@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import axios from "axios";
 
@@ -8,7 +8,7 @@ import "./Navbar.css";
 const Navbar = () => {
 
   const { auth, setAuth } = useGlobalContext();
-
+  const navigate = useNavigate();
 
 
   //this determines view state of navbar depending on if user is authenticated
@@ -18,6 +18,7 @@ const Navbar = () => {
     axios.get("http://localhost:8080/logout").then((res) => {
       sessionStorage.removeItem("authenticated");
       setAuth(sessionStorage.getItem("authenticated"));
+      navigate("/login");
     });
   }
 

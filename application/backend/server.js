@@ -16,7 +16,7 @@ const mongoose = require("mongoose");
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3001", // the origin of the client
+    origin: "http://localhost:3000", // the origin of the client
   })
 );
 app.use(cookieParser());
