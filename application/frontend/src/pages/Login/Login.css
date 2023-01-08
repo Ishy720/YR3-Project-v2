@@ -1,0 +1,14 @@
+.login {
+    background-color: rgb(50, 50, 50);
+    width: 100%;
+    padding: 1px;
+}
+  
+.login #pageTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 60px;
+    color: rgba(255, 241, 169, 0.696);
+}

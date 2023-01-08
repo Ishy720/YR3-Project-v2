@@ -1,0 +1,23 @@
+#loginContainer {
+    align-content: center;
+    text-align: -webkit-center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: 500px;
+}
+
+#loginFormContainer {
+    background-color: rgba(169, 169, 169, 0.27);
+    width: 60%;
+    height: max-content;
+    padding: inherit;
+    border-radius: 8px;
+}
+
+.clickLink {
+    color: purple;
+}
+
+.clickLink:hover {
+    cursor: pointer;
+}
