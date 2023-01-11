@@ -1,15 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useGlobalContext } from "./context";
 
-
+//import pages
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import Discover from "./pages/Discover/Discover";
 import Books from "./pages/Books/Books";
-import Navbar from "./components/Navbar/Navbar";
 import Protected from "./components/ProtectedRoutes/Protected";
+
+//import components
+import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 
 //Baseline

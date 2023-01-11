@@ -1,11 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import React, { createContext, useContext, useState } from "react";
 
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  //let navigate = useNavigate();
-
+  
   //user state to check if user is logged in
   const [user, setUser] = useState(false);
   const [auth, setAuth] = useState(
