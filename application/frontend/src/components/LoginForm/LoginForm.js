@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../../context";
 
-function LoginForm(props) {
-  const { setAuth } = useGlobalContext();
+function LoginForm() {
+  const { setUser, setAuth } = useGlobalContext();
 
   let navigate = useNavigate();
 
@@ -35,12 +35,15 @@ function LoginForm(props) {
     axios
       .post("http://localhost:8080/login", loginData)
       .then((res) => {
+        console.log(res.data.user);
         sessionStorage.setItem("authenticated", true);
+        sessionStorage.setItem("user", res.data.user);
         //note to self set more things here after this logic is fixed
       })
       .then(() => {
         console.log("submit");
         setAuth(Boolean(sessionStorage.getItem("authenticated")));
+        setUser(sessionStorage.getItem("user"));
         navigate("/discover");
       });
   }

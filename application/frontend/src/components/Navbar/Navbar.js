@@ -7,13 +7,15 @@ import "./Navbar.css";
 
 const Navbar = () => {
 
-  const { auth, setAuth } = useGlobalContext();
+  const { auth, setAuth, user, setUser } = useGlobalContext();
   const navigate = useNavigate();
 
   function logoutFunction() {
     axios.get("http://localhost:8080/logout").then((res) => {
       sessionStorage.removeItem("authenticated");
+      sessionStorage.removeItem("user");
       setAuth(sessionStorage.getItem("authenticated"));
+      setUser(sessionStorage.getItem("user"));
       navigate("/login");
     });
   }
@@ -37,7 +39,10 @@ const Navbar = () => {
         </div>
         <div className="auth-links">
           {auth ? (
+            <>
+            <div id="welcomeUserText">Welcome {user}!</div>
             <button onClick={logoutFunction}>Logout</button>
+            </>
           ) : (
             <>
               <Link to="/register">Register</Link>

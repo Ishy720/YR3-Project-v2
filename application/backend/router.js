@@ -106,44 +106,30 @@ app.post("/login", async function (req, res) {
           const { _id, username, password } = returnedDocument;
 
           if (retrievedPassword == password) {
-            req.session.authenticated = true;
 
+            req.session.authenticated = true;
             req.session.user = {
               id: _id,
               username: username,
               loggedIn: true,
             };
-            //Make a session
-            // req.session.userID = _id;
-            // req.session.username = username;
-            // req.session.loggedIn = true;
-            console.log("Logged in user");
 
-            //Tell them it worked
-            // res.json({
-            //   code: 200,
-            //   message: "You have successfully logged into your account!",
-            //   session: req.session,
-            // });
+            console.log("Logged in user");
 
             res.status(200).json({
               message: "You have successfully logged into your account!",
-
-              //   Attaching the session to the login functionality
-            //   session: req.session,
-            //   sessionId: req.session.id,
+              user: username
             });
+
           } else {
             console.log("Incorrect details");
             //Tell them wrong username/password (its really the password but we don't tell them)
-            // res.json({ code: 400, message: "Incorrect username/password" });
             res.status(401).json({ message: "Incorrect username/password" });
           }
         });
       } else {
         console.log("Couldn't find the user account");
         //User doesn't exist, tell them that doesn't work
-        // res.json({ code: 404, message: "That user does not exist" });
         res.status(404).json({ message: "That user does not exist" });
       }
     }

@@ -5,7 +5,7 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
   
   //user state to check if user is logged in
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(sessionStorage.getItem("user"));
   const [auth, setAuth] = useState(
     Boolean(sessionStorage.getItem("authenticated"))
   );
