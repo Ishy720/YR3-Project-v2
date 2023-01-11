@@ -1,29 +1,8 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import LoginForm from "../../components/LoginForm/LoginForm";
 import "./Login.css";
-import { useGlobalContext } from "../../context";
+
 const Login = () => {
-  const { auth } = useGlobalContext();
-  const navigate = useNavigate();
-
-
-  // useEffect(() => {
-  //   //if user logged in, redirect them back to discover page
-  //   // if(sessionStorage.getItem("authenticated") != null && sessionStorage.getItem("authenticated") == true) {
-  //   //   navigate("/discover");
-
-  //   // }
-  //   if (auth) {
-  //     navigate("/discover");
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    if (auth) {
-      navigate("/discover");
-    }
-  }, []);
 
   return (
     <div>
