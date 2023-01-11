@@ -1,4 +1,7 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useGlobalContext } from "./context";
+
+
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
 import Register from "./pages/Register/Register";
@@ -11,14 +14,17 @@ import Footer from "./components/Footer/Footer";
 
 //Baseline
 function App() {
+
+  const { auth } = useGlobalContext();
+
   return (
     <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={auth ? <Navigate to="/discover" /> : <Register />} />
+        <Route path="/login" element={auth ? <Navigate to="/discover" /> : <Login />} />
         <Route path="/*" element={<Home />} />
 
         <Route
