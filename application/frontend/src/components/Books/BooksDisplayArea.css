@@ -1,0 +1,20 @@
+.booksContainer {
+    width: 100%;
+    margin-top: 3rem;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.empty {
+    color: rgba(255, 241, 169, 0.696);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    font-size: 20px;
+  }
+  

@@ -1,0 +1,45 @@
+.searchPage {
+    background-color: rgb(50, 50, 50);
+    width: 100%;
+    padding: 1px;
+  }
+  
+.searchPage #pageTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 60px;
+    color: rgba(255, 241, 169, 0.696);
+}
+  
+.searchPage .searchDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 50%;
+    padding: 13px;
+    background-color: black;
+    border-radius: 30px;
+}
+  
+.searchPage .searchDiv input {
+    flex: 1;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding-right: 1rem;
+    outline: none;
+    color:rgb(229, 227, 227);
+    background: #020202;
+    width: inherit;
+}
+  
+.searchPage .searchDiv img {
+    cursor: pointer;
+}
+  
+.searchPage .searchDiv #searchBar::placeholder {
+    color: rgba(255, 241, 169, 0.284);
+}
