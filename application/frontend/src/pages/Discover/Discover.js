@@ -8,7 +8,7 @@ import LoadingIcon from '../../images/LoadingIcon.svg';
 const Discover = () => {
 
 
-  const [loadingState, setLoadingState] = useState(true);
+  const [hasSearched, setHasSearched] = useState(false);
 
   //State to hold book results array from API, view component will re-render everytime this state is updated via setBooks
   const [books, setBooks] = useState([]);
@@ -44,6 +44,7 @@ const Discover = () => {
     setBooks(data.books);
     console.log(data.books);
     setIconState(SearchIcon);
+    setHasSearched(true);
 
   };
 
@@ -57,11 +58,13 @@ const Discover = () => {
   //When view component is rendered, load default search results
   useEffect(() => {
     //searchBooks({searchTerm});
-    searchBooks(`Harry Potter`);
+    //searchBooks(`Harry Potter`);
   }, []);
   
   return (
+
     <div className="searchPage">
+
       <h1 id="pageTitle">Find my books</h1>
 
       <div className='searchDiv'>
@@ -69,10 +72,30 @@ const Discover = () => {
         <img id="searchIcon" src={iconState} alt="search" onClick={() => searchBooks(searchTerm)}/>
       </div>
 
+      {hasSearched ? (
+      <>
 
-      <BooksDisplayArea books={books} />
+        {books.length > 0 ? (
+          <>
+            <BooksDisplayArea books={books} />
+          </>
+        ) : (
+          <>
+            <h1>No results found.</h1>
+          </>
+        )};
+
+
+      </>
+    ) : (
+      <>
+        <h1>Results will appear here.</h1>
+      </>
+    )}
+
 
     </div>
+
 
   );
 };
