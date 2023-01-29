@@ -2,7 +2,9 @@
 const app = require("./server.js");
 
 //Database asset imports
+const mongoose = require("mongoose");
 const User = require("./models/UserSchema.js");
+const Book = require("./models/BookSchema.js");
 
 app.get("/test", function (req, res) {
   res.status(200).json({ message: "Success!" });
@@ -36,6 +38,18 @@ app.post("/createTestSession", function (req, res) {
 
 app.get("/session", (req, res) => {
   res.json({ session: req.session });
+});
+
+app.get("/getBooksBySearchTerm", (req, res) => {
+  const { searchTerm } = req.body;
+  const bookModel = mongoose.model('Book');
+  bookModel.find({title: { $regex: searchTerm, $options: 'i' } }).limit(10)
+    .then((results) => {
+      res.json({books: results});
+    })
+    .catch((err) => {
+      throw err;
+    });
 });
 
 //When a user registers a new account

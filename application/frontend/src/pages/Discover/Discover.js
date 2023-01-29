@@ -26,6 +26,7 @@ const Discover = () => {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${title}&printType=${filter}&key=${API_KEY}`);
     const data = await response.json();
     setBooks(data.items);
+    console.log(data.items);
     setIconState(SearchIcon);
   };
 
