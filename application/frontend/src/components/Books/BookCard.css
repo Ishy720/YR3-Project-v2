@@ -6,7 +6,7 @@
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
     font-family: Arial, sans-serif;
     color: white;
-    padding: 70px;
+    padding: 400px;
     text-align: -webkit-center;
 }
   
@@ -22,7 +22,8 @@
   
 .bookComponent span {
     font-style: italic;
-  }
+    padding: 10px;
+}
   
 .bookComponent p {
     font-style: italic;

@@ -4,11 +4,9 @@ import SearchIcon from '../../images/SearchIcon.svg';
 import SearchFilters from '../../components/Books/SearchFilters';
 import BooksDisplayArea from '../../components/Books/BooksDisplayArea';
 import LoadingIcon from '../../images/LoadingIcon.svg';
+import { API_KEY } from '../../config/api_key';
 
 const Discover = () => {
-
-
-  const [loadingState, setLoadingState] = useState(true);
 
   //State to hold book results array from API, view component will re-render everytime this state is updated via setBooks
   const [books, setBooks] = useState([]);
@@ -20,44 +18,27 @@ const Discover = () => {
   const [iconState, setIconState] = useState(SearchIcon);
 
   //State to hold the current filter option the user wants, default is all types
-  //const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('all');
 
   //Fetches search term query results from API and places into books state
   const searchBooks = async (title) => {
     setIconState(LoadingIcon)
-
-    const search = {
-      searchTerm: title
-    }
-
-    const options = {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(search)
-    };
-
-    const response = await fetch('http://localhost:8080/getBooksBySearchTerm', options);
-    const data = await response.json()
-
-    setBooks(data.books);
-    console.log(data.books);
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${title}&printType=${filter}&key=${API_KEY}`);
+    const data = await response.json();
+    setBooks(data.items);
+    console.log(data.items);
     setIconState(SearchIcon);
-
   };
 
-  /*
   //Function for child search component to call with filter result
   function updateFilter(newFilter) {
     setFilter(newFilter);
   }
-  */
 
   //When view component is rendered, load default search results
   useEffect(() => {
     //searchBooks({searchTerm});
-    searchBooks(`Harry Potter`);
+    searchBooks(`React`);
   }, []);
   
   return (
@@ -69,6 +50,7 @@ const Discover = () => {
         <img id="searchIcon" src={iconState} alt="search" onClick={() => searchBooks(searchTerm)}/>
       </div>
 
+      <SearchFilters updateFilter={result => updateFilter(result)} />
 
       <BooksDisplayArea books={books} />
 

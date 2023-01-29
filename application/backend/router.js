@@ -40,7 +40,8 @@ app.get("/session", (req, res) => {
   res.json({ session: req.session });
 });
 
-app.get("/getBooksBySearchTerm", (req, res) => {
+app.post("/getBooksBySearchTerm", (req, res) => {
+  console.log(req.body);
   const { searchTerm } = req.body;
   const bookModel = mongoose.model('Book');
   bookModel.find({title: { $regex: searchTerm, $options: 'i' } }).limit(10)

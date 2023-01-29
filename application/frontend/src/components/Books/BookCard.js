@@ -9,11 +9,11 @@ const BookCard = ({ book }) => {
 
   //Try to add the thumbnail url to the BookCard component.
   try { 
-    bookImageURL = book.volumeInfo.imageLinks.thumbnail;
+    bookImageURL = book.imgurl;
   }
   //A thumbnail couldn't be retrieved from the destructured array parameter.
   catch(err) {
-    console.log(`Couldn't load image for book with title "${book.volumeInfo.title}"`)
+    console.log(`Couldn't load image for book with title "${book.title}"`)
     bookImageURL = NoBookCover;
   }
 
@@ -21,11 +21,15 @@ const BookCard = ({ book }) => {
     <>
     <div className='bookComponent'>
       <div>
-        <img src={bookImageURL} alt={book.volumeInfo.title} onClick={() => {alert(`Clicked ${book.volumeInfo.title}`)}} />
+        <img src={bookImageURL} alt={book.title} onClick={() => {alert(`Clicked ${book.title}`)}} />
       </div>
       <div>
-        <h3>{book.volumeInfo.title}</h3>
-        <span>{book.volumeInfo.printType}</span>
+        <h3>{book.title}</h3>
+        <span>{book.author}</span>
+        <span>{book.releaseDate}</span>
+        <span>{book.description}</span>
+        <span>Rating: {book.avgRating}/5</span>
+        <span>{book.likedPercentage}% of people liked this</span>
       </div>
       <div>
       <button>Add to my to-read list</button>
