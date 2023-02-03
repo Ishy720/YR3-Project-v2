@@ -40,7 +40,7 @@ const Navbar = () => {
         <div className="auth-links">
           {auth ? (
             <>
-            <div id="welcomeUserText">Welcome {user}!</div>
+            <div id="welcomeUserText">Welcome {user.user}!</div>
             <button onClick={logoutFunction}>Logout</button>
             </>
           ) : (

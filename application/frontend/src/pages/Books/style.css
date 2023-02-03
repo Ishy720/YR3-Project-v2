@@ -1,0 +1,148 @@
+.section-title {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  color: antiquewhite;
+  font-size: 2rem;
+}
+.other-message {
+  text-align: center;
+  text-transform: uppercase;
+  color: antiquewhite;
+  font-size: 2rem;
+  min-width: 90vw;
+}
+.main-con {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  background-color: rgba(250, 235, 215, 0.6);
+}
+
+.book-card {
+  margin: 2rem 0;
+  width: 250px;
+  height: 470px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: rgba(100, 100, 100, 0.9) 0px 3px 8px;
+}
+
+.image-con {
+  height: 250px;
+  /* border: solid red; */
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+}
+
+.details-con {
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.title,
+.author,
+.rating {
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.title span,
+.author span,
+.rating span {
+  font-weight: 700;
+  min-width: 60px !important;
+  padding: 0 0.9rem;
+  /* border: solid; */
+  display: block;
+}
+
+.card-footer {
+  /* border: solid red; */
+  display: flex;
+  /* flex-direction: column; */
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  border-radius: 0;
+  width: 100%;
+}
+.add-to {
+  margin: 0;
+  text-align: left;
+  width: 100%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  top: -15px;
+  left: .2rem;
+  
+}
+.icon-con {
+  /* width: 100%; */
+  display: flex;
+  /* justify-content: flex-end; */
+  /* padding-bottom: 0.5rem; */
+  /* padding-right: 0.9rem; */
+  /* border: solid; */
+}
+
+.more-con {
+  width: 100%;
+  display: flex;
+  /* bottom:-100px; */
+}
+
+.more-con button {
+  padding: 0.3rem;
+  cursor: pointer;
+  flex: 1;
+  border-radius: 0;
+  transition: all 0.5s;
+}
+
+.more-con button:hover {
+  background-color: black;
+  color: antiquewhite;
+}
+.trash-icon {
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.5s;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.trash-icon:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+@media screen and (min-width: 600px) {
+  .main-con {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 5px 15px;
+    padding: 1rem 2rem;
+  }
+  .book-card {
+    max-width: 230px;
+  }
+}

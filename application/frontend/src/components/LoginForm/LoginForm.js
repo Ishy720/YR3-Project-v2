@@ -35,15 +35,24 @@ function LoginForm() {
     axios
       .post("http://localhost:8080/login", loginData)
       .then((res) => {
-        console.log(res.data.user);
+        console.log(res.data);
         sessionStorage.setItem("authenticated", true);
-        sessionStorage.setItem("user", res.data.user);
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            user: res.data.user.username,
+            id: res.data.user.id,
+          })
+        );
+        setUser({
+          user: res.data.user.username,
+          id: res.data.user.id,
+        });
         //note to self set more things here after this logic is fixed
       })
       .then(() => {
         console.log("submit");
         setAuth(Boolean(sessionStorage.getItem("authenticated")));
-        setUser(sessionStorage.getItem("user"));
         navigate("/discover");
       });
   }

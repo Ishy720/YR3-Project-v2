@@ -43,10 +43,12 @@ app.get("/session", (req, res) => {
 app.post("/getBooksBySearchTerm", (req, res) => {
   console.log(req.body);
   const { searchTerm } = req.body;
-  const bookModel = mongoose.model('Book');
-  bookModel.find({title: { $regex: searchTerm, $options: 'i' } }).limit(10)
+  const bookModel = mongoose.model("Book");
+  bookModel
+    .find({ title: { $regex: searchTerm, $options: "i" } })
+    .limit(10)
     .then((results) => {
-      res.json({books: results});
+      res.json({ books: results });
     })
     .catch((err) => {
       throw err;
@@ -121,7 +123,6 @@ app.post("/login", async function (req, res) {
           const { _id, username, password } = returnedDocument;
 
           if (retrievedPassword == password) {
-
             req.session.authenticated = true;
             req.session.user = {
               id: _id,
@@ -133,9 +134,8 @@ app.post("/login", async function (req, res) {
 
             res.status(200).json({
               message: "You have successfully logged into your account!",
-              user: username
+              user: { username: username, id: _id },
             });
-
           } else {
             console.log("Incorrect details");
             //Tell them wrong username/password (its really the password but we don't tell them)
@@ -150,3 +150,193 @@ app.post("/login", async function (req, res) {
     }
   });
 });
+
+// MOSH CODE
+
+//  add book to to-read list controller
+const addBookToReadList = async (req, res) => {
+  const { userId, bookId } = req.params;
+
+  const book = await Book.findOne({ _id: bookId });
+  if (!book) {
+    return res.status(404).json({ msg: `no book with  id:${bookId} found` });
+  }
+
+  // check  if user exists
+  const checkUser = await User.findOne({ _id: userId });
+  if (!checkUser) {
+    return res.status(404).json({ message: "could not add book to any list" });
+  }
+
+  // check if book already exists in list
+  const check = checkUser.toReadList.find((book) => book._id == bookId);
+
+  if (check) {
+    return res.status(400).json({
+      message: `${book.title} by ${book.author} already exists in your list`,
+    });
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    {
+      _id: userId,
+    },
+    {
+      $push: { toReadList: book },
+      $pull: { finishedList: book, currentlyReadingList: book },
+    },
+    { new: true, runValidators: true }
+  );
+  res.status(200).json(updatedUser);
+};
+
+//  add book to currently reading list controller
+const addToCurrentlyReadingList = async (req, res) => {
+  const { userId, bookId } = req.params;
+
+  const book = await Book.findOne({ _id: bookId });
+  if (!book) {
+    return res.status(404).json({ msg: `no book with  id:${bookId} found` });
+  }
+
+  // check  if user exists
+  const checkUser = await User.findOne({ _id: userId });
+  if (!checkUser) {
+    return res.status(404).json({ message: "could not add book to any list" });
+  }
+
+  // check if book already exists in list
+  const check = checkUser.currentlyReadingList.find(
+    (book) => book._id == bookId
+  );
+
+  if (check) {
+    return res.status(400).json({
+      message: `${book.title} by ${book.author} already exists in your list`,
+    });
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    {
+      _id: userId,
+    },
+    {
+      $push: { currentlyReadingList: book },
+      $pull: { finishedList: book, toReadList: book },
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json(updatedUser);
+};
+
+//  add book to finshed reading list controller
+const addToFinishedList = async (req, res) => {
+  const { userId, bookId } = req.params;
+
+  const book = await Book.findOne({ _id: bookId });
+  if (!book) {
+    return res.status(404).json({ msg: `no book with  id:${bookId} found` });
+  }
+
+  // check  if user exists
+  const checkUser = await User.findOne({ _id: userId });
+  if (!checkUser) {
+    return res.status(404).json({ message: "could not add book to any list" });
+  }
+
+  // check if book already exists in list
+  const check = checkUser.finishedList.find((book) => book._id == bookId);
+
+  if (check) {
+    return res.status(400).json({
+      message: `${book.title} by ${book.author} already exists in your list`,
+    });
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    {
+      _id: userId,
+    },
+    {
+      $push: { finishedList: book },
+      $pull: { currentlyReadingList: book, toReadList: book },
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json(updatedUser);
+};
+
+const getToReadList = async (req, res) => {
+  const { userId } = req.params;
+  const toReadList = await User.findById({ _id: userId })
+    .select("toReadList -_id")
+    .sort("createdAt");
+  if (!toReadList) return res.status(404).json({ message: "no list found" });
+  res.status(200).json(toReadList);
+};
+const getCurrentlyReadingList = async (req, res) => {
+  const { userId } = req.params;
+  const currentlyReadingList = await User.findById({ _id: userId }).select(
+    "currentlyReadingList -_id"
+  );
+  if (!currentlyReadingList)
+    return res.status(404).json({ message: "no list found" });
+  res.status(200).json(currentlyReadingList);
+};
+
+const getFinishedList = async (req, res) => {
+  const { userId } = req.params;
+  const finishedList = await User.findById({ _id: userId }).select(
+    "finishedList -_id"
+  );
+  if (!finishedList) return res.status(404).json({ message: "no list found" });
+  res.status(200).json(finishedList);
+};
+
+const deleteBookFromList = async (req, res) => {
+  const { bookId, userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) return res.status(404).json({ message: "no user found " });
+
+  let book;
+
+  book = user.currentlyReadingList.find((item) => item._id == bookId);
+  if (!book) {
+    book = user.toReadList.find((item) => item._id == bookId);
+  }
+
+  if (!book) {
+    book = user.finishedList.find((item) => item._id == bookId);
+  }
+
+  if (!book) {
+    return res.status(404).json({ message: "no book found" });
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: {
+        currentlyReadingList: book,
+        toReadList: book,
+        finishedList: book,
+      },
+    },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json(updatedUser);
+};
+
+// Routers
+app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
+
+app.get("/list/toread/:userId", getToReadList);
+app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
+app.get("/list/finished/:userId", getFinishedList);
+
+app.patch("/delete/:userId/:bookId", deleteBookFromList);
