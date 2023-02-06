@@ -11,19 +11,16 @@ const Book = require("../models/BookSchema");
 
 //DB Connection and Server start
 mongoose
-  .connect(
-    "mongodb+srv://moshood:1234@nodeandexpress.sealr.mongodb.net/BooksLibrary?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connected to MongoDB");
   })
   .catch((err) => {
     console.log(err);
-  });
+});
 
 //Takes book attributes and saves into database
 async function saveBook(
