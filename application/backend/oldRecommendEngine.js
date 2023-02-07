@@ -1,4 +1,4 @@
-//OLD, THIS IS TRASSHHHHH
+//OLD, run time is awfully slow and will never be used in a real environment.
 
 //Imports
 const brain = require("brain.js");
