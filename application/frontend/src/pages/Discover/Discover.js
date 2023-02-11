@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Discover.css';
+import BookCarousel from '../../components/Books/BookCarousel';
 import SearchIcon from '../../images/SearchIcon.svg';
 import SearchFilters from '../../components/Books/SearchFilters';
 import BooksDisplayArea from '../../components/Books/BooksDisplayArea';
@@ -77,6 +78,7 @@ const Discover = () => {
 
         {books.length > 0 ? (
           <>
+            <BookCarousel books={books} />
             <BooksDisplayArea books={books} />
           </>
         ) : (
