@@ -75,11 +75,3 @@
 .carousel button:last-of-type {
     right: 10px;
 }
-
-.slide-left {
-    transform: translateX(-100%);
-}
-
-.slide-right {
-    transform: translateX(100%);
-}

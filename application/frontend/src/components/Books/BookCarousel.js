@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "./BookCarousel.css";
 
 const BookCarousel = ({ books }) => {
@@ -6,6 +6,8 @@ const BookCarousel = ({ books }) => {
     const [slideAmount, setSlideAmount] = useState(0);
     const [transitioning, setTransitioning] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [direction, setDirection] = useState(0);
+    const carouselListRef = useRef(null);
 
     useEffect(() => {
         const handleResize = () => {
@@ -17,36 +19,45 @@ const BookCarousel = ({ books }) => {
         };
     }, []);
 
-    const booksToDisplay = [
-        ...books.slice(currentIndex + 1, books.length),
-        ...books.slice(0, currentIndex + 1)
-    ];
+    const booksToDisplay = [...books.slice(currentIndex + 1, books.length), ...books.slice(0, currentIndex + 1)];
 
     const handleNext = () => {
         setTransitioning(true);
-        setSlideAmount(-windowWidth / booksToDisplay.length);
+        setDirection(1);
     };
 
     const handlePrev = () => {
         setTransitioning(true);
-        setSlideAmount(windowWidth / booksToDisplay.length);
+        setDirection(-1);
     };
 
     useEffect(() => {
         if (transitioning) {
-            setTimeout(() => {
-                setSlideAmount(0);
-                setCurrentIndex((currentIndex + (slideAmount > 0 ? -1 : 1) + books.length) % books.length);
-                setTransitioning(false);
-            }, 500);
+            let start;
+            const step = (timestamp) => {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                if (progress > 500) {
+                    carouselListRef.current.style.transform = `translateX(${0}%)`;
+                    setCurrentIndex((currentIndex + direction + books.length) % books.length);
+                    setTransitioning(false);
+                    setDirection(0);
+                } else {
+                    carouselListRef.current.style.transform = `translateX(${slideAmount - (progress / 500) * slideAmount}%)`;
+                    requestAnimationFrame(step);
+                }
+            };
+            setSlideAmount(-direction * windowWidth / booksToDisplay.length);
+            requestAnimationFrame(step);
         }
-    }, [currentIndex, slideAmount, transitioning, books.length, windowWidth]);
+    }, [currentIndex, slideAmount, transitioning, direction, books.length, windowWidth]);
 
     return (
         <div className="carousel">
             <button onClick={handlePrev}>Prev</button>
             <ul
                 className="carousel-list"
+                ref={carouselListRef}
                 style={{
                     transform: `translateX(${slideAmount}%)`,
                     transition: transitioning ? 'transform 0.5s' : 'none'
@@ -63,6 +74,8 @@ const BookCarousel = ({ books }) => {
             <button onClick={handleNext}>Next</button>
         </div>
     );
+    
+
 };
   
 
