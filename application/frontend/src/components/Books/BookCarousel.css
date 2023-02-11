@@ -34,17 +34,18 @@
     width: 200px;
     height: 300px;
     object-fit: cover;
+    margin-bottom: 20px;
 }
   
 .carousel-item h3 {
-    margin-top: 20px;
     font-size: 20px;
     font-weight: bold;
+    text-align: center;
 }
   
 .carousel-item p {
-    margin-top: 10px;
     font-size: 16px;
+    text-align: center;
 }
   
 .carousel button {

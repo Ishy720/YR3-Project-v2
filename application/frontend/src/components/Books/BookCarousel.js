@@ -5,19 +5,8 @@ const BookCarousel = ({ books }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [slideAmount, setSlideAmount] = useState(0);
     const [transitioning, setTransitioning] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [direction, setDirection] = useState(0);
     const carouselListRef = useRef(null);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     const booksToDisplay = [...books.slice(currentIndex + 1, books.length), ...books.slice(0, currentIndex + 1)];
 
@@ -33,24 +22,28 @@ const BookCarousel = ({ books }) => {
 
     useEffect(() => {
         if (transitioning) {
-            let start;
-            const step = (timestamp) => {
-                if (!start) start = timestamp;
-                const progress = timestamp - start;
-                if (progress > 500) {
-                    carouselListRef.current.style.transform = `translateX(${0}%)`;
-                    setCurrentIndex((currentIndex + direction + books.length) % books.length);
-                    setTransitioning(false);
-                    setDirection(0);
-                } else {
-                    carouselListRef.current.style.transform = `translateX(${slideAmount - (progress / 500) * slideAmount}%)`;
-                    requestAnimationFrame(step);
-                }
-            };
-            setSlideAmount(-direction * windowWidth / booksToDisplay.length);
-            requestAnimationFrame(step);
+          let start;
+          const step = (timestamp) => {
+            if (!start) start = timestamp;
+            const progress = timestamp - start;
+            if (progress > 500) {
+              carouselListRef.current.style.transform = `translateX(${
+                -100 * (currentIndex + direction + books.length) % books.length
+              }%)`;
+              setCurrentIndex((currentIndex + direction + books.length) % books.length);
+              setTransitioning(false);
+              setDirection(0);
+            } else {
+              carouselListRef.current.style.transform = `translateX(${
+                slideAmount - (progress / 500) * slideAmount
+              }%)`;
+              requestAnimationFrame(step);
+            }
+          };
+          setSlideAmount(-100 / books.length * direction);
+          requestAnimationFrame(step);
         }
-    }, [currentIndex, slideAmount, transitioning, direction, books.length, windowWidth]);
+      }, [currentIndex, slideAmount, transitioning, direction, books.length]);
 
     return (
         <div className="carousel">
