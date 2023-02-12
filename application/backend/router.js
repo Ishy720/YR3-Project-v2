@@ -1,5 +1,6 @@
 //Import server
 const app = require("./server.js");
+const {hashSync, compareSync} = require("bcrypt");
 
 //Database asset imports
 const mongoose = require("mongoose");
@@ -58,8 +59,7 @@ app.post("/getBooksBySearchTerm", (req, res) => {
 //When a user registers a new account
 app.post("/registerNewUser", async function (req, res) {
   //Get user details
-  const { username, forename, surname, email, password, marketingAgreed } =
-    req.body;
+  const { username, forename, surname, email, password, marketingAgreed } = req.body;
 
   //Validate inputs!!!
 
@@ -70,12 +70,14 @@ app.post("/registerNewUser", async function (req, res) {
     if (!result) {
       //Encrypt password, email
 
+      const encryptedPassword = hashSync(password, 10);
+
       const newUser = User({
         username: username,
         forename: forename,
         surname: surname,
         email: email,
-        password: password,
+        password: encryptedPassword,
         marketingAgreed: marketingAgreed,
         banned: false,
       });
@@ -122,7 +124,7 @@ app.post("/login", async function (req, res) {
           const [returnedDocument] = documents;
           const { _id, username, password } = returnedDocument;
 
-          if (retrievedPassword == password) {
+          if (compareSync(retrievedPassword, password)) {
             req.session.authenticated = true;
             req.session.user = {
               id: _id,
@@ -151,7 +153,6 @@ app.post("/login", async function (req, res) {
   });
 });
 
-// MOSH CODE
 
 //  add book to to-read list controller
 const addBookToReadList = async (req, res) => {
@@ -230,7 +231,7 @@ const addToCurrentlyReadingList = async (req, res) => {
   res.status(200).json(updatedUser);
 };
 
-//  add book to finshed reading list controller
+//add book to finshed reading list controller
 const addToFinishedList = async (req, res) => {
   const { userId, bookId } = req.params;
 
@@ -330,7 +331,47 @@ const deleteBookFromList = async (req, res) => {
   res.status(200).json(updatedUser);
 };
 
-// Routers
+
+const recommendedBooks = async (req, res) => {
+
+  const { userId } = req.params
+
+  const user = await User.findOne({ _id: userId })
+  const joinedBooks = user.toReadList.concat(user.finishedList, user.currentlyReadingList)
+  console.log(user.toReadList);
+  let authors = []
+  joinedBooks.map((book) => {
+    authors.push(book.author.split(",")[0])
+  })
+
+  const uniqueAuthors = [...new Set(authors)]
+  const books = await Book.find({ author: { $in: uniqueAuthors } }).select("author title").sort("avgRating").limit(20)
+
+  //   return Promise.all(
+  //  uniqueAuthors.map(async author => {
+  //     const regex = new RegExp(author, "i");
+  //     return await Book.aggregate([
+  //       { $match: { author: regex } },
+  //       { $sample: { size: 10 } },
+  //       { $sort: { avgRating: -1 } }
+  //     ]).exec();
+  //   })
+  //   );
+
+  // const recommendBooks =await  Book.find({ author: { ...uniqueAuthors } })
+
+  res.json({ books, length: books.length })
+
+
+
+
+}
+
+
+app.get("/recommendation/:userId", recommendedBooks)
+
+
+//Routers
 app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
 app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
 app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
