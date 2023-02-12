@@ -23,11 +23,12 @@ const Navbar = () => {
   //Conditional rendering depending on if user is logged in or not.
   return (
     <header>
-      <nav>
+      <nav className="navbarClass">
         <div className="nav-links">
           {auth ? (
             <>
-              <Link to="/"> Home</Link> <Link to="about">About</Link>
+              <Link to="/"> Home</Link> 
+              <Link to="about">About</Link>
               <Link to="/discover"> Discover</Link>
               <Link to="books">Books</Link>
             </>
@@ -41,7 +42,7 @@ const Navbar = () => {
           {auth ? (
             <>
             <div id="welcomeUserText">Welcome {user.user}!</div>
-            <button onClick={logoutFunction}>Logout</button>
+            <button id="logoutBtn" onClick={logoutFunction}>Logout</button>
             </>
           ) : (
             <>

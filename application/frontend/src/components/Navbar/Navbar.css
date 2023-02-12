@@ -5,27 +5,85 @@ a{
     padding: 14px 16px;
     text-decoration: none;
     font-family: Arial, sans-serif;
-    /* border: solid red; */
 }
+
 header{
     width: 100%;
-    border: solid;
-    border-radius: 50px;
+    border: none;
+    border-radius: 0;
     padding: 1rem 0;
     background-color: rgb(34, 34, 34);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: solid red; */
     width: 90%;
     max-width: 900px;
     margin: 0 auto;
 }
 
-#welcomeUserText {
-    color: red;
+.nav-links{
+    display: flex;
+    align-items: center;
+    width: 30%;
 }
 
+.nav-links a{
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.auth-links{
+    display: flex;
+    align-items: center;
+    width: 30%;
+}
+
+.auth-links a{
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#logoutBtn {
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 20px;
+    color: white;
+    padding: 8px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover{
+    background-color: white;
+    color: rgb(34, 34, 34);
+}
+
+#welcomeUserText {
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+@media (max-width: 600px) {
+    .nav-links{
+        display: none;
+    }
+    
+    .auth-links{
+        width: 100%;
+        justify-content: space-between;
+    }
+}
