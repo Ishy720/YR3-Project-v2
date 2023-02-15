@@ -3,11 +3,11 @@
 //Imports
 const brain = require("brain.js");
 const cache = require('memory-cache');
-const Book = require("./models/BookSchema.js");
+const Book = require("../models/BookSchema.js");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-//DB Connection and Server start
+//DB Connection
 mongoose
   .connect(process.env.DB_URI, {
     useNewUrlParser: true,
