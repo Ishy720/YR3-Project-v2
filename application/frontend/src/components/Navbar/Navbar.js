@@ -28,9 +28,10 @@ const Navbar = () => {
           {auth ? (
             <>
               <Link to="/"> Home</Link> 
-              <Link to="about">About</Link>
+              <Link to="/about">About</Link>
               <Link to="/discover"> Discover</Link>
-              <Link to="books">Books</Link>
+              <Link to="/books">Books</Link>
+              <Link to="/suggested">Suggested</Link>
             </>
           ) : (
             <>

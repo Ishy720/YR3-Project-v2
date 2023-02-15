@@ -8,6 +8,7 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import Discover from "./pages/Discover/Discover";
 import Books from "./pages/Books/Books";
+import Suggested from "./pages/Suggested/Suggested";
 import Protected from "./components/ProtectedRoutes/Protected";
 
 //import components
@@ -43,6 +44,15 @@ function App() {
           element={
             <Protected>
               <Books />
+            </Protected>
+          }
+        />
+
+        <Route
+          path="/suggested"
+          element={
+            <Protected>
+              <Suggested />
             </Protected>
           }
         />
