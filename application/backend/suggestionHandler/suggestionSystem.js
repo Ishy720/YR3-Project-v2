@@ -1,6 +1,6 @@
 //Imports
-const Book = require("./models/BookSchema.js");
-const User = require("./models/UserSchema.js");
+const Book = require("../models/BookSchema.js");
+const User = require("../models/UserSchema.js");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -23,7 +23,7 @@ async function retrieveRelatedBooksByAuthor(bookId) {
   if (!book) {
       console.log(`Book with id ${bookId} not found`);
   }
-  const author = book.author;
+  const author = book.author.split(",")[0];
 
   const regex = new RegExp(`^${author.split(" ").join(".*")}$`, "i");
 
@@ -61,17 +61,17 @@ async function retrieveRelatedBooks(genreArray) {
   );
 };
 
-
+/*
 const uniqueUserInputGenres = ['Action', 'Adventure'];
 retrieveRelatedBooks(uniqueUserInputGenres).then(output => {
     const result = output.sort(({avgRating:a}, {avgRating:b}) => b-a);
     console.log(result[0]);
-});
+});*/
 
 
-/*
-const bookId = "63d53dcd0dcdd4cc1d1251ac" //twilight - author name is fine and only contains one author name
-//const bookId = "63d53dcd0dcdd4cc1d1251c2"; //harry potter book - author name has multiple people and () which is wrong
+
+//const bookId = "63d53dcd0dcdd4cc1d1251ac" //twilight - author name is fine and only contains one author name
+const bookId = "63d53dcd0dcdd4cc1d1251c2"; //harry potter book - author name has multiple people and () which is wrong
 retrieveRelatedBooksByAuthor(bookId).then(output => {
   console.log(output);
-});*/
+});
