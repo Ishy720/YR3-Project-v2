@@ -1,6 +1,7 @@
-//Import server
+//Imports
 const app = require("./server.js");
 const {hashSync, compareSync} = require("bcrypt");
+const {checkUser, checkSession} = require("./authMiddleware");
 
 //Database asset imports
 const mongoose = require("mongoose");
@@ -11,14 +12,8 @@ app.get("/test", function (req, res) {
   res.status(200).json({ message: "Success!" });
 });
 
-app.get("/isLoggedIn", function (req, res) {
-  if (req.session.loggedIn) {
-    console.log("Session exists");
-    res.status(200).json({ message: "A session exists" });
-  } else {
-    console.log("Session doesn't exist");
-    res.status(400).json({ message: "No session exists" });
-  }
+app.get("/testMiddleware", checkUser("USER"), function(req, res) {
+  res.status(200).json({message: "Woah it worked"});
 });
 
 app.get("/logout", function (req, res) {
@@ -59,7 +54,7 @@ app.post("/getBooksBySearchTerm", (req, res) => {
 //When a user registers a new account
 app.post("/registerNewUser", async function (req, res) {
   //Get user details
-  const { username, forename, surname, email, password, marketingAgreed } = req.body;
+  const { username, forename, surname, email, password, marketingAgreed, accountType } = req.body;
 
   //Validate inputs!!!
 
@@ -68,7 +63,7 @@ app.post("/registerNewUser", async function (req, res) {
     if (error) throw error;
 
     if (!result) {
-      //Encrypt password, email
+      //Encrypt password
 
       const encryptedPassword = hashSync(password, 10);
 
@@ -79,6 +74,7 @@ app.post("/registerNewUser", async function (req, res) {
         email: email,
         password: encryptedPassword,
         marketingAgreed: marketingAgreed,
+        accountType: accountType,
         banned: false,
       });
 
@@ -94,10 +90,8 @@ app.post("/registerNewUser", async function (req, res) {
       }
 
       //Send back response
-      //   res.json({ message: "Nice one mate" });
       res.status(201).json({ message: "Nice one mate" });
     } else {
-      console.log("User already exists!");
       //Send back response
       res.json({ message: "User already exists!" });
     }
@@ -122,10 +116,11 @@ app.post("/login", async function (req, res) {
         User.find({ username: username }, function (error, documents) {
           if (error) throw error;
           const [returnedDocument] = documents;
-          const { _id, username, password } = returnedDocument;
+          const { _id, username, password, accountType } = returnedDocument;
 
           if (compareSync(retrievedPassword, password)) {
             req.session.authenticated = true;
+            req.session.accountType = accountType;
             req.session.user = {
               id: _id,
               username: username,
@@ -372,12 +367,12 @@ app.get("/recommendation/:userId", recommendedBooks)
 
 
 //Routers
-app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
-app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
-app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
+app.patch("/toreadlist/:userId/:bookId", checkUser("USER"), addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", checkUser("USER"), addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", checkUser("USER"), addToFinishedList);
 
-app.get("/list/toread/:userId", getToReadList);
-app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
-app.get("/list/finished/:userId", getFinishedList);
+app.get("/list/toread/:userId", checkUser("USER"), getToReadList);
+app.get("/list/currentlyreading/:userId", checkUser("USER"), getCurrentlyReadingList);
+app.get("/list/finished/:userId", checkUser("USER"), getFinishedList);
 
-app.patch("/delete/:userId/:bookId", deleteBookFromList);
+app.patch("/delete/:userId/:bookId", checkUser("USER"), deleteBookFromList);

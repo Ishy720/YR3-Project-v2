@@ -63,7 +63,8 @@ function RegisterForm() {
                 surname, 
                 email, 
                 password, 
-                marketingAgreed
+                marketingAgreed,
+                accountType: "USER"
             };
 
             const options = {
