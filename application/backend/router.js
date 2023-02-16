@@ -334,10 +334,8 @@ const recommendedBooks = async (req, res) => {
   const user = await User.findOne({ _id: userId })
   const joinedBooks = user.toReadList.concat(user.finishedList, user.currentlyReadingList)
   console.log(user.toReadList);
-  let authors = []
-  joinedBooks.map((book) => {
-    authors.push(book.author.split(",")[0])
-  })
+  const authors = []
+  joinedBooks.map((book) => authors.push(book.author.split(",")[0]))
 
   const uniqueAuthors = [...new Set(authors)]
   const books = await Book.find({ author: { $in: uniqueAuthors } }).select("author title").sort("avgRating").limit(20)
@@ -367,12 +365,12 @@ app.get("/recommendation/:userId", recommendedBooks)
 
 
 //Routers
-app.patch("/toreadlist/:userId/:bookId", checkUser("USER"), addBookToReadList);
-app.patch("/currentlyreadinglist/:userId/:bookId", checkUser("USER"), addToCurrentlyReadingList);
-app.patch("/finishedlist/:userId/:bookId", checkUser("USER"), addToFinishedList);
+app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
 
-app.get("/list/toread/:userId", checkUser("USER"), getToReadList);
-app.get("/list/currentlyreading/:userId", checkUser("USER"), getCurrentlyReadingList);
-app.get("/list/finished/:userId", checkUser("USER"), getFinishedList);
+app.get("/list/toread/:userId", getToReadList);
+app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
+app.get("/list/finished/:userId", getFinishedList);
 
-app.patch("/delete/:userId/:bookId", checkUser("USER"), deleteBookFromList);
+app.patch("/delete/:userId/:bookId", deleteBookFromList);
