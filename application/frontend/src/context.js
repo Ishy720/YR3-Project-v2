@@ -4,12 +4,10 @@ import React, { createContext, useContext, useState } from "react";
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  console.log("app");
+  console.log("App context called");
   //user state to check if user is logged in
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("user")));
-  const [auth, setAuth] = useState(
-    Boolean(sessionStorage.getItem("authenticated"))
-  );
+  const [auth, setAuth] = useState(Boolean(sessionStorage.getItem("authenticated")));
 
   const [toreadlist, setToReadList] = useState([]);
   const [currentlyReadingList, setCurrentlyReadingList] = useState([]);
