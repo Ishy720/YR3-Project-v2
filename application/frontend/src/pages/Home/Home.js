@@ -42,9 +42,14 @@ function Home() {
       <div className="home">
         <h1 id="pageTitle">Home</h1>
 
+        <h2>Manage all your books in one place.</h2>
+        <button onClick={() => {navigate("/discover")}}>Explore books now -></button>
+
         <button onClick={testServer}>Test server</button>
 
-        <button onClick={() => {navigate("/about")}}>To About page</button>
+
+
+        <h3>Our newest additions:</h3>
       </div>
     );
 }
