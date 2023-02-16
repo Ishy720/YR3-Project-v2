@@ -7,6 +7,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const port = 8080;
 require("dotenv/config");
+app.use(express.static('build'));
 
 //Database Imports
 const mongoose = require("mongoose");

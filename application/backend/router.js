@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const User = require("./models/UserSchema.js");
 const Book = require("./models/BookSchema.js");
 
+const path = require('path');
+
 app.get("/test", function (req, res) {
   res.status(200).json({ message: "Success!" });
 });
@@ -374,3 +376,8 @@ app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
 app.get("/list/finished/:userId", getFinishedList);
 
 app.patch("/delete/:userId/:bookId", deleteBookFromList);
+
+
+app.get("*", function (req, res) {
+  req.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+});
