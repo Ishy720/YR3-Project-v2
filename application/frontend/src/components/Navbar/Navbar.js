@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import axios from "axios";
@@ -20,12 +20,19 @@ const Navbar = () => {
     });
   }
 
+  
+
+  useEffect(() => {
+    console.log("Called");
+    //Check if user is logged in here and update global text accordingly.
+  });
+
   //Conditional rendering depending on if user is logged in or not.
   return (
     <header>
       <nav className="navbarClass">
         <div className="nav-links">
-          {auth ? (
+          {auth === true ? (
             <>
               <Link to="/"> Home</Link> 
               <Link to="/about">About</Link>
@@ -40,7 +47,7 @@ const Navbar = () => {
           )}
         </div>
         <div className="auth-links">
-          {auth ? (
+          {auth === true ? (
             <>
             <div id="welcomeUserText">Welcome {user.user}!</div>
             <button id="logoutBtn" onClick={logoutFunction}>Logout</button>
