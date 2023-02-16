@@ -1,2 +1,0 @@
-web: cd application && cd frontend && npm i pkg.json && npm start
-web: cd application && cd backend && npm i pkg.json && npm start
