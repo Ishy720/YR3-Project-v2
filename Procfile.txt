@@ -1,2 +1,0 @@
-web: cd application/frontend && npm start
-web: cd application/backend && npm start
