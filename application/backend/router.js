@@ -379,5 +379,5 @@ app.patch("/delete/:userId/:bookId", deleteBookFromList);
 
 
 app.get("*", function (req, res) {
-  req.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
