@@ -8,8 +8,13 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import Discover from "./pages/Discover/Discover";
 import Books from "./pages/Books/Books";
+import AdminView from "./pages/Admin/AdminView";
+import ManagerView from "./pages/Manager/ManagerView";
 import Suggested from "./pages/Suggested/Suggested";
 import Protected from "./components/ProtectedRoutes/Protected";
+import UserProtected from "./components/ProtectedRoutes/UserProtected"
+import AdminProtected from "./components/ProtectedRoutes/AdminProtected"
+import ManagerProtected from "./components/ProtectedRoutes/ManagerProtected"
 
 //import components
 import Navbar from "./components/Navbar/Navbar";
@@ -18,7 +23,7 @@ import Footer from "./components/Footer/Footer";
 //Baseline
 function App() {
 
-  const { auth } = useGlobalContext();
+  const { auth, accountType } = useGlobalContext();
 
   return (
     <>
@@ -28,6 +33,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/register" element={auth ? <Navigate to="/discover" /> : <Register />} />
         <Route path="/login" element={auth ? <Navigate to="/discover" /> : <Login />} />
+        <Route path="/admin" element={auth && accountType === "ADMIN" ? <AdminView /> : <Home />} />
+        <Route path="/manager" element={auth && accountType === "MANAGER" ? <ManagerView /> : <Home />} />
         <Route path="/*" element={<Home />} />
 
         <Route
@@ -56,6 +63,9 @@ function App() {
             </Protected>
           }
         />
+
+
+
       </Routes>
       <Footer />
     </>

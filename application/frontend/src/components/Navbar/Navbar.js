@@ -7,12 +7,13 @@ import "./Navbar.css";
 
 const Navbar = () => {
 
-  const { auth, setAuth, user, setUser } = useGlobalContext();
+  const { auth, setAuth, user, setUser, accountType } = useGlobalContext();
   const navigate = useNavigate();
 
   function logoutFunction() {
     axios.get("http://localhost:8080/logout").then((res) => {
       sessionStorage.removeItem("authenticated");
+      sessionStorage.removeItem("accountType");
       sessionStorage.removeItem("user");
       setAuth(sessionStorage.getItem("authenticated"));
       setUser(sessionStorage.getItem("user"));
@@ -20,18 +21,12 @@ const Navbar = () => {
     });
   }
 
-  
-
-  useEffect(() => {
-    console.log("Called");
-    //Check if user is logged in here and update global text accordingly.
-  });
-
   //Conditional rendering depending on if user is logged in or not.
   return (
     <header>
       <nav className="navbarClass">
         <div className="nav-links">
+
           {auth === true ? (
             <>
               <Link to="/"> Home</Link> 
@@ -45,7 +40,10 @@ const Navbar = () => {
               <Link to="/"> Home</Link> <Link to="about">About</Link>
             </>
           )}
+
         </div>
+
+
         <div className="auth-links">
           {auth === true ? (
             <>
@@ -59,6 +57,7 @@ const Navbar = () => {
             </>
           )}
         </div>
+
       </nav>
     </header>
   );

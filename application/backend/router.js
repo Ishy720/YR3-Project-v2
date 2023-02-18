@@ -133,7 +133,7 @@ app.post("/login", async function (req, res) {
 
             res.status(200).json({
               message: "You have successfully logged into your account!",
-              user: { username: username, id: _id },
+              user: { username: username, id: _id, accountType: accountType},
             });
           } else {
             console.log("Incorrect details");

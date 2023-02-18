@@ -5,7 +5,8 @@ import axios from "axios";
 import { useGlobalContext } from "../../context";
 
 function LoginForm() {
-  const { setUser, setAuth } = useGlobalContext();
+
+  const { setUser, setAuth, setAccountType } = useGlobalContext();
 
   let navigate = useNavigate();
 
@@ -37,23 +38,36 @@ function LoginForm() {
       .then((res) => {
         console.log(res.data);
         sessionStorage.setItem("authenticated", true);
+        sessionStorage.setItem("accountType", res.data.user.accountType);
         sessionStorage.setItem(
           "user",
           JSON.stringify({
             user: res.data.user.username,
             id: res.data.user.id,
+            accountType: res.data.user.accountType
           })
         );
         setUser({
           user: res.data.user.username,
           id: res.data.user.id,
+          accountType: res.data.user.accountType
         });
         //note to self set more things here after this logic is fixed
       })
       .then(() => {
         console.log("submit");
         setAuth(Boolean(sessionStorage.getItem("authenticated")));
-        navigate("/discover");
+        setAccountType(sessionStorage.getItem("accountType"));
+        console.log(sessionStorage.getItem("accountType"));
+        if(sessionStorage.getItem("accountType") === "USER") {
+          navigate("/discover");
+        }
+        if(sessionStorage.getItem("accountType") === "MANAGER") {
+          navigate("/manager");
+        }
+        if(sessionStorage.getItem("accountType") === "ADMIN") {
+          navigate("/admin");
+        }
       });
   }
 

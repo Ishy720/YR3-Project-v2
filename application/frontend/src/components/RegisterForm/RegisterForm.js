@@ -44,6 +44,7 @@ function RegisterForm() {
 
     //Function responsible for checking input data is valid, sends to backend
     async function handleSubmit(e) {
+        e.preventDefault();
 
         const response = validateRegistrationDetails(state);
         
