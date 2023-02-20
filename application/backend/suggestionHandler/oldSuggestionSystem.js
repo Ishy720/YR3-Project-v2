@@ -98,3 +98,27 @@ recommendBooks(userBooks, cacheKey)
     console.log(recommendations);
   })
   .catch(error => console.error(error));
+
+  /*
+  async function retrieveSimilarBooks(userFinishedBooks) {
+
+  const genres = new Set();
+
+  await Promise.all(userFinishedBooks.map(async (bookId) => {
+    const book = await Book.findOne({ _id: bookId });
+    book.genres.forEach(genre => genres.add(genre));
+  }));
+
+  const genreRegex = new RegExp(Array.from(genres).join("|"), "i");
+
+  const books = await Book.aggregate([
+    { $match: { genres: genreRegex } },
+    { $sample: { size: 1000 } },
+  ]).exec();
+
+  const descriptions = books.map(book => ({ id: book._id, title: book.title, description: book.description }));
+
+  return descriptions;
+
+}
+*/

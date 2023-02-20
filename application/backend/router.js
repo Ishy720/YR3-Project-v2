@@ -1,7 +1,7 @@
 //Imports
 const app = require("./server.js");
-const {hashSync, compareSync} = require("bcrypt");
-const {checkUser, checkSession} = require("./authMiddleware");
+const { hashSync, compareSync } = require("bcrypt");
+const { checkUser, checkSession } = require("./authMiddleware");
 
 //Database asset imports
 const mongoose = require("mongoose");
@@ -14,8 +14,8 @@ app.get("/test", function (req, res) {
   res.status(200).json({ message: "Success!" });
 });
 
-app.get("/testMiddleware", checkUser("USER"), function(req, res) {
-  res.status(200).json({message: "Woah it worked"});
+app.get("/testMiddleware", checkUser("USER"), function (req, res) {
+  res.status(200).json({ message: "Woah it worked" });
 });
 
 app.get("/logout", function (req, res) {
@@ -133,7 +133,7 @@ app.post("/login", async function (req, res) {
 
             res.status(200).json({
               message: "You have successfully logged into your account!",
-              user: { username: username, id: _id, accountType: accountType},
+              user: { username: username, id: _id, accountType: accountType },
             });
           } else {
             console.log("Incorrect details");
@@ -342,6 +342,8 @@ const recommendedBooks = async (req, res) => {
   const uniqueAuthors = [...new Set(authors)]
   const books = await Book.find({ author: { $in: uniqueAuthors } }).select("author title").sort("avgRating").limit(20)
 
+  const filterBooks = joinedBooks.filter((book) => books.includes(book.title))
+
   //   return Promise.all(
   //  uniqueAuthors.map(async author => {
   //     const regex = new RegExp(author, "i");
@@ -355,7 +357,7 @@ const recommendedBooks = async (req, res) => {
 
   // const recommendBooks =await  Book.find({ author: { ...uniqueAuthors } })
 
-  res.json({ books, length: books.length })
+  res.json({ filterBooks, length: books.length })
 
 
 
