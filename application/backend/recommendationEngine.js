@@ -70,16 +70,24 @@ async function recommendBooks(userId) {
   const databaseSample = await retrieveRelatedBooks(chosenRandomBookGenres);
   const tokenizedDescriptions = getTokenizedDescriptions(databaseSample);
 
+  //instantiate tfidf
   const tfidf = new natural.TfIdf();
 
-  // add the tokenized descriptions to the tfidf instance
+  //add the tokenized descriptions to the tfidf instance
   for (const tokens of tokenizedDescriptions) {
     tfidf.addDocument(tokens);
   }
 
   const recommendedBooks = [];
 
-  // get the tf-idf score for the chosen book
+  const masterTokens = [];
+
+  //get the recommended books for title, also get recommended books for book description, tokenize genres and 
+  //append the end results in a set
+  //to get the ultimate recommendations you big brain sexy motherfucker.
+  //also try lemotisation instead of stopwords because key words are being removed in title.
+
+  //get the tf-idf score for the user's random book
   tfidf.tfidfs(tokenize(chosenRandomBook.description), (i, measure) => {
     recommendedBooks.push({
       book: databaseSample[i],
@@ -87,13 +95,13 @@ async function recommendBooks(userId) {
     });
   });
 
-  // sort the recommended books by score (descending)
+  //sort the recommended books by descending score
   recommendedBooks.sort((a, b) => b.score - a.score);
   const topBooks = recommendedBooks.slice(0, 30);
   return topBooks;
 }
   
-
+//pass a user ID in to the function. The function will pick a random book they've finished and recommend books related to it.
 recommendBooks("63ea439a88f303678100b11f")
   .then(response => {
     for(data in response) {
