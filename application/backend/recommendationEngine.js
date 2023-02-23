@@ -41,7 +41,7 @@ function tokenize(text) {
 async function retrieveRelatedBooks(genres) {
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
-    { $sample: { size: 10000 } },
+    { $sample: { size: 20000 } },
     { $project: { _id: 1, title: 1, description: 1 } }
   ]).exec();
 
@@ -52,7 +52,7 @@ function getTokenizedDescriptions(books) {
   return books.map(book => tokenize(book.description));
 }
 
-async function recommendBooks(userId) {
+async function recommendFromOneRandomBook(userId) {
 
   //get user's finished books
   const user = await User.findOne({ _id: userId });
@@ -80,7 +80,8 @@ async function recommendBooks(userId) {
 
   const recommendedBooks = [];
 
-  const masterTokens = [];
+  //const inputString = chosenRandomBook.title + " " + chosenRandomBook.description;
+  //const inputTokens = tokenize(inputString);
 
   //get the recommended books for title, also get recommended books for book description, tokenize genres and 
   //append the end results in a set
@@ -88,7 +89,7 @@ async function recommendBooks(userId) {
   //also try lemotisation instead of stopwords because key words are being removed in title.
 
   //get the tf-idf score for the user's random book
-  tfidf.tfidfs(tokenize(chosenRandomBook.description), (i, measure) => {
+  tfidf.tfidfs(tokenize(chosenRandomBook.title + " " + chosenRandomBook.description), (i, measure) => {
     recommendedBooks.push({
       book: databaseSample[i],
       score: measure
@@ -100,12 +101,25 @@ async function recommendBooks(userId) {
   const topBooks = recommendedBooks.slice(0, 30);
   return topBooks;
 }
+
+
   
 //pass a user ID in to the function. The function will pick a random book they've finished and recommend books related to it.
-recommendBooks("63ea439a88f303678100b11f")
+recommendFromOneRandomBook("63ea439a88f303678100b11f")
   .then(response => {
     for(data in response) {
       console.log(response[data].book.title);
     }
   })
   .catch(error => console.error(error));
+
+
+  /*
+let title = "Harry Potter and the Order of the Phoenix";
+let description = "Harry Potter goes to Hogwarts to learn spells. However, things change when his archnemisis Lord Voldermort comes."
+
+let concatResult = title + " " + description;
+const tokenResult = tokenize(concatResult);
+//const relevantWordsArray = removeStopwords(tokenResult, eng);
+console.log(tokenResult)
+*/
