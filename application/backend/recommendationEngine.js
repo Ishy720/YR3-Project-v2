@@ -4,7 +4,6 @@ const Book = require("./models/BookSchema.js");
 const User = require("./models/UserSchema.js")
 const mongoose = require("mongoose");
 const natural = require('natural');
-const TfIdf = natural.TfIdf;
 
 require("dotenv").config();
 
@@ -15,13 +14,13 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Recommendation engine connected to MongoDB");
   })
   .catch((err) => {
     console.log(err);
 });
 
-
+//takes in text and removes stopwords, then tokenizes them (splits text into array of words)
 function tokenize(text) {
     const splitText = text.split(" ");
     const relevantWordsArray = removeStopwords(splitText, eng);
@@ -38,20 +37,32 @@ function tokenize(text) {
     return Array.from(tokenSet);
 }
 
+//takes an array of genres and retrieves randomized sample of books which regex match the input genres array
 async function retrieveRelatedBooks(genres) {
+
+  /*
+  Retrieves all books for tfidf to scan through, very time costly. Also not accurate; my engine isn't checking the genre similarity
+  so this will result in anomalous results. e.g harry potter and order of phoenix, 30th recommendation returned is about
+  "tasteful nudes and other misguided attempts at personal growth and validation". This is not a suitable recommendation.
+  */
+  //const books = await Book.find();
+
+  //Retrieves smaller sample which matches by genre, max sample of 20000. Much faster execution and better related corpus for tf-idf
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
     { $sample: { size: 20000 } },
     { $project: { _id: 1, title: 1, description: 1 } }
   ]).exec();
-
+  
   return books;
 }
 
+//takes array of books and returns tokenized descriptions
 function getTokenizedDescriptions(books) {
   return books.map(book => tokenize(book.description));
 }
 
+//takes in a user ID and returns a set of recommended books based on a random selection in their finished reading list
 async function recommendFromOneRandomBook(userId) {
 
   //get user's finished books
@@ -80,12 +91,6 @@ async function recommendFromOneRandomBook(userId) {
 
   const recommendedBooks = [];
 
-  //const inputString = chosenRandomBook.title + " " + chosenRandomBook.description;
-  //const inputTokens = tokenize(inputString);
-
-  //get the recommended books for title, also get recommended books for book description, tokenize genres and 
-  //append the end results in a set
-  //to get the ultimate recommendations you big brain sexy motherfucker.
   //also try lemotisation instead of stopwords because key words are being removed in title.
 
   //get the tf-idf score for the user's random book
@@ -98,13 +103,31 @@ async function recommendFromOneRandomBook(userId) {
 
   //sort the recommended books by descending score
   recommendedBooks.sort((a, b) => b.score - a.score);
+
+  //return the top 30 books
   const topBooks = recommendedBooks.slice(0, 30);
   return topBooks;
 }
 
+async function recommendFromSimilarUsers(userId) {
 
-  
-//pass a user ID in to the function. The function will pick a random book they've finished and recommend books related to it.
+  //retrieve the user's to-read list, currently-reading list, finished-reading list
+
+  //fetch sample of similar users by comparing their reading lists. logic for this to be undecided
+
+  //use tf-idf to rate those user's books against the input user's books
+
+  //APPROACH 1
+  //out of the top few similar users, retrieve the books they have that the input user does not have and return those
+
+  //APPROACH 2
+  //out of all the books from the similar users, return the books with highest compatability scores which the input user doesn't have
+
+}
+
+
+/*
+//pass a user ID into the function. The function will pick a random book they've finished and recommend books related to it.
 recommendFromOneRandomBook("63ea439a88f303678100b11f")
   .then(response => {
     for(data in response) {
@@ -112,14 +135,12 @@ recommendFromOneRandomBook("63ea439a88f303678100b11f")
     }
   })
   .catch(error => console.error(error));
-
-
-  /*
-let title = "Harry Potter and the Order of the Phoenix";
-let description = "Harry Potter goes to Hogwarts to learn spells. However, things change when his archnemisis Lord Voldermort comes."
-
-let concatResult = title + " " + description;
-const tokenResult = tokenize(concatResult);
-//const relevantWordsArray = removeStopwords(tokenResult, eng);
-console.log(tokenResult)
 */
+
+
+//pass a user ID into the function. The function will recommend books by checking similar user tastes and recommend books they have.
+recommendFromSimilarUsers("63ea439a88f303678100b11f")
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => console.error(error));
