@@ -1,7 +1,6 @@
 //Imports
 const { removeStopwords, eng } = require('stopword')
 const Book = require("./models/BookSchema.js");
-const User = require("./models/UserSchema.js")
 const mongoose = require("mongoose");
 const natural = require('natural');
 
@@ -38,7 +37,7 @@ function tokenize(text) {
 }
 
 //takes an array of genres and retrieves randomized sample of books which regex match the input genres array
-async function retrieveRelatedBooks(genres) {
+async function retrieveRelatedBooks(bookId, genres) {
 
   /*
   Retrieves all books for tfidf to scan through, very time costly. Also not accurate; my engine isn't checking the genre similarity
@@ -50,8 +49,9 @@ async function retrieveRelatedBooks(genres) {
   //Retrieves smaller sample which matches by genre, max sample of 20000. Much faster execution and better related corpus for tf-idf
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
+    { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
     { $sample: { size: 20000 } },
-    { $project: { _id: 1, title: 1, description: 1 } }
+    { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]).exec();
   
   return books;
@@ -59,12 +59,14 @@ async function retrieveRelatedBooks(genres) {
 
 //takes array of books and returns tokenized descriptions
 function getTokenizedDescriptions(books) {
-  return books.map(book => tokenize(book.description));
+  return books.map(book => tokenize(book.title + " " + book.description));
+  //return books.map(book => tokenize(book.description));
 }
 
 //takes in a user ID and returns a set of recommended books based on a random selection in their finished reading list
-async function recommendFromOneRandomBook(userId) {
+async function recommendFromOneRandomBook(bookId) {
 
+  /*
   //get user's finished books
   const user = await User.findOne({ _id: userId });
   const userFinishedBooks = user.finishedList;
@@ -75,10 +77,14 @@ async function recommendFromOneRandomBook(userId) {
   }
 
   const chosenRandomBook = userFinishedBooks[Math.floor(Math.random() * (userFinishedBooks.length))];
+  */
+
+  const chosenRandomBook = await Book.findOne({ _id: bookId });
+
   console.log("Generating recommendations for " + chosenRandomBook.title);
   const chosenRandomBookGenres = chosenRandomBook.genres;
 
-  const databaseSample = await retrieveRelatedBooks(chosenRandomBookGenres);
+  const databaseSample = await retrieveRelatedBooks(bookId, chosenRandomBookGenres);
   const tokenizedDescriptions = getTokenizedDescriptions(databaseSample);
 
   //instantiate tfidf
@@ -109,6 +115,23 @@ async function recommendFromOneRandomBook(userId) {
   return topBooks;
 }
 
+//pass a book ID into the function. The function will recommend books related to it.
+recommendFromOneRandomBook("63d53dcd0dcdd4cc1d1251a9")
+  .then(response => {
+    for(data in response) {
+      console.log(response[data].book.title);
+    }
+  })
+  .catch(error => console.error(error));
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+
+/*
 async function recommendFromSimilarUsers(userId) {
 
   //retrieve the user's to-read list, currently-reading list, finished-reading list
@@ -124,23 +147,15 @@ async function recommendFromSimilarUsers(userId) {
   //out of all the books from the similar users, return the books with highest compatability scores which the input user doesn't have
 
 }
-
-
-/*
-//pass a user ID into the function. The function will pick a random book they've finished and recommend books related to it.
-recommendFromOneRandomBook("63ea439a88f303678100b11f")
-  .then(response => {
-    for(data in response) {
-      console.log(response[data].book.title);
-    }
-  })
-  .catch(error => console.error(error));
 */
 
 
+
+/*
 //pass a user ID into the function. The function will recommend books by checking similar user tastes and recommend books they have.
 recommendFromSimilarUsers("63ea439a88f303678100b11f")
   .then(response => {
     console.log(response)
   })
   .catch(error => console.error(error));
+  */
