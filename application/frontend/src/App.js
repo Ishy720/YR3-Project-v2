@@ -12,29 +12,53 @@ import AdminView from "./pages/Admin/AdminView";
 import ManagerView from "./pages/Manager/ManagerView";
 import Suggested from "./pages/Suggested/Suggested";
 import Protected from "./components/ProtectedRoutes/Protected";
-import UserProtected from "./components/ProtectedRoutes/UserProtected"
-import AdminProtected from "./components/ProtectedRoutes/AdminProtected"
-import ManagerProtected from "./components/ProtectedRoutes/ManagerProtected"
+import UserProtected from "./components/ProtectedRoutes/UserProtected";
+import AdminProtected from "./components/ProtectedRoutes/AdminProtected";
+import ManagerProtected from "./components/ProtectedRoutes/ManagerProtected";
 
 //import components
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
+import AddCustomListModal from "./components/AddCustomListModal/AddCustomListModal";
+import SelectCustomListModal from "./components/SelectCustomListModal/SelectCustomListModal";
+//import BookInfoModal from "./components/Books/BookInfoModal";
 
 //Baseline
 function App() {
-
-  const { auth, accountType } = useGlobalContext();
+  const { auth, accountType, showModal, setShowModal, showSelectListModal} =
+    useGlobalContext();
 
   return (
     <>
       <Navbar />
+      {showModal && <AddCustomListModal />}
+      {showSelectListModal && <SelectCustomListModal />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/register" element={auth ? <Navigate to="/discover" /> : <Register />} />
-        <Route path="/login" element={auth ? <Navigate to="/discover" /> : <Login />} />
-        <Route path="/admin" element={auth && accountType === "ADMIN" ? <AdminView /> : <Home />} />
-        <Route path="/manager" element={auth && accountType === "MANAGER" ? <ManagerView /> : <Home />} />
+        <Route
+          path="/register"
+          element={auth ? <Navigate to="/discover" /> : <Register />}
+        />
+
+        <Route
+          path="/login"
+          element={auth ? <Navigate to="/discover" /> : <Login />}
+        />
+
+        <Route
+          path="/admin"
+          element={auth && accountType === "ADMIN" ? <AdminView /> : <Home />}
+        />
+
+        <Route
+          path="/manager"
+          element={
+            auth && accountType === "MANAGER" ? <ManagerView /> : <Home />
+          }
+        />
+
         <Route path="/*" element={<Home />} />
 
         <Route
@@ -63,9 +87,6 @@ function App() {
             </Protected>
           }
         />
-
-
-
       </Routes>
       <Footer />
     </>

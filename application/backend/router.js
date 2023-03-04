@@ -2,6 +2,7 @@
 const app = require("./server.js");
 const { hashSync, compareSync } = require("bcrypt");
 const { checkUser, checkSession } = require("./authMiddleware");
+const recommendationEngine = require('./recommendationEngine');
 
 //Database asset imports
 const mongoose = require("mongoose");
@@ -150,6 +151,19 @@ app.post("/login", async function (req, res) {
   });
 });
 
+app.post("/getRecommendationsForOneBook", async (req, res) => {
+  
+  const { bookId } = req.body;
+
+  const result = await recommendationEngine.recommendFromOneRandomBook(bookId);
+  console.log("Sending back recommendations");
+
+  res.status(200).json({ books: result });
+
+});
+
+
+
 
 //  add book to to-read list controller
 const addBookToReadList = async (req, res) => {
@@ -157,7 +171,7 @@ const addBookToReadList = async (req, res) => {
 
   const book = await Book.findOne({ _id: bookId });
   if (!book) {
-    return res.status(404).json({ msg: `no book with  id:${bookId} found` });
+    return res.status(404).json({ msg: `No book with  id: ${bookId} found!` });
   }
 
   // check  if user exists
@@ -185,6 +199,7 @@ const addBookToReadList = async (req, res) => {
     },
     { new: true, runValidators: true }
   );
+
   res.status(200).json(updatedUser);
 };
 
@@ -274,6 +289,7 @@ const getToReadList = async (req, res) => {
   if (!toReadList) return res.status(404).json({ message: "no list found" });
   res.status(200).json(toReadList);
 };
+
 const getCurrentlyReadingList = async (req, res) => {
   const { userId } = req.params;
   const currentlyReadingList = await User.findById({ _id: userId }).select(
@@ -296,7 +312,7 @@ const getFinishedList = async (req, res) => {
 const deleteBookFromList = async (req, res) => {
   const { bookId, userId } = req.params;
   const user = await User.findById(userId);
-  if (!user) return res.status(404).json({ message: "no user found " });
+  if (!user) return res.status(404).json({ message: "No user found " });
 
   let book;
 
@@ -310,7 +326,7 @@ const deleteBookFromList = async (req, res) => {
   }
 
   if (!book) {
-    return res.status(404).json({ message: "no book found" });
+    return res.status(404).json({ message: "No book found" });
   }
 
   const updatedUser = await User.findOneAndUpdate(
@@ -328,47 +344,241 @@ const deleteBookFromList = async (req, res) => {
   res.status(200).json(updatedUser);
 };
 
+const recommendedBooksByAuthor = async (req, res) => {
+  const { userId } = req.params;
 
-const recommendedBooks = async (req, res) => {
+  const user = await User.findOne({ _id: userId });
+  const joinedBooks = user.toReadList.concat(
+    user.finishedList,
+    user.currentlyReadingList
+  );
+  const authors = [];
+  joinedBooks.map((book) => authors.push(book.author.split(",")[0]));
 
-  const { userId } = req.params
+  const uniqueAuthors = [...new Set(authors)];
+  const books = await Book.find({ author: { $in: uniqueAuthors } }).sort("avgRating");
+
+  const filterBooks = books
+    .filter((x) => !joinedBooks.find((y) => y.title === x.title))
+    .sort((a, b) => b.avgRating - a.avgRating)
+    .slice(0, 20);
+
+  res.status(200).json({
+    filterBooks,
+    length: filterBooks.length,
+  });
+};
+
+const recommendedBooksByGenre = async (req, res) => {
+
+  const { userId } = req.params;
+
+  const user = await User.findOne({ _id: userId });
+  if (!user) return res.status(404).json({ message: "No user found" });
+
+  const joinedBooks = user.toReadList.concat(
+    user.finishedList,
+    user.currentlyReadingList
+  );
+
+  if (joinedBooks.length == 0) {
+    return res.status(200).json({
+      message: "No recommendations yet, please add books to your list",
+    });
+  }
+
+  let genre = [];
+  joinedBooks.map((book) => (genre = genre.concat(book.genres)));
+
+  console.log(genre);
+
+  const uniqueGenre = [...new Set(genre)].slice(0, 5);
+  console.log(uniqueGenre.length);
+  const books = await Book.find({ genres: { $all: uniqueGenre } });
+
+  const filterBooks = books
+    .filter((x) => !joinedBooks.find((y) => y.title === x.title))
+    .sort((a, b) => b.avgRating - a.avgRating)
+    .slice(0, 20);
+
+  // res.status(200).json({
+  //   filterBooks,
+  //   length: filterBooks.length,
+  // });
+
+  res.json({ filterBooks, length: filterBooks.length });
+};
+
+// Create custom list
+const createCustomList = async (req, res) => {
+  const { userId } = req.params;
+  const { listName } = req.body;
+
+  if (!listName)
+    return res.status(400).json({ message: "List name can not be empty" });
+  var key = listName;
+  var value = [];
+
+  var placeholder = {};
+  placeholder["customList." + key] = value;
 
   const user = await User.findOne({ _id: userId })
-  const joinedBooks = user.toReadList.concat(user.finishedList, user.currentlyReadingList)
-  console.log(user.toReadList);
-  const authors = []
-  joinedBooks.map((book) => authors.push(book.author.split(",")[0]))
+  if (!user) return res.status(404).json({ message: "No user found" });
+  // console.log(customList);
 
-  const uniqueAuthors = [...new Set(authors)]
-  const books = await Book.find({ author: { $in: uniqueAuthors } }).select("author title").sort("avgRating").limit(20)
+  // console.log(customList[0]);
 
-  const filterBooks = joinedBooks.filter((book) => books.includes(book.title))
-
-  //   return Promise.all(
-  //  uniqueAuthors.map(async author => {
-  //     const regex = new RegExp(author, "i");
-  //     return await Book.aggregate([
-  //       { $match: { author: regex } },
-  //       { $sample: { size: 10 } },
-  //       { $sort: { avgRating: -1 } }
-  //     ]).exec();
-  //   })
-  //   );
-
-  // const recommendBooks =await  Book.find({ author: { ...uniqueAuthors } })
-
-  res.json({ filterBooks, length: books.length })
+  if (user.customList && user.customList[listName]) return res
+    .status(403)
+    .json({ message: `A list with name ${listName} exists` })
 
 
+  // if (customList[0]) {
+  //   if (customList[0][listName])
+
+  // }
 
 
-}
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { $set: placeholder },
+    { new: true, runValidators: true }
+  );
+
+  res.status(201).json({ message: `${listName} list created successfully` });
+};
+
+// Delete custom list
+const deleteCustomList = async (req, res) => {
+  const { userId } = req.params;
+  const { listName } = req.body;
+
+  if (!listName)
+    return res.status(400).json({ message: "List name can not be empty" });
+  const user = await User.findOne({ _id: userId });
+  if (!user) return res.status(404).json({ message: "No user found" });
+
+  var key = listName;
+  var value = [];
+
+  var placeholder = {};
+  placeholder["customList." + key] = value;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { $unset: placeholder },
+    { new: true, runValidators: true }
+  );
+  res.status(201).json({ message: `${listName} list deleted successfully` });
+};
+
+// Add book to custom list
+const addBookToCustomList = async (req, res) => {
+  const { userId, bookId } = req.params;
+  const { list } = req.query;
+
+  if (!list)
+    return res.status(400).json({ message: "list name can not be empty" });
+  const { customList } = await User.findOne({ _id: userId }).select(
+    "customList"
+  );
 
 
-app.get("/recommendation/:userId", recommendedBooks)
+
+  const book = await Book.findOne({ _id: bookId });
+
+  if (!book)
+    return res.status(404).json({ message: `No book with id ${bookId}found` });
+
+  if (!customList[list])
+    return res.status(404).json({ message: `No list with the name ${list}` });
+
+  const checkiIfBookIsInList = customList[list].find(
+    (book) => book._id == bookId
+  );
+
+  if (checkiIfBookIsInList)
+    return res.status(200).json({ message: "book already exist in list" });
+
+  var key = list;
+  var value = book;
+
+  var placeholder = {};
+  placeholder["customList." + key] = value;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { $push: placeholder },
+    { new: true, runValidators: true }
+  );
+  res.status(200).json({ message: `Book added to ${list} list successfully` });
+};
+
+// Remove book from custom list
+const removeBookFromCustomList = async (req, res) => {
+  const { userId, bookId } = req.params;
+  const { list } = req.query;
+  if (!list)
+    return res.status(400).json({ message: "List name cannot be empty!" });
+
+  const { customList } = await User.findOne({ _id: userId }).select("customList");
+
+  const book = await Book.findOne({ _id: bookId });
+
+  if (!book)
+    return res.status(404).json({ message: `No book with id ${bookId} found!` });
+
+  if (!customList[list])
+    return res.status(404).json({ message: `No list with the name ${list}!` });
+
+  const checkiIfBookIsInList = customList[list].find(
+    (book) => book._id == bookId
+  );
+
+  if (!checkiIfBookIsInList)
+    return res.status(400).json({ message: "book doest not exists in list" });
+
+  var key = list;
+  var value = book;
+
+  var placeholder = {};
+  placeholder["customList." + key] = value;
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    { $pull: placeholder },
+    { new: true, runValidators: true }
+  );
+  res
+    .status(200)
+    .json({ message: `Book removed from ${list} list successfuly` });
+};
+
+const getCustomList = async (req, res) => {
+
+  const { userId } = req.params;
+
+  const customList = await User.findOne({ _id: userId })
+    .select("customList -_id")
+    .sort("createdAt");
+
+  if (!customList) return res.status(404).json({ message: "No list found" });
+
+  res.status(200).json(customList);
+
+};
 
 
-//Routers
+
+app.post("/createcustomlist/:userId", createCustomList);
+app.patch("/deletecustomlist/:userId", deleteCustomList);
+app.get("/customlist/:userId", getCustomList);
+
+app.patch("/customlist/addbook/:userId/:bookId", addBookToCustomList);
+app.patch("/customlist/removebook/:userId/:bookId", removeBookFromCustomList);
+app.get("/recommendationbyauthor/:userId", recommendedBooksByAuthor);
+app.get("/recommendationbygenre/:userId", recommendedBooksByGenre);
+
 app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
 app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
 app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
@@ -379,7 +589,7 @@ app.get("/list/finished/:userId", getFinishedList);
 
 app.patch("/delete/:userId/:bookId", deleteBookFromList);
 
-
+//for heroku
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });

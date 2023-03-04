@@ -78,7 +78,7 @@ const Discover = () => {
 
         {books.length > 0 ? (
           <>
-            <BookCarousel books={books} />
+            
             <BooksDisplayArea books={books} />
           </>
         ) : (

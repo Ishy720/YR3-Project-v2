@@ -1,0 +1,67 @@
+.main-sec {
+  /* border: solid red; */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+}
+
+h4 {
+  color: antiquewhite;
+  text-transform: uppercase;
+}
+
+.modal-content {
+  /* border: solid red; */
+  width: 50%;
+  margin: auto;
+  background-color: rgb(50, 50, 50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+
+
+.list-con {
+  border: solid;
+  width: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.delete-btn {
+  color: red;
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 50%;
+  margin: 1rem auto;
+  border-radius: 10px;
+}
+
+.close-modal-icon {
+  color: red;
+  font-size: 2rem;
+  position: absolute;
+  right: 10px;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+
+.submit-btn{
+  margin: 1rem 0;
+  background-color: rgb(50, 50, 50);
+  color: antiquewhite;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

@@ -13,6 +13,7 @@ const UserSchema = new Schema(
     toReadList: [],
     currentlyReadingList: [],
     finishedList: [],
+    customList: { type: Object }
   },
 
   { timestamps: true }

@@ -4,31 +4,17 @@ import "./style.css";
 import ToReadList from "../../components/ToReadList/ToReadList";
 import CurrentlyReadingList from "../../components/CurrentlyReadingList/CurrentlyReadingList";
 import FinishedList from "../../components/FinishedList/FinishedList";
-
+import { useGlobalContext } from "../../context";
+import CustomList from "../../components/CustomList/CustomList";
 //axios.defaults.withCredentials = true;
 
 const Books = () => {
 
-  /*
-  function getSessionDetails() {
-    let settings = {
-      method: "GET",
-      // headers: {
-      //   Authorization: `Bearer ${cookies.sessionId}`,
-      // },
-    };
-    axios
-      .get("http://localhost:8080/session")
-      .then((res) => console.log(res.data));
-    // fetch("http://localhost:8080/session", {
-    //   withCredentials: true,
-    //   credentials: "same-origin",
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //   });
-  }*/
+  const { showModal, setShowModal } = useGlobalContext();
+
+  const closeModal = () => {
+    setShowModal(true);
+  };
 
   return (
     <>
@@ -38,18 +24,34 @@ const Books = () => {
           <ToReadList />
         </section>
       </div>
+
       <div>
         <h2 className="section-title">Currently reading:</h2>
         <section className="main-con">
           <CurrentlyReadingList />
         </section>
       </div>
+
       <div>
         <h2 className="section-title">Finished:</h2>
         <section className="main-con">
           <FinishedList />
         </section>
       </div>
+
+      <div>
+        <h2 className="section-title">Custom list:</h2>
+        <div>
+          <button className="btn" onClick={closeModal}>
+            Create/Edit custom list
+          </button>
+        </div>
+
+        <section className="custom-list">
+          <CustomList />
+        </section>
+      </div>
+
     </>
   );
 };

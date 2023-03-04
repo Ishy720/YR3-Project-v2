@@ -92,22 +92,15 @@
   text-transform: uppercase;
   position: absolute;
   top: -15px;
-  left: .2rem;
-  
+  left: 0.2rem;
 }
 .icon-con {
-  /* width: 100%; */
   display: flex;
-  /* justify-content: flex-end; */
-  /* padding-bottom: 0.5rem; */
-  /* padding-right: 0.9rem; */
-  /* border: solid; */
 }
 
 .more-con {
   width: 100%;
   display: flex;
-  /* bottom:-100px; */
 }
 
 .more-con button {
@@ -135,8 +128,62 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.btn {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  margin: 0.5rem;
+  font-weight: bold;
+  background-color: #faebd799;
+  cursor: pointer;
+}
+
+.custom-list {
+  display: flex;
+  flex-direction: column;
+  width: unset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  background-color: rgba(250, 235, 215, 0.6);
+}
+
+.each-customlist-con {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: solid 2px rgb(50, 50, 50);
+}
+.empty-customlist-con {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: solid 2px rgb(50, 50, 50);
+}
+
+.each-customlist-con .book-card{
+  border: solid;
+  height: 420px;
+}
+.customlist-title{
+  color: antiquewhite;
+  text-transform: capitalize;
+  letter-spacing: .2rem;
+  border-bottom: solid 2px antiquewhite;
+}
+
 @media screen and (min-width: 600px) {
-  .main-con {
+  .main-con,
+  .each-customlist-con {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 5px 15px;

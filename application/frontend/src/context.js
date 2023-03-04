@@ -5,14 +5,40 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
 
-  //user state to check if user is logged in
+  //user information states
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("user")));
   const [auth, setAuth] = useState(Boolean(sessionStorage.getItem("authenticated")));
   const [accountType, setAccountType] = useState(sessionStorage.getItem("accountType"));
 
+  //book list states
   const [toreadlist, setToReadList] = useState([]);
   const [currentlyReadingList, setCurrentlyReadingList] = useState([]);
   const [finishedList, setFinishedList] = useState([]);
+  const [customListNames, setCustomlistNames] = useState([]);
+  const [customList, setCustomlist] = useState([]);
+
+  //modal view states
+  const [showModal, setShowModal] = useState(false);
+  const [showSelectListModal, setShowSelectListModal] = useState(false);
+
+  const [showBookInfoModal, setShowBookInfoModal] = useState(false);
+  const [bookInformation, setBookInformation] = useState({
+    _id: '',
+    title: '',
+    author: '',
+    releaseDate: '',
+    description: '',
+    imgurl: '',
+    genres: [],
+    avgRating: '',
+    likedPercentage: '',
+    ratingDistribution: []
+  });
+
+  //suggestion states
+  const [selectedBook, setSelectedBook] = useState("");
+  const [suggestionsByGenre, setSuggestionsByGenre] = useState([]);
+  const [suggestionsByAuthor, setSuggestionsByAuthor] = useState([]);
 
   const addToreadList = async (userId, bookId) => {
     return axios
@@ -72,6 +98,96 @@ const AppProvider = ({ children }) => {
       });
   };
 
+  const createCustomList = async (userId, listName) => {
+    return axios
+      .post(`http://localhost:8080/createcustomlist/${userId}`, { listName })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return err.response.data;
+      });
+  };
+
+  const deleteCustomList = async (userId, listName) => {
+    return axios
+      .patch(`http://localhost:8080/deletecustomlist/${userId}`, { listName })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return err.response.data;
+      });
+  };
+
+  const getCustomList = async (userId) => {
+    axios
+      .get(`http://localhost:8080/customlist/${userId}`)
+      .then((res) => {
+        setCustomlistNames(Object.keys(res.data.customList));
+        setCustomlist(res.data.customList);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const addBookToCustomList = async (userId, bookId, list) => {
+    return axios
+      .patch(
+        `http://localhost:8080/customlist/addbook/${userId}/${bookId}?list=${list}`
+      )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return err.response.data;
+      });
+  };
+
+  const deleteBookFromCustomList = async (userId, bookId, list) => {
+    return axios
+      .patch(
+        `http://localhost:8080/customlist/removebook/${userId}/${bookId}?list=${list}`
+      )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return err.response.data;
+      });
+  };
+
+  const getSuggestionsByGenre = async (userId) => {
+    return axios
+      .get(`http://localhost:8080/recommendationbygenre/${userId}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.filterBooks) {
+          setSuggestionsByGenre(res.data.filterBooks);
+        }
+        else {
+          setSuggestionsByGenre([]);
+        }
+        return
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getSuggestionsByAuthor = async (userId) => {
+    return axios
+      .get(`http://localhost:8080/recommendationbyauthor/${userId}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.filterBooks) {
+          setSuggestionsByAuthor(res.data.filterBooks);
+        }
+        else {
+          setSuggestionsByAuthor([]);
+        }
+        return
+      })
+      .catch((err) => console.log(err));
+  };
+
   //return global functions for all pages to use
   return (
     <AppContext.Provider
@@ -95,6 +211,27 @@ const AppProvider = ({ children }) => {
         finishedList,
         setFinishedList,
         deletebook,
+        createCustomList,
+        deleteCustomList,
+        getCustomList,
+        customListNames,
+        customList,
+        showModal,
+        setShowModal,
+        showSelectListModal,
+        setShowSelectListModal,
+        selectedBook,
+        setSelectedBook,
+        addBookToCustomList,
+        deleteBookFromCustomList,
+        getSuggestionsByGenre,
+        suggestionsByGenre,
+        suggestionsByAuthor,
+        getSuggestionsByAuthor, 
+        showBookInfoModal,
+        setShowBookInfoModal,
+        bookInformation,
+        setBookInformation
       }}
     >
       {children}
