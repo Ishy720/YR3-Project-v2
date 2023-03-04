@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaTrash, FaTimes } from "react-icons/fa";
 import "./BookInfoModal.css"
 import { useGlobalContext } from "../../context";
+import Carousel from "../Carousel/Carousel";
 
 const BookInfoModal = () => {
 
@@ -40,7 +41,9 @@ const BookInfoModal = () => {
       const data = await response.json();
       if(isMounted.current) {
         console.log(data.books);
-        setSuggestedBooks(data.books);
+        const booksOnly = data.books.map((item) => item.book);
+        setSuggestedBooks(booksOnly);
+        //setSuggestedBooks(data.books);
       }
     } catch (err) {
       console.log('Fetch request aborted:', err.message);
@@ -53,8 +56,8 @@ const BookInfoModal = () => {
   }, []);
 
   const closeModal = () => {
-    abortController.current.abort();
     isMounted.current = false; 
+    abortController.current.abort();
     setShowBookInfoModal(false);
     setBookInformation(
       {
@@ -74,15 +77,24 @@ const BookInfoModal = () => {
     <section className="main-sec">
       <div className="modal-content">
         <FaTimes className="close-modal-icon" onClick={closeModal} />
-        <h6>{bookInformation._id}</h6>
         <h1>{bookInformation.title}</h1>
-        <img src={bookInformation.imgurl} />
-        <h2>{bookInformation.author}</h2>
+
 
         <h4>Similar books to {bookInformation.title}:</h4>
+
+        {suggestedBooks.length > 0 ? <Carousel books={suggestedBooks} /> : <p>Generating...</p>}
+
+
       </div>
     </section>
   );
 };
+
+/*
+        <h6>{bookInformation._id}</h6>
+        <h1>{bookInformation.title}</h1>
+        <img src={bookInformation.imgurl} />
+        <h2>{bookInformation.author}</h2>
+        */
 
 export default BookInfoModal;
