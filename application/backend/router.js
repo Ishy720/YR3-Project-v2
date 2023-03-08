@@ -93,10 +93,10 @@ app.post("/registerNewUser", async function (req, res) {
       }
 
       //Send back response
-      res.status(201).json({ message: "Nice one mate" });
+      res.status(200).json({ message: "Successfully registered!" });
     } else {
       //Send back response
-      res.json({ message: "User already exists!" });
+      res.status(201).json({ message: "Username already taken!" });
     }
   });
 });
