@@ -1,7 +1,8 @@
 import { useReducer } from 'react'
 import { useNavigate } from 'react-router-dom';
-import './RegisterForm.css'
-import { validateRegistrationDetails } from '../../common/data_validation'
+import './RegisterForm.css';
+import { validateRegistrationDetails } from '../../common/data_validation';
+import toast, { Toaster } from 'react-hot-toast';
 
 function RegisterForm() {
 
@@ -42,6 +43,14 @@ function RegisterForm() {
 
     const [state, dispatch] = useReducer(reducer, formState);
 
+    function notifyError(message) {
+        toast.error(message);
+    }
+
+    function notifySuccess(message) {
+        toast.success(message);
+    }
+
     //Function responsible for checking input data is valid, sends to backend
     async function handleSubmit(e) {
         e.preventDefault();
@@ -50,7 +59,11 @@ function RegisterForm() {
         
         if(response.length > 0) {
             //prevent the event from firing to server
-            alert(response);
+            //alert(response);
+            for(let i = 0; i < response.length; i++) {
+                notifyError(response[i]);
+            }
+
             e.preventDefault();
         }
 
@@ -75,12 +88,11 @@ function RegisterForm() {
                 },
                 body: JSON.stringify(userData)
             }
-          
-            await fetch('http://localhost:8080/registerNewUser', options).then(res =>
-                res.json()
-            ).then(data =>
-                alert(data.message)
-            );
+
+            const response = await fetch('http://localhost:8080/registerNewUser', options);
+            const resMessage = await response.json();
+            if(response.status == 200) notifySuccess(resMessage.message);
+            if(response.status == 201) notifyError(resMessage.message);
             
         };
         
@@ -216,6 +228,10 @@ function RegisterForm() {
 
             </div>
 
+            <Toaster
+            position="bottom-right"
+            reverseOrder={false}
+            />
         </div>
     );
 }

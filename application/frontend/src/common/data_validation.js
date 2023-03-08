@@ -62,6 +62,9 @@ export function validateRegistrationDetails(data) {
     if (password !== "" && passwordReentry === "") {
         response.push("Please re-enter your password!")
     }
+    if (password !== "" && passwordReentry !== "" && !validatePasswordStrength(password)) {
+        response.push("Password must contain one upper & lowercase letter, one digit, one special character, 6 characters long!");
+    }
     //Check if they didn't agree with TnC
     if(tncAgreed === false) {
         response.push("You must agree to the Terms and Conditions!")
