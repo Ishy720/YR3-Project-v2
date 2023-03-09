@@ -424,20 +424,10 @@ const createCustomList = async (req, res) => {
 
   const user = await User.findOne({ _id: userId })
   if (!user) return res.status(404).json({ message: "No user found" });
-  // console.log(customList);
-
-  // console.log(customList[0]);
 
   if (user.customList && user.customList[listName]) return res
     .status(403)
     .json({ message: `A list with name ${listName} exists` })
-
-
-  // if (customList[0]) {
-  //   if (customList[0][listName])
-
-  // }
-
 
   const updatedUser = await User.findOneAndUpdate(
     { _id: userId },
@@ -483,8 +473,6 @@ const addBookToCustomList = async (req, res) => {
     "customList"
   );
 
-
-
   const book = await Book.findOne({ _id: bookId });
 
   if (!book)
@@ -498,7 +486,7 @@ const addBookToCustomList = async (req, res) => {
   );
 
   if (checkiIfBookIsInList)
-    return res.status(200).json({ message: "book already exist in list" });
+    return res.status(200).json({ message: "Book already exist in list" });
 
   var key = list;
   var value = book;
@@ -536,7 +524,7 @@ const removeBookFromCustomList = async (req, res) => {
   );
 
   if (!checkiIfBookIsInList)
-    return res.status(400).json({ message: "book doest not exists in list" });
+    return res.status(400).json({ message: "Book doest not exists in list" });
 
   var key = list;
   var value = book;
