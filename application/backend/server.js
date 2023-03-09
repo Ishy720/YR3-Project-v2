@@ -30,15 +30,13 @@ app.use(
   })
 );
 
-const oneDay = 1000 * 60 * 60 * 24;
-
 //Initialise session
 app.use(
   session({
     secret: "Reeeeeeeeeehahahahahahahaahahahaha",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: oneDay, httpOnly: false },
+    cookie: { httpOnly: false },
   })
 );
 
