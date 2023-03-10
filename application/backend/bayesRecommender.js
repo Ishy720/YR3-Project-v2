@@ -15,7 +15,7 @@ mongoose
   })
   .then(() => {
     console.log("Recommendation engine connected to MongoDB");
-    findSimilarBooks("63d53dce0dcdd4cc1d126851");
+    findSimilarBooks("640b6eb11024425951abdb92");
     //trainClassifier();
     //getBookCountByGenre();
     //printComicBookTitles();
@@ -75,9 +75,9 @@ const trainClassifier = async () => {
   
     console.log("Adding docs");
     books.forEach(book => {
-      const titleTokens = tokenize(book.title);
-      const authorTokens = tokenize(book.author);
-      const descriptionTokens = tokenize(book.description);
+      const titleTokens = tokenize(book.title.toLowerCase());
+      const authorTokens = tokenize(book.author.toLowerCase());
+      const descriptionTokens = tokenize(book.description.toLowerCase());
 
       classifier.addDocument(titleTokens, book._id.toString());
       classifier.addDocument(authorTokens, book._id.toString());
@@ -110,9 +110,9 @@ const getBooksByIds = async (bookIds) => {
 const findSimilarBooks = async (bookId) => {
     const classifier = loadClassifier();
     const inputBook = await Book.findById(bookId);
-    const inputTitleTokens = tokenize(inputBook.title);
-    const inputAuthorTokens = tokenize(inputBook.author);
-    const inputDescriptionTokens = tokenize(inputBook.description);
+    const inputTitleTokens = tokenize(inputBook.title.toLowerCase());
+    const inputAuthorTokens = tokenize(inputBook.author.toLowerCase());
+    const inputDescriptionTokens = tokenize(inputBook.description.toLowerCase());
     const inputFeatures = [...inputTitleTokens, ...inputAuthorTokens, ...inputDescriptionTokens];
 
 
@@ -162,6 +162,5 @@ const findSimilarBooks = async (bookId) => {
     */
 };
 
-  //"63d53dd10dcdd4cc1d12a77c" "Avengers vs. X-Men Omnibus"
-  //"63d53dce0dcdd4cc1d127035" "Batman, Volume 3: Death of the Family"
- // "63d53dce0dcdd4cc1d126851" Xmen
+//"640b6eb31024425951ac0c6f" New X-Men, Vol 7: Here comes tomorrow
+//"640b6eb11024425951abdb92" Batman and Robin

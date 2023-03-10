@@ -7,7 +7,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 //Database asset imports
-const Book = require("../models/BookSchema");
+const Book = require("./models/BookSchema");
 
 //DB Connection and Server start
 mongoose
@@ -68,11 +68,23 @@ function validateTitle(title) {
   return regex.test(title);
 }
 
+function checkIllegalCharacters(title) {
+  const regex = /[^\x00-\x7F]+/g;
+  const splitTitle = title.split("");
+
+  if (regex.test(splitTitle[0]))
+    return true;
+
+
+  return false;
+}
+
 //Prevent DDoS attack so I don't get banned like I was with Google twice.
 const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
+/*
 function readCSVFile() {
   let bookArray = [];
 
@@ -170,7 +182,7 @@ function readCSVFile() {
         testArray[0] = bookArray[0];
         testArray[1] = bookArray[1];
         testArray[2] = bookArray[2];
-        */
+        
 
       //console.log(testArray[0]);
 
@@ -180,6 +192,105 @@ function readCSVFile() {
       } catch (err) {
         console.log("Error: " + err);
       }
+    });
+}*/
+
+function findBookByTitle(books, title) {
+  return books.find(book => book.title === title) || null;
+}
+
+let count = 0;
+const bookArray = [];
+
+function readCSVFile() {
+  fs.createReadStream("./books.csv")
+    .pipe(parse({ delimiter: ",", from_line: 2 }))
+    .on("data", async function (row) {
+
+      const bookInformation = row;
+
+
+      const title = bookInformation[1].trim();
+      const author = bookInformation[3].split(",")[0].trim();
+      const releaseDate = bookInformation[14].trim();
+      const description = bookInformation[5].trim();
+      const imgURL = bookInformation[21].trim();
+      const unfilteredGenres = bookInformation[8].substring(1, bookInformation[8].length - 1);
+      const avgRating = parseFloat(bookInformation[4].trim());
+      const likedPercentage = parseInt(bookInformation[19].trim());
+      const unfilteredRatingDistribution = bookInformation[18].substring(1,bookInformation[18].length - 1);
+      const language = bookInformation[6].trim();
+      const bookType = bookInformation[10].trim();
+
+      const splitGenres = unfilteredGenres.split(",");
+      const genres = [];
+      for (i in splitGenres) {
+        genres.push(splitGenres[i].trim().substring(1, splitGenres[i].trim().length - 1));
+      }
+
+      const splitRatingDistributions = unfilteredRatingDistribution.split(",");
+      const ratingDistribution = [];
+
+      for (i in splitRatingDistributions) {
+        ratingDistribution.push(
+          parseInt(
+            splitRatingDistributions[i]
+              .trim()
+              .substring(1, splitRatingDistributions[i].trim().length - 1)
+          )
+        );
+      }
+
+      //validation rules
+      if(language === "English" && 
+      //validateTitle(title) &&
+      !checkIllegalCharacters(title) && 
+      releaseDate != "" &&
+      description != "" &&
+      imgURL != "" &&
+      genres.length != 0 &&
+      ratingDistribution.length > 2 &&
+      (bookType == "Hardcover" || bookType == "Paperback" || bookType == "Audiobook")) {
+
+        //console.log(ratingDistribution);
+
+        
+        const newBook = Book({
+          title: title,
+          author: author,
+          releaseDate: releaseDate,
+          description: description,
+          imgurl: imgURL,
+          genres: genres,
+          avgRating: avgRating,
+          likedPercentage: likedPercentage,
+          ratingDistribution: ratingDistribution,
+        });
+
+        bookArray.push(newBook);
+        
+
+        count++;
+      }
+      
+
+    }).on("error", function (error) {
+      console.log(error.message);
+    })
+    .on("end", async function () {
+
+
+      console.log("COMPLETE: No. of books processed: " + count);
+
+      
+      try {
+        const result = await Book.insertMany(bookArray);
+        console.log(result);
+      } catch (err) {
+        console.log("Error: " + err);
+      }
+      
+
     });
 }
 

@@ -353,7 +353,7 @@ const recommendedBooksByAuthor = async (req, res) => {
     user.currentlyReadingList
   );
   const authors = [];
-  joinedBooks.map((book) => authors.push(book.author.split(",")[0]));
+  joinedBooks.map((book) => authors.push(book.author));
 
   const uniqueAuthors = [...new Set(authors)];
   const books = await Book.find({ author: { $in: uniqueAuthors } }).sort("avgRating");
