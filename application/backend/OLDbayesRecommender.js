@@ -15,7 +15,7 @@ mongoose
   })
   .then(() => {
     console.log("Recommendation engine connected to MongoDB");
-    findSimilarBooks("640b6eb11024425951abdb92");
+    findSimilarBooks("640b6eb31024425951ac0c6f");
     //trainClassifier();
     //getBookCountByGenre();
     //printComicBookTitles();
