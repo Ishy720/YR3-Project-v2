@@ -133,7 +133,7 @@ const findSimilarBooks = async (bookId) => {
         };
     });
 
-    console.log(`Top 10 similar books for book ${bookId}:`);
+    console.log(`Top 10 similar books for book ${inputBook.title}:`);
     const results = await getBooksByIds(categories.map((category) => category.id));
     for (const book of results) {
         const similarityScore = categories.find((category) => category.id === book.id).score;
