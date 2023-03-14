@@ -51,7 +51,7 @@ async function retrieveRelatedBooks(bookId, genres) {
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
     { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
-    { $sample: { size: 20000 } },
+    //{ $sample: { size: 20100 } },
     { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]).exec();
   //const books = await Book.find({ genres: /Comic Book/i });
@@ -65,21 +65,8 @@ function getTokenizedDescriptions(books) {
   //return books.map(book => tokenize(book.description));
 }
 
-//takes in a user ID and returns a set of recommended books based on a random selection in their finished reading list
+//returns a set of recommended books
 async function recommendFromOneRandomBook(bookId) {
-
-  /*
-  //get user's finished books
-  const user = await User.findOne({ _id: userId });
-  const userFinishedBooks = user.finishedList;
-
-  //if nothing in finished list return null
-  if(userFinishedBooks.length == 0) {
-    return null;
-  }
-
-  const chosenRandomBook = userFinishedBooks[Math.floor(Math.random() * (userFinishedBooks.length))];
-  */
 
   const chosenRandomBook = await Book.findOne({ _id: bookId });
 
@@ -117,18 +104,21 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
+/*
 //pass a book ID into the function. The function will recommend books related to it.
-recommendFromOneRandomBook("640b6eb11024425951abbfde")
+recommendFromOneRandomBook("640b6eb31024425951ac0c6f")
   .then(response => {
     for(data in response) {
       console.log(response[data].book.title);
     }
   })
-  .catch(error => console.error(error));
+  .catch(error => console.error(error));*/
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;
 
+//"640b6eb01024425951abad25" harry potter deathly hallows
+//"640b6eb31024425951ac0c6f" xmen book
 
 
 //--------------------------------------------------------------------------------

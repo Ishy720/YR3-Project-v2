@@ -15,6 +15,7 @@ const BookInfoModal = () => {
 
   const [suggestedBooks, setSuggestedBooks] = useState([]);
   const isMounted = useRef(true);
+  let searched = false;
   const abortController = useRef(new AbortController());
 
   const getRecommendations = async (id) => {
@@ -42,7 +43,10 @@ const BookInfoModal = () => {
       if(isMounted.current) {
         console.log(data.books);
         const booksOnly = data.books.map((item) => item.book);
+        if(!searched) {
         setSuggestedBooks(booksOnly);
+        }
+        searched = true;
         //setSuggestedBooks(data.books);
       }
     } catch (err) {
