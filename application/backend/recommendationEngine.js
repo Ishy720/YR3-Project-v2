@@ -46,11 +46,11 @@ async function retrieveRelatedBooks(bookId, genres) {
   */
   //const books = await Book.find();
 
-  //Retrieves smaller sample which matches by genre, max sample of 20000. Much faster execution and better related corpus for tf-idf
+  //Retrieves smaller sample which matches by genre. Much faster execution and better related corpus for tf-idf
   
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
-    { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
+    //{ $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
     //{ $sample: { size: 20100 } },
     { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]).exec();
@@ -104,15 +104,28 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
-/*
+
 //pass a book ID into the function. The function will recommend books related to it.
-recommendFromOneRandomBook("640b6eb31024425951ac0c6f")
+recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
+    /*
     for(data in response) {
-      console.log(response[data].book.title);
-    }
+      console.log(`Book: ${response[data].book.title} - Similarity score: ${response[data].score}`);
+    }*/
+
+        // Find minimum and maximum scores
+        const minScore = response[response.length - 1].score;
+        const maxScore = response[0].score;
+        const scoreRange = maxScore - minScore;
+        
+        for(data in response) {
+          // Normalize scores between 1-100
+          const normalizedScore = (response[data].score - minScore) / scoreRange * 99 + 1;
+          
+          console.log(`Book: ${response[data].book.title} - Similarity score: ${normalizedScore.toFixed(2)}`);
+        }
   })
-  .catch(error => console.error(error));*/
+  .catch(error => console.error(error));
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;
