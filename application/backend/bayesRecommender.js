@@ -150,10 +150,10 @@ const findSimilarBooks = async (bookId) => {
   for (const book of results) {
     const similarityScore = categories.find((category) => category.id === book.id).score;
     const normalizedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
+    //CHECK SIM SCORES????
     if(normalizedScore > 0) {
       console.log(`Book: ${book.title} - Similarity score: ${normalizedScore}`);
     }
-    //console.log(`Book: ${book.title} - Similarity score: ${normalizedScore}`);
   }
 };
 

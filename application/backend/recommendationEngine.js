@@ -47,12 +47,14 @@ async function retrieveRelatedBooks(bookId, genres) {
   //const books = await Book.find();
 
   //Retrieves smaller sample which matches by genre, max sample of 20000. Much faster execution and better related corpus for tf-idf
+  
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
     { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
     { $sample: { size: 20000 } },
     { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]).exec();
+  //const books = await Book.find({ genres: /Comic Book/i });
   
   return books;
 }
@@ -116,7 +118,7 @@ async function recommendFromOneRandomBook(bookId) {
 }
 
 //pass a book ID into the function. The function will recommend books related to it.
-recommendFromOneRandomBook("63d53dcd0dcdd4cc1d1251a9")
+recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
     for(data in response) {
       console.log(response[data].book.title);
