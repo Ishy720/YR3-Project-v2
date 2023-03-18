@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useGlobalContext } from "./context";
-
+import "./index.css"
 //import pages
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
@@ -36,7 +36,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        {/* <Route path="/about" element={<About />} /> */}
         <Route
           path="/register"
           element={auth ? <Navigate to="/discover" /> : <Register />}

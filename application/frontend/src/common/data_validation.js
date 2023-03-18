@@ -16,10 +16,10 @@ export function validateName(nameParam) {
 //ONE DIGIT
 //ONE SPECIAL CHARACTER
 //6 CHARACTERS LONG
-export function validatePasswordStrength(passwordParam) {
-    const regex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,})/
-    return regex.test(passwordParam)
-}
+// export function validatePasswordStrength(passwordParam) {
+//     const regex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,})/
+//     return regex.test(passwordParam)
+// }
 
 //Performs regex test to check if the parameter passed is a valid email
 export function validateEmail(emailParam) {
@@ -62,9 +62,9 @@ export function validateRegistrationDetails(data) {
     if (password !== "" && passwordReentry === "") {
         response.push("Please re-enter your password!")
     }
-    if (password !== "" && passwordReentry !== "" && !validatePasswordStrength(password)) {
-        response.push("Password must contain one upper & lowercase letter, one digit, one special character, 6 characters long!");
-    }
+    // if (password !== "" && passwordReentry !== "" && !validatePasswordStrength(password)) {
+    //     response.push("Password must contain one upper & lowercase letter, one digit, one special character, 6 characters long!");
+    // }
     //Check if they didn't agree with TnC
     if(tncAgreed === false) {
         response.push("You must agree to the Terms and Conditions!")

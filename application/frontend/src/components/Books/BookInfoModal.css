@@ -1,4 +1,4 @@
-.main-sec {
+.bookinfo-main-sec {
   position: fixed;
   top: 0;
   left: 0;
@@ -8,24 +8,77 @@
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
+  overflow-y: scroll;
 }
 
-.modal-content {
-  width: 70%;
+.bookinfo-main-sec::-webkit-scrollbar {
+  display: none;
+}
+.booksinfo-modal-content {
+  width: 100%;
+  max-width: 1000px;
   margin: auto;
-  background-color: #f5f5f5;
+  background-color: #333;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  padding: 2rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  overflow-x:hidden;
-  overflow-y:auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* border: solid green; */
 }
 
-.modal-content img {
-  max-width: 200px;
-  margin-right: 2rem;
+.bookinfo-main-sec .bookinfo-book-card h3 {
+  font-size: 0.8rem;
+}
+.bookinfo-main-sec .bookinfo-book-card h4 {
+  font-size: 0.8rem;
+}
+
+.bookinfo-main-sec .bookinfo-book-card img {
+  max-width: 150px;
+  height: 200px;
+}
+
+.bookinfo-main-sec .carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  position: relative;
+  overflow: hidden;
+  /* border: solid yellow; */
+  width: 90% !important;
+}
+
+.bookinfo-main-sec .carousel-slide {
+  height: 400px;
+}
+.bookinfo-main-sec .carousel-slide img {
+  height: 70%;
+}
+
+.bookinfo-main-sec .carousel-slide p {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #000;
+}
+
+.bookinfo-main-sec .carousel .slider-wrapper {
+  overflow: hidden;
+  margin: auto;
+  width: 100%;
+  height: 400px !important;
+}
+
+.bookinfo-main-sec .control-dots {
+  display: none !important;
+}
+
+.carousel-container {
+  width: 100%;
+  /* border: solid red; */
+  height: fit-content !important;
 }
 
 .modal-content h1 {
@@ -56,4 +109,45 @@
   top: 20px;
   right: 20px;
   cursor: pointer;
+}
+
+.bookinfo-book-card {
+  border: solid 2px #f7dc65c1;
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+  border-radius: 20px;
+  margin: 1rem;
+}
+
+.bookinfo-book-card img {
+  height: 25rem;
+  width: 15rem;
+}
+
+.book-desc {
+  color: antiquewhite;
+  display: none;
+}
+.book-title {
+  color: antiquewhite;
+}
+@media screen and (min-width: 900px) {
+  .book-desc {
+    display: block;
+  }
+
+  .bookinfo-main-sec .carousel-slide img {
+    height: 400px;
+  }
+  .bookinfo-main-sec .bookinfo-book-card img {
+    max-width: 200px;
+    height: 100%;
+  }
+  .bookinfo-main-sec .bookinfo-book-card h3 {
+    font-size: 1rem;
+  }
+  .bookinfo-main-sec .bookinfo-book-card h4 {
+    font-size: 1rem;
+  }
 }

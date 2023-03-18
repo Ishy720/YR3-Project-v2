@@ -1,4 +1,4 @@
-a{
+/* a{
     text-decoration: none;
     color: white;
     text-align: center;
@@ -86,4 +86,166 @@ button:hover{
         width: 100%;
         justify-content: space-between;
     }
+} */
+
+a {
+  text-decoration: none;
+}
+.nav-toggle,
+.nav-close {
+  color: #fff1a9b1;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.nav-close {
+  font-size: 2rem;
+}
+
+.nav-close,
+.nav-toggle:hover {
+  color: #f7dc65c1;
+}
+.nav-close {
+  float: right;
+  margin: 1rem;
+}
+
+nav {
+  background-color: rgba(0, 0, 0, 1);
+  box-shadow: rgba(247, 220, 101, 0.5) 0px 5px 10px;
+}
+
+.nav-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  padding: 1rem 0;
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-links {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  background-color: black;
+  max-width: 400px;
+  margin: 0;
+  left: -100%;
+  padding: 0;
+  transition: all 0.5s;
+  z-index: 999;
+}
+
+.show-navlinks {
+  left: 0;
+}
+
+.nav-links li {
+  margin: 2rem 1rem;
+  font-size: 1.2rem;
+  padding-left: 1rem;
+  list-style-type: none;
+  position: relative;
+  width: fit-content;
+}
+
+.nav-links li {
+  position: relative;
+}
+
+.nav-links li::after {
+  content: "";
+  height: 2px;
+  width: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #f7dc65c1;
+  transition: width 0.5s;
+}
+
+.nav-links li:hover::after {
+  width: 100%;
+  left: 15px;
+}
+
+.nav-links a {
+  color: #fff1a9b1;
+}
+
+.auth {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.logout-btn,
+.login-btn,
+.register-btn {
+  font-size: 1rem;
+  padding: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 100px;
+  height: 40px;
+  letter-spacing: 0.1rem;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #f7dc65c1;
+}
+
+.welcome-text {
+  color: #fff1a9b1;
+  font-size: 1.2rem;
+  display: none;
+  margin: 0;
+}
+
+.welcome-text span {
+  text-transform: uppercase;
+  font-weight: bolder;
+  font-family: "Sono", sans-serif;
+}
+
+@media screen and (min-width: 400px) {
+  .welcome-text {
+    display: block;
+  
+  }
+}
+@media screen and (min-width: 900px) {
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 800;
+  }
+  .nav-close,
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .nav-links {
+    left: 0;
+    position: unset;
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+  }
+  .nav-links li {
+    margin: 0 0.7rem;
+    padding: 0;
+  }
+  .nav-links li:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
 }

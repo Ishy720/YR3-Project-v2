@@ -1,94 +1,98 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaTrash, FaTimes } from "react-icons/fa";
-import "./BookInfoModal.css"
+import "./BookInfoModal.css";
 import { useGlobalContext } from "../../context";
 import Carousel from "../Carousel/Carousel";
 
 const BookInfoModal = () => {
-
   const {
     bookInformation,
     setBookInformation,
-    showBookInfoModal, 
-    setShowBookInfoModal
+    showBookInfoModal,
+    setShowBookInfoModal,
   } = useGlobalContext();
 
   const [suggestedBooks, setSuggestedBooks] = useState([]);
+
   const isMounted = useRef(true);
   let searched = false;
   const abortController = useRef(new AbortController());
 
   const getRecommendations = async (id) => {
     const parameter = {
-      bookId: bookInformation._id
-    }
-
-    const options = {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(parameter),
-      signal: abortController.current.signal
+      bookId: bookInformation._id,
     };
 
-    /*
-    const response = await fetch('http://localhost:8080/getRecommendationsForOneBook', options);
-    const data = await response.json()
-    setSuggestedBooks(data.books);
-    */
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(parameter),
+      signal: abortController.current.signal,
+    };
+    
     try {
-      const response = await fetch('http://localhost:8080/getRecommendationsForOneBook', options);
+      const response = await fetch("http://localhost:8080/getRecommendationsForOneBook", options);
       const data = await response.json();
-      if(isMounted.current) {
+
+      if (isMounted.current) {
         console.log(data.books);
         const booksOnly = data.books.map((item) => item.book);
-        if(!searched) {
-        setSuggestedBooks(booksOnly);
+        if (!searched) {
+          setSuggestedBooks(booksOnly);
         }
         searched = true;
         //setSuggestedBooks(data.books);
       }
     } catch (err) {
-      console.log('Fetch request aborted:', err.message);
+      console.log("Fetch request aborted:", err.message);
     }
   };
 
   useEffect(() => {
     abortController.current = new AbortController();
     getRecommendations(bookInformation._id);
-  }, []);
+    setSuggestedBooks([]);
+  }, [bookInformation]);
 
   const closeModal = () => {
-    isMounted.current = false; 
+    isMounted.current = false;
     abortController.current.abort();
     setShowBookInfoModal(false);
-    setBookInformation(
-      {
-        title: '',
-        author: '',
-        releaseDate: '',
-        description: '',
-        imgurl: '',
-        genres: [],
-        avgRating: '',
-        likedPercentage: '',
-        ratingDistribution: [],
-      });
+    setBookInformation({
+      title: "",
+      author: "",
+      releaseDate: "",
+      description: "",
+      imgurl: "",
+      genres: [],
+      avgRating: "",
+      likedPercentage: "",
+      ratingDistribution: [],
+    });
   };
 
   return (
-    <section className="main-sec">
-      <div className="modal-content">
+    <section className="bookinfo-main-sec">
+      <div className="booksinfo-modal-content">
         <FaTimes className="close-modal-icon" onClick={closeModal} />
-        <h1>{bookInformation.title}</h1>
+        <div className="bookinfo-book-card">
+          <img src={bookInformation.imgurl} />
 
-
+          <div>
+            <h3 className="book-title">{bookInformation.title}</h3>
+            <h4 className="book-author">{bookInformation.author}</h4>
+            <p className="book-desc">{bookInformation.description}</p>
+          </div>
+        </div>
         <h4>Similar books to {bookInformation.title}:</h4>
 
-        {suggestedBooks.length > 0 ? <Carousel books={suggestedBooks} /> : <p>Generating...</p>}
-
-
+        {suggestedBooks.length > 0 ? (
+          <Carousel books={suggestedBooks} />
+        ) : (
+          <p>Generating...</p>
+        )}
       </div>
     </section>
   );

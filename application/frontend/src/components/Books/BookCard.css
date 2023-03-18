@@ -1,52 +1,133 @@
 .bookComponent {
-    width: 310px;
-    overflow: hidden;
-    border: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0, 1);
-    font-family: Arial, sans-serif;
-    color: white;
-    padding: 70px;
-    text-align: -webkit-center;
+  background-color: #000;
+  /* border: solid red; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: rgba(247, 220, 101, 0.5) 0px 5px 5px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  max-width: 400px;
+  min-height: 400px;
 }
-  
+
+.bookComponent .image {
+  display: grid;
+  grid-row-end: 3;
+  grid-row-start: 1;
+}
+
+.bookComponent .arrow-down {
+  color: #f7dc65c1;
+  font-size: 1.5rem;
+}
+.bookComponent .btns {
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 700;
+  background-color: #000;
+  overflow: hidden;
+  transition: all 0.5s;
+  width: 0;
+}
+
+.bookComponent .show-listCon {
+  font-size: 1rem;
+  padding: 0;
+  font-weight: bold;
+  height: 40px;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.bookComponent .show-listCon:hover ~ .btns {
+  width: 50%;
+}
+.bookComponent .btns:hover {
+  width: 50%;
+}
+
 .bookComponent img {
-    border-radius: 10px;
-    width: 220px;
-    height: 340px;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    display: flex;
+  width: 120px;
+  height: 200px;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
 }
-  
+
+.bookComponent .details {
+  color: #f7dc65c1;
+  color: #000;
+  background-color: aliceblue;
+  grid-row-end: 3;
+  grid-row-start: 1;
+}
+.bookComponent .details p {
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+}
+.bookComponent .details h5 {
+  padding-left: 0.5rem;
+}
+
+.bookComponent .btns button {
+  font-size: 1rem;
+  padding: 0;
+  border-radius: 10px;
+  height: 40px;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+  width: 60%;
+  margin: 0.4rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.bookComponent .btns button:hover,
+.bookComponent .show-listCon:hover {
+  background-color: #f7dc65c1;
+}
+
+/* 
 .bookComponent span {
-    font-style: italic;
-    padding: 10px;
+  font-style: italic;
+  padding: 10px;
 }
-  
+
 .bookComponent p {
-    font-style: italic;
+  font-style: italic;
 }
 
 .bookComponent button {
-    background-color: #1c1c1e;
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  background-color: #1c1c1e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-  
 .bookComponent button:hover {
-    background-color: #5d5d5d;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: #5d5d5d;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-  
+
 .bookComponent button:focus {
-    outline: none;
-    background-color: #2c2c2e;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
+  outline: none;
+  background-color: #2c2c2e;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+} */

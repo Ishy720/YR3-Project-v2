@@ -1,57 +1,76 @@
-import React from 'react'
-import './Home.css'
-import { useNavigate } from 'react-router-dom';
-
+import React, { useRef } from "react";
+import "./Home.css";
+import { Link, useNavigate } from "react-router-dom";
+import { useViewportScroll, useTransform, motion } from "framer-motion";
+import { FaArrowCircleRight } from "react-icons/fa";
 function Home() {
-
-  function testServer() {
-
-    fetch('http://localhost:8080/test').then(res =>
-      res.json()
-    ).then(data =>
-      console.log(data.message)
-    )
-
-    let username = "Ismail";
-    let age = 20;
-
-    const userData = {
-      username,
-      age
-    };
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
-    }
-
-    fetch('http://localhost:8080/uploadUser', options).then(res =>
-      res.json()
-    ).then(data =>
-      console.log(data.message)
-    )
-    
-  }
-
   let navigate = useNavigate();
+  const { scrollY } = useViewportScroll();
+  const sectionRef = useRef(null);
+  const y = useTransform(scrollY, [0, 500], [0, 0]);
+  return (
+    <div className="home">
+      <motion.section
+        ref={sectionRef}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ y }}
+      >
+        <div className="hero">
+          <div className="hero-image"></div>
+          <div className="hero-content">
+            <h2>Thousands of books at your fingertips.</h2>
+            <Link to="/discover">
+              <button>
+                Explore<FaArrowCircleRight />
+              </button>
+            </Link>
+          </div>
+        </div>
+      </motion.section>
 
-    return (
-      <div className="home">
-        <h1 id="pageTitle">Home</h1>
+      <div className="about">
+        <h1>About us</h1>
 
-        <h2>Manage all your books in one place.</h2>
-        <button onClick={() => {navigate("/discover")}}>Explore books now -></button>
-
-        <button onClick={testServer}>Test server</button>
-
-
-
-        <h3>Our newest additions:</h3>
+        <section>
+          <h2>Our Aims</h2>
+          <p>
+            We aim to deliver users a place to manage and keep track of books in
+            one single and safe place!
+          </p>
+        </section>
+        <section>
+          <h2>Our Story</h2>
+          <p>
+            We're book lovers, and we've made this website for all of the book
+            lovers out there! It's not always easy to remember the books we've
+            read, and we understand the struggles of trying to find new books to
+            read when there's so many to explore. Our website will help you
+            overcome these struggles and provide you with a pleasant experience
+          </p>
+        </section>
+        <section>
+          <h2>Our Promise</h2>
+          <p>
+            By signing up, you will have access to a database of thousands of
+            books that are regularly monitored and updated by our team. We
+            welcome and look forward to any and all feedback towards our website
+            to improve our services for our customers!
+          </p>
+        </section>
+        <section>
+          <h2>Our Helping Hand</h2>
+          <p>
+            Don't know what to read? Looking for something new, or perhaps more
+            books from authors that you are interested in? Sign in now and start
+            adding books to your reading lists! We'll suggest a range of books
+            to you that you may be interested in using our own content filtering
+            algorithms!
+          </p>
+        </section>
       </div>
-    );
+    </div>
+  );
 }
 
 export default Home;

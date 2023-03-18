@@ -1,8 +1,78 @@
-#pageTitle {
+#registerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+}
+
+#registerFormContainer {
+  background-color: #000;
+  width: 95%;
+  border-radius: 10px;
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 1rem;
+  box-shadow: rgba(247, 220, 101, 3) 0px 3px 6px,
+    rgba(247, 220, 101, 3) 0px 3px 6px;
+}
+#registerContainer h2 {
+  text-align: center;
+  color: rgba(247, 220, 101, 0.757);
+  font-size: 2rem;
+  font-family: "Sono", sans-serif;
+}
+#registerContainer label {
+  color: #f7dc65c1;
+}
+#registerContainer input {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+#registerContainer .check-box-con input {
+  width: fit-content;
+}
+#registerContainer button {
+  font-size: 1rem;
+  padding: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 100px;
+  height: 40px;
+  letter-spacing: 0.1rem;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+  display: block;
+  margin: auto;
+}
+#registerContainer button:hover {
+  background-color: #f7dc65c1;
+}
+#registerContainer h4 {
+  text-align: center;
+  text-transform: capitalize;
+  color: #f7dc65c1;
+}
+#registerContainer h4 span {
+  color: #f7dc65c1;
+  margin-left: 0.2rem;
+  cursor: pointer;
+}
+#registerContainer h4 span:hover {
+  color: #fff1a9b1;
+}
+
+/* #pageTitle {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Arial, sans-serif;
     font-size: 60px;
     color: rgba(255, 241, 169, 0.696);
     padding-bottom: 100px;
@@ -12,9 +82,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 500px;
     padding: 40px 0;
-    padding-bottom: 200px;
+    border: solid;
 }
 
 #registerFormContainer {
@@ -61,4 +130,4 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #7d47b9;
-}
+} */

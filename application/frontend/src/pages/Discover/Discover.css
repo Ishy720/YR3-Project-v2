@@ -1,45 +1,51 @@
 .searchPage {
-    background-color: rgb(50, 50, 50);
-    width: 100%;
-    padding: 1px;
-  }
-  
-.searchPage #pageTitle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    font-size: 60px;
-    color: rgba(255, 241, 169, 0.696);
+  background-color: rgb(50, 50, 50);
+  width: 100%;
+  padding: 1px;
+  min-height: 80vh;
+  padding-bottom: 2rem;
 }
-  
+
+#pageTitle {
+  color: rgba(255, 241, 169, 0.696);
+  margin: 0;
+  padding: 0;
+}
+
 .searchPage .searchDiv {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    width: 50%;
-    padding: 13px;
-    background-color: black;
-    border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem auto;
+  width: 90%;
+  max-width: 700px;
+  padding: 13px;
+  background-color: black;
+  border-radius: 20px;
 }
-  
+
 .searchPage .searchDiv input {
-    flex: 1;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: 500;
-    padding-right: 1rem;
-    outline: none;
-    color:rgb(229, 227, 227);
-    background: #020202;
-    width: inherit;
+  flex: 1;
+  color: #fff1a9b1;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding-right: 1rem;
+  outline: none;
+  background: #020202;
+  width: inherit;
 }
-  
+
 .searchPage .searchDiv img {
-    cursor: pointer;
+  cursor: pointer;
 }
-  
+
 .searchPage .searchDiv #searchBar::placeholder {
-    color: rgba(255, 241, 169, 0.284);
+  color: rgba(255, 241, 169, 0.284);
+}
+
+
+.loading-status{
+  text-align: center;
+  color: #fff1a9b1;
 }

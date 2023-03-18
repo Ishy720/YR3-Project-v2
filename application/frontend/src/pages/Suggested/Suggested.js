@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import Carousel from "../../components/Carousel/Carousel";
 import { useGlobalContext } from "../../context";
-
+import "./suggested.css";
 const Suggested = () => {
-
   const {
     getSuggestionsByGenre,
     suggestionsByGenre,
@@ -12,11 +11,9 @@ const Suggested = () => {
     user: { id: userId },
   } = useGlobalContext();
 
-  useEffect( () => {
-
+  useEffect(() => {
     getSuggestionsByGenre(userId);
     getSuggestionsByAuthor(userId);
-    
   }, []);
 
   return (
@@ -36,8 +33,6 @@ const Suggested = () => {
       ) : (
         <Carousel books={suggestionsByAuthor} />
       )}
-
-
     </div>
   );
 };

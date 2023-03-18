@@ -2,15 +2,18 @@
   width: 100%;
   text-align: center;
   text-transform: uppercase;
-  color: antiquewhite;
   font-size: 2rem;
+  margin-top: 0;
+  padding-top: 2rem;
+  margin: 0;
+  font-family: "Sono", sans-serif;
 }
 .other-message {
   text-align: center;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: antiquewhite;
   font-size: 2rem;
-  min-width: 90vw;
+  min-width: 95vw;
 }
 .main-con {
   display: flex;
@@ -18,8 +21,7 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
-  background-color: rgba(250, 235, 215, 0.6);
+  margin-bottom:0;
 }
 
 .book-card {
@@ -34,7 +36,6 @@
 
 .image-con {
   height: 250px;
-  /* border: solid red; */
 }
 
 .image {
@@ -69,14 +70,11 @@
   font-weight: 700;
   min-width: 60px !important;
   padding: 0 0.9rem;
-  /* border: solid; */
   display: block;
 }
 
 .card-footer {
-  /* border: solid red; */
   display: flex;
-  /* flex-direction: column; */
   padding: 0;
   position: absolute;
   bottom: 0;
@@ -118,7 +116,7 @@
 .trash-icon {
   color: red;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 2rem;
   transition: all 0.5s;
   padding: 0.3rem;
   border-radius: 10px;
@@ -147,8 +145,8 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
-  background-color: rgba(250, 235, 215, 0.6);
+  margin-bottom:0;
+  /* background-color: rgba(250, 235, 215, 0.6); */
 }
 
 .each-customlist-con {
@@ -170,15 +168,54 @@
   border-bottom: solid 2px rgb(50, 50, 50);
 }
 
-.each-customlist-con .book-card{
-  border: solid;
+.each-customlist-con .book-card {
   height: 420px;
 }
-.customlist-title{
+.customlist-title {
   color: antiquewhite;
   text-transform: capitalize;
-  letter-spacing: .2rem;
+  letter-spacing: 0.2rem;
   border-bottom: solid 2px antiquewhite;
+}
+
+.booklist-component {
+  height: max-content;
+  min-height: 80vh;
+}
+.booklist-component .tab-btns {
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin-bottom: 0;
+}
+
+.booklist-component .tab-btns button {
+  font-size: 1rem;
+  padding: 0;
+  height: 40px;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+  border-right: solid 1px #000;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-family: "Sono", sans-serif;
+}
+
+.active-tab {
+  position: relative;
+  background-color: #f7dc65c1 !important;
+}
+
+.active-tab::after {
+  content: "";
+  height: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  transition: width 0.5s;
+  width: 100%;
 }
 
 @media screen and (min-width: 600px) {

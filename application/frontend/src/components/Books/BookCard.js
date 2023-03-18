@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./BookCard.css";
 import NoBookCover from "../../images/NoBookCover.jpg";
 import { useGlobalContext } from "../../context";
-
+import {
+  FaArrowAltCircleRight,
+  FaArrowCircleDown,
+  FaBars,
+  FaPlus,
+  FaTimes,
+} from "react-icons/fa";
 const BookCard = ({ book }) => {
-
   const { _id: bookId } = book;
   const {
     addToreadList,
@@ -17,7 +22,7 @@ const BookCard = ({ book }) => {
     bookInformation,
     setBookInformation,
     showBookInfoModal,
-    setShowBookInfoModal
+    setShowBookInfoModal,
   } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
@@ -78,66 +83,75 @@ const BookCard = ({ book }) => {
 
   const showInfo = (book) => {
     console.log(book);
-    setBookInformation(
-      {
-        _id: book._id,
-        title: book.title, 
-        author: book.author,
-        releaseDate: book.releaseDate,
-        description: book.description,
-        imgurl: book.imgurl,
-        genres: book.genres,
-        avgRating: book.avgRating,
-        likedPercentage: book.likedPercentage,
-        ratingDistribution: book.ratingDistribution,
-      });
+    setBookInformation({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      releaseDate: book.releaseDate,
+      description: book.description,
+      imgurl: book.imgurl,
+      genres: book.genres,
+      avgRating: book.avgRating,
+      likedPercentage: book.likedPercentage,
+      ratingDistribution: book.ratingDistribution,
+    });
 
     setShowBookInfoModal(true);
-  }
+  };
+
+  const listCon = useRef();
+
+  const showlistCon = () => {
+    listCon.current.classList.toggle("show-list");
+    console.log(listCon.current);
+  };
 
   return (
     <>
-
       <div className="bookComponent">
-        <div>
+        <div className="image">
           <img
             src={bookImageURL}
             alt={book.title}
             onClick={() => {
-              showInfo(book)
+              showInfo(book);
             }}
           />
         </div>
-        <div>
-          <h3>{book.title}</h3>
-          <span>{book.author}</span>
-          <span>Rating: {book.avgRating}/5</span>
-          <span>{book.likedPercentage}% of people liked this</span>
+        <div className="details">
+          <h5>{book.title}</h5>
+          <p>{book.author}</p>
+          <p>Rating: {book.avgRating}/5</p>
+          <p>{book.likedPercentage}% of people liked this</p>
         </div>
-        <div>
+        <button onClick={showlistCon} className="show-listCon">
+          Add to list <FaArrowAltCircleRight />
+        </button>
+        {/* <FaArrowCircleDown className="arrow-down" /> */}
+        <div className="btns" ref={listCon}>
           <button
             onClick={() => handleAddToReadList(userId, bookId)}
             disabled={loading}
           >
-            Add to my to-read list
+            to-read list
           </button>
           <button
             disabled={loading}
             onClick={() => handleAddToCurrentlyReadingList(userId, bookId)}
           >
-            Add to my currently reading list
+            reading list
           </button>
           <button
             onClick={() => handleAddToFinishedList(userId, bookId)}
             disabled={loading}
           >
-            Add to my finished list
+            finished list
           </button>
           <button
             onClick={() => handleAddToCustomList(bookId)}
             disabled={loading}
           >
-            Add to my custom list
+            custom list
           </button>
         </div>
       </div>

@@ -1,14 +1,170 @@
 .home {
-    background-color: rgb(50, 50, 50);
-    width: 100%;
-    padding: 1px;
+  overflow: hidden;
+  /* position: relative; */
 }
-  
-.home #pageTitle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    font-size: 60px;
-    color: rgba(255, 241, 169, 0.696);
+
+.hero {
+  height: 90vh;
+  position: relative;
+}
+.hero-image {
+  height: 90vh;
+  overflow: hidden;
+  background: url("../../images/hero2.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero-content {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-content button {
+  font-size: 2rem;
+  padding: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 200px;
+  height: 40px;
+  letter-spacing: 0.1rem;
+  background-color: #fff1a9b1;
+  border: transparent;
+  cursor: pointer;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-content button:hover {
+  background-color: #f5cc15c1;
+}
+
+.hero-content h2 {
+  color: #f7dc65c1;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 1rem;
+  letter-spacing: 0.5rem;
+  text-align: center;
+  width: max-content;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.about {
+  padding: 0.5rem;
+  display: grid;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about h1 {
+  padding-top: 12px;
+  font-family: "Times New Roman", Times, serif;
+  text-transform: capitalize;
+  font-size: 2rem;
+  text-align: center;
+  color: #fff1a9b1;
+  margin: 0;
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+}
+.about h1::after {
+  content: "";
+  height: 5px;
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  background-color: #f7dc65c1;
+  transition: width 0.5s;
+  width: 100%;
+  /* left: 15px; */
+}
+
+.about section {
+  border: solid 1px #fff1a9b1;
+  border-radius: 10px;
+  margin: 1rem auto;
+  padding: 0.5rem;
+  position: relative;
+  height: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ccc;
+  cursor: pointer;
+  width: 100%;
+  max-width: 500px;
+}
+.about section h2 {
+  text-transform: capitalize;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: opacity 0.5s, transform 0.5s;
+  z-index: 1;
+}
+
+.about section p {
+  opacity: 0;
+  transition: opacity 0.5s, transform 0.5s;
+  transform: scale(0.8);
+  text-align: center;
+  line-height: 1.6rem;
+  height: fit-content;
+  border: solid 2px #fff1a9b1;
+  padding: 0.4rem;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.about section:hover h2 {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.about section:hover p {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media screen and (min-width: 600px) {
+  .hero-content h2 {
+    font-size: 3rem;
+  }
+  .hero-content button {
+    height: 50px;
+  }
+}
+
+@media screen and (min-width: 950px) {
+  .about {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .about h1 {
+    display: grid;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .about section {
+    max-width: unset;
+    height: unset;
+  }
 }

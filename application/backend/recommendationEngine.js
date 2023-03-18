@@ -51,7 +51,7 @@ async function retrieveRelatedBooks(bookId, genres) {
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
     //{ $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
-    //{ $sample: { size: 20100 } },
+    { $sample: { size: 20000 } },
     { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]).exec();
   //const books = await Book.find({ genres: /Comic Book/i });
@@ -86,9 +86,7 @@ async function recommendFromOneRandomBook(bookId) {
 
   const recommendedBooks = [];
 
-  //also try lemotisation instead of stopwords because key words are being removed in title.
-
-  //get the tf-idf score for the user's random book
+  //get the tf-idf score for the input book by summing TF-IDF score for each token feature
   tfidf.tfidfs(tokenize(chosenRandomBook.title + " " + chosenRandomBook.description), (i, measure) => {
     recommendedBooks.push({
       book: databaseSample[i],
@@ -104,28 +102,31 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
-
+/*
 //pass a book ID into the function. The function will recommend books related to it.
 recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
+    
     /*
     for(data in response) {
       console.log(`Book: ${response[data].book.title} - Similarity score: ${response[data].score}`);
-    }*/
+    }
+    
 
-        // Find minimum and maximum scores
-        const minScore = response[response.length - 1].score;
-        const maxScore = response[0].score;
-        const scoreRange = maxScore - minScore;
+    // Find minimum and maximum scores
+    const minScore = response[response.length - 1].score;
+    const maxScore = response[0].score;
+    const scoreRange = maxScore - minScore;
+    
+    for(data in response) {
+      // Normalize scores between 1-100
+      const normalizedScore = (response[data].score - minScore) / scoreRange * 99 + 1;
+      
+      console.log(`Book: ${response[data].book.title} - Similarity score: ${normalizedScore.toFixed(2)}`);
+    }
         
-        for(data in response) {
-          // Normalize scores between 1-100
-          const normalizedScore = (response[data].score - minScore) / scoreRange * 99 + 1;
-          
-          console.log(`Book: ${response[data].book.title} - Similarity score: ${normalizedScore.toFixed(2)}`);
-        }
   })
-  .catch(error => console.error(error));
+  .catch(error => console.error(error));*/
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;

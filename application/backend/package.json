@@ -5,7 +5,7 @@
   "main": "router.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon router"
+    "start": "node router"
   },
   "author": "",
   "license": "ISC",

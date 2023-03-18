@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import axios from "axios";
 
 import "./Navbar.css";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
-
   const { auth, setAuth, user, setUser, accountType } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -21,46 +21,102 @@ const Navbar = () => {
     });
   }
 
+  const sideBar = useRef();
+
+  const handleToggleSideBar = () => {
+    sideBar.current.classList.toggle("show-navlinks");
+  };
+
   //Conditional rendering depending on if user is logged in or not.
   return (
-    <header>
-      <nav className="navbarClass">
-        <div className="nav-links">
-
-          {auth === true ? (
-            <>
-              <Link to="/"> Home</Link> 
-              <Link to="/about">About</Link>
-              <Link to="/discover"> Discover</Link>
+    <nav>
+      <div className="nav-center">
+        <FaBars className="nav-toggle" onClick={handleToggleSideBar} />
+        <ul className="nav-links" ref={sideBar}>
+          <FaTimes className="nav-close" onClick={handleToggleSideBar} />
+          <li onClick={handleToggleSideBar}>
+            <Link to="/">Home</Link>
+          </li>
+          {user && (
+            <li onClick={handleToggleSideBar}>
+              <Link to="/discover">Discover</Link>
+            </li>
+          )}
+          {user && (
+            <li onClick={handleToggleSideBar}>
               <Link to="/books">Books</Link>
+            </li>
+          )}
+          {user && (
+            <li onClick={handleToggleSideBar}>
               <Link to="/suggested">Suggested</Link>
+            </li>
+          )}
+        </ul>
+        <div className="auth">
+          {user ? (
+            <>
+              <p className="welcome-text">
+                Welcome <span>{user.user}</span>
+              </p>
+              <button className="logout-btn" onClick={logoutFunction}>
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <Link to="/"> Home</Link> <Link to="about">About</Link>
-            </>
-          )}
-
-        </div>
-
-
-        <div className="auth-links">
-          {auth === true ? (
-            <>
-            <div id="welcomeUserText">Welcome {user.user}!</div>
-            <button id="logoutBtn" onClick={logoutFunction}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/register">Register</Link>
-              <Link to="/login">Login</Link>
+              <Link to="/login">
+                <button className="login-btn">Login</button>
+              </Link>
+              <Link to="/register">
+                <button className="register-btn">Register</button>
+              </Link>
             </>
           )}
         </div>
-
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 };
 
 export default Navbar;
+
+{
+  /* <header>
+<nav className="navbarClass">
+  <div className="nav-links">
+
+    {auth === true ? (
+      <>
+        <Link to="/"> Home</Link> 
+        <Link to="/about">About</Link>
+        <Link to="/discover"> Discover</Link>
+        <Link to="/books">Books</Link>
+        <Link to="/suggested">Suggested</Link>
+      </>
+    ) : (
+      <>
+        <Link to="/"> Home</Link> <Link to="about">About</Link>
+      </>
+    )}
+
+  </div>
+
+
+  <div className="auth-links">
+    {auth === true ? (
+      <>
+      <div id="welcomeUserText">Welcome {user.user}!</div>
+      <button id="logoutBtn" onClick={logoutFunction}>Logout</button>
+      </>
+    ) : (
+      <>
+        <Link to="/register">Register</Link>
+        <Link to="/login">Login</Link>
+      </>
+    )}
+  </div>
+
+</nav>
+</header> */
+}
