@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useGlobalContext } from "../../context";
 
@@ -9,7 +10,7 @@ const ToReadList = () => {
   const [query, setQuery] = useState(false);
 
   const {
-    deletebook,
+    deleteBook,
     finishedList,
     setFinishedList,
     addToFinishedList,
@@ -22,10 +23,18 @@ const ToReadList = () => {
     user: { id: userId },
   } = useGlobalContext();
 
+  function notifyError(message) {
+    toast.error(message);
+  }
+
+  function notifySuccess(message) {
+    toast.success(message);
+  }
+
   const getList = async () => {
     setLoading(true);
     const { data } = await getToReadList(userId);
-    console.log(data);
+    //console.log(data);
     setToReadList(data.toReadList);
     setLoading(false);
   };
@@ -35,10 +44,12 @@ const ToReadList = () => {
     const data = await addToCurrentlyReadingList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
-      alert(data.data.message);
+      //alert(data.data.message);
+      notifyError(data.data.message);
     } else {
       setCurrentlyReadingList(data.data.currentlyReadingList);
-      alert("successfully added book to currently reading list");
+      //alert("successfully added book to currently reading list");
+      notifySuccess("Moved book to your reading list!")
       setToReadList(data.data.toReadList);
     }
     setQuery(false);
@@ -49,9 +60,11 @@ const ToReadList = () => {
     const data = await addToFinishedList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
-      alert(data.data.message);
+      //alert(data.data.message);
+      notifyError(data.data.message);
     } else {
-      alert("successfully added book to finished list");
+      //alert("successfully added book to finished list");
+      notifySuccess("Moved book to your finished list!")
       setFinishedList(data.data.finishedList);
       setToReadList(data.data.toReadList);
     }
@@ -74,7 +87,7 @@ const ToReadList = () => {
     content = <p className="other-message">Loading......</p>;
   }
   if (toreadlist.length === 0) {
-    content = <p className="other-message">No books in this list</p>;
+    content = <p className="other-message">Looks like you aren't tracking any books here! Add a book to get started!</p>;
   }
 
   if (!loading && toreadlist.length > 0) {
@@ -91,11 +104,8 @@ const ToReadList = () => {
             <h5 className="author">
               <span>Author</span> {book.author}
             </h5>
-            <h5 className="rating">
-              <span>Rating</span> {book.avgRating}
-            </h5>
             <footer className="card-footer">
-              <p className="add-to">Add to:</p>
+              <p className="add-to">Move to:</p>
               <div className="more-con">
                 <button
                   onClick={() =>
@@ -103,7 +113,7 @@ const ToReadList = () => {
                   }
                   disabled={query}
                 >
-                  currently reading
+                  Currently reading
                 </button>
                 <button
                   onClick={() => handleAddToFinishedList(userId, book._id)}
@@ -115,12 +125,14 @@ const ToReadList = () => {
               <div className="icon-con">
                 <FaTrashAlt
                   className="trash-icon"
-                  onClick={() => deletebook(userId, book._id)}
+                  onClick={() => deleteBook(userId, book._id)}
                 />
               </div>
             </footer>
           </div>
+          <Toaster position="bottom-right" reverseOrder={false} />
         </div>
+        
       );
     });
   }

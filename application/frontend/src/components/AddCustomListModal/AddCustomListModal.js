@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import { FaTrash, FaTimes } from "react-icons/fa";
 import { useGlobalContext } from "../../context";
+import toast, { Toaster } from "react-hot-toast";
 
 const AddCustomListModal = () => {
   const {
@@ -14,6 +15,10 @@ const AddCustomListModal = () => {
     showModal,
     setShowModal,
   } = useGlobalContext();
+
+  function notifySuccess(message) {
+    toast.success(message);
+  }
 
   const [listName, setListName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +35,8 @@ const AddCustomListModal = () => {
     setLoading(true);
     e.preventDefault();
     const data = await createCustomList(user.id, listName);
-    alert(data.message);
+    //alert(data.message);
+    notifySuccess(data.message);
     setLoading(false);
     getCustomList(user.id);
   };
@@ -40,7 +46,8 @@ const AddCustomListModal = () => {
     e.preventDefault();
     const listName = e.currentTarget.getAttribute("listname");
     const data = await deleteCustomList(user.id, listName);
-    alert(data.message);
+    //alert(data.message);
+    notifySuccess(data.message);
     setLoading(false);
     getCustomList(user.id);
   };
@@ -81,6 +88,7 @@ const AddCustomListModal = () => {
               })}
           </div>
         </section>
+        <Toaster position="bottom-right" reverseOrder={false} />
       </div>
     </section>
   );

@@ -84,7 +84,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  const deletebook = async (userId, bookId) => {
+  const deleteBook = async (userId, bookId) => {
     axios
       .patch(`http://localhost:8080/delete/${userId}/${bookId}`)
       .then((res) => {
@@ -210,7 +210,7 @@ const AppProvider = ({ children }) => {
         setCurrentlyReadingList,
         finishedList,
         setFinishedList,
-        deletebook,
+        deleteBook,
         createCustomList,
         deleteCustomList,
         getCustomList,

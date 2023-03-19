@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context";
 import { FaTrash, FaTimes } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 
 import "./style.css";
 const SelectCustomListModal = () => {
@@ -26,10 +27,15 @@ const SelectCustomListModal = () => {
     setShowSelectListModal(false);
   };
 
+  function notifySuccess(message) {
+    toast.success(message);
+  }
+
   const handleSubmit = async () => {
     setLoading(true);
     const data = await addBookToCustomList(userId, bookId, listName);
-    alert(data.message);
+    //alert(data.message);
+    notifySuccess(data.message);
     setLoading(false);
   };
   return (
@@ -60,6 +66,7 @@ const SelectCustomListModal = () => {
           <p>Create custom list</p>
         )}
       </div>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </section>
   );
 };

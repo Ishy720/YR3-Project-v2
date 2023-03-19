@@ -174,7 +174,7 @@ nav {
 }
 
 .nav-links a {
-  color: #fff1a9b1;
+  color: #ffffff;
 }
 
 .auth {
@@ -193,7 +193,7 @@ nav {
   width: 100px;
   height: 40px;
   letter-spacing: 0.1rem;
-  background-color: #fff1a9b1;
+  background-color: #fff1a9;
   border: transparent;
   cursor: pointer;
 }

@@ -50,12 +50,11 @@ function Home() {
           </p>
         </section>
         <section>
-          <h2>Our Promise</h2>
+          <h2>Our Algorithm</h2>
           <p>
-            By signing up, you will have access to a database of thousands of
-            books that are regularly monitored and updated by our team. We
-            welcome and look forward to any and all feedback towards our website
-            to improve our services for our customers!
+            We use TF-IDF calculations to find the best suggestions for the books
+            you look at. By doing so, you can be sure you'll always find something
+            new and interesting to read!
           </p>
         </section>
         <section>

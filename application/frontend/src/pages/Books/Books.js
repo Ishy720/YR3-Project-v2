@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import "./style.css";
 import ToReadList from "../../components/ToReadList/ToReadList";
 import CurrentlyReadingList from "../../components/CurrentlyReadingList/CurrentlyReadingList";
 import FinishedList from "../../components/FinishedList/FinishedList";
 import { useGlobalContext } from "../../context";
 import CustomList from "../../components/CustomList/CustomList";
-//axios.defaults.withCredentials = true;
 
 const Books = () => {
   const { showModal, setShowModal } = useGlobalContext();
@@ -45,10 +43,10 @@ const Books = () => {
           Currently reading
         </button>
         <button onClick={(e) => toggleTab(e, "finished")} ref={finishedTab}>
-          finished reading
+          Finished reading
         </button>
         <button onClick={(e) => toggleTab(e, "custom")} ref={customTab}>
-          Custom list
+          Custom lists
         </button>
       </div>
 
@@ -84,7 +82,7 @@ const Books = () => {
           {/* <h2 className="section-title">Custom list:</h2> */}
           <div>
             <button className="btn" onClick={closeModal}>
-              Create/Edit custom list
+              Create/Edit Custom Lists
             </button>
           </div>
 

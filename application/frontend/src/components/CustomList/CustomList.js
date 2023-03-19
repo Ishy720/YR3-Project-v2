@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useGlobalContext } from "../../context";
 
@@ -24,6 +25,10 @@ const CustomList = () => {
     customList,
   } = useGlobalContext();
 
+  function notifySuccess(message) {
+    toast.success(message);
+  }
+
   const getList = async () => {
     setLoading(true);
     getCustomList(userId);
@@ -37,7 +42,8 @@ const CustomList = () => {
   const handleDelete = async (userId, bookId, book) => {
     const data = await deleteBookFromCustomList(userId, bookId, book);
     console.log(data);
-    alert(data.message);
+    //alert(data.message);
+    notifySuccess("Removed book from list!")
     getCustomList(userId);
   };
 
@@ -76,9 +82,6 @@ const CustomList = () => {
                 <h5 className="author">
                   <span>Author</span> {book.author}
                 </h5>
-                <h5 className="rating">
-                  <span>Rating</span> {book.avgRating}
-                </h5>
                 <footer className="card-footer">
                   <div className="icon-con">
                     <FaTrashAlt
@@ -95,6 +98,7 @@ const CustomList = () => {
           <>
             <h2 className="customlist-title">{bookName}</h2>
             <section className="each-customlist-con">{booklist}</section>
+            <Toaster position="bottom-right" reverseOrder={false} />
           </>
         );
       }
@@ -142,7 +146,7 @@ export default CustomList;
 //           <div className="icon-con">
 //             <FaTrashAlt
 //               className="trash-icon"
-//               onClick={() => deletebook(userId, book._id)}
+//               onClick={() => deleteBook(userId, book._id)}
 //             />
 //           </div>
 //         </footer>

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import "./BookCard.css";
 import NoBookCover from "../../images/NoBookCover.jpg";
 import { useGlobalContext } from "../../context";
+import toast, { Toaster } from "react-hot-toast";
 import {
   FaArrowAltCircleRight,
   FaArrowCircleDown,
@@ -9,6 +10,8 @@ import {
   FaPlus,
   FaTimes,
 } from "react-icons/fa";
+
+
 const BookCard = ({ book }) => {
   const { _id: bookId } = book;
   const {
@@ -27,6 +30,15 @@ const BookCard = ({ book }) => {
 
   const [loading, setLoading] = useState(false);
 
+  function notifyError(message) {
+    toast.error(message);
+  }
+
+  function notifySuccess(message) {
+    toast.success(message);
+  }
+
+
   //Some books do not have an thumbnail associated with them so we check if the thumbnail attribute exists within the book's imageLinks.
   let bookImageURL = "";
 
@@ -44,9 +56,11 @@ const BookCard = ({ book }) => {
     const data = await addToreadList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
-      alert(data.data.message);
+      //alert(data.data.message);
+      notifyError(data.data.message);
     } else {
-      alert(`Added ${book.title} to your to-read list!`);
+      //alert(`Added ${book.title} to your to-read list!`);
+      notifySuccess(`Added ${book.title} to your to-read list!`)
     }
     setLoading(false);
   };
@@ -56,9 +70,11 @@ const BookCard = ({ book }) => {
     const data = await addToCurrentlyReadingList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
-      alert(data.data.message);
+      //alert(data.data.message);
+      notifyError(data.data.message);
     } else {
-      alert(`Added ${book.title} to your currently-reading list!`);
+      //alert(`Added ${book.title} to your currently-reading list!`);
+      notifySuccess(`Added ${book.title} to your currently-reading list!`)
     }
     setLoading(false);
   };
@@ -68,9 +84,11 @@ const BookCard = ({ book }) => {
     const data = await addToFinishedList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
-      alert(data.data.message);
+      //alert(data.data.message);
+      notifyError(data.data.message);
     } else {
-      alert(`Added ${book.title} to your finished-reading list!`);
+      //alert(`Added ${book.title} to your finished-reading list!`);
+      notifySuccess(`Added ${book.title} to your finished-reading list!`)
     }
     setLoading(false);
   };
@@ -133,27 +151,28 @@ const BookCard = ({ book }) => {
             onClick={() => handleAddToReadList(userId, bookId)}
             disabled={loading}
           >
-            to-read list
+            To-read list
           </button>
           <button
             disabled={loading}
             onClick={() => handleAddToCurrentlyReadingList(userId, bookId)}
           >
-            reading list
+            Reading list
           </button>
           <button
             onClick={() => handleAddToFinishedList(userId, bookId)}
             disabled={loading}
           >
-            finished list
+            Finished list
           </button>
           <button
             onClick={() => handleAddToCustomList(bookId)}
             disabled={loading}
           >
-            custom list
+            Custom list
           </button>
         </div>
+        <Toaster position="bottom-right" reverseOrder={false} />
       </div>
     </>
   );
