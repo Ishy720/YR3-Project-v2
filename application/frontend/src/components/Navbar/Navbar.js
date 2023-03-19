@@ -52,6 +52,11 @@ const Navbar = () => {
               <Link to="/suggested">Suggested</Link>
             </li>
           )}
+          {accountType == "ADMIN" && (
+            <li onClick={handleToggleSideBar}>
+              <Link to="/admin">Admin</Link>
+            </li>
+          )}
         </ul>
         <div className="auth">
           {user ? (

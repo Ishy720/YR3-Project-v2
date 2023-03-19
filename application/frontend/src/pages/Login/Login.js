@@ -6,7 +6,6 @@ const Login = () => {
 
   return (
     <div>
-      {/* <h1 id="pageTitle">Login</h1> */}
       <LoginForm />
     </div>
   );

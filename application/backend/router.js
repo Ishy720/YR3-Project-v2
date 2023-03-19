@@ -57,7 +57,7 @@ app.post("/getBooksBySearchTerm", (req, res) => {
 //When a user registers a new account
 app.post("/registerNewUser", async function (req, res) {
   //Get user details
-  const { username, forename, surname, email, password, marketingAgreed, accountType } = req.body;
+  const { username, password, accountType } = req.body;
 
   //Validate inputs!!!
 
@@ -72,13 +72,8 @@ app.post("/registerNewUser", async function (req, res) {
 
       const newUser = User({
         username: username,
-        forename: forename,
-        surname: surname,
-        email: email,
         password: encryptedPassword,
-        marketingAgreed: marketingAgreed,
-        accountType: accountType,
-        banned: false,
+        accountType: accountType
       });
 
       try {
@@ -156,13 +151,79 @@ app.post("/getRecommendationsForOneBook", async (req, res) => {
   const { bookId } = req.body;
 
   const result = await recommendationEngine.recommendFromOneRandomBook(bookId);
-  console.log("Sending back recommendations");
+  //console.log("Sending back recommendations");
 
   res.status(200).json({ books: result });
 
 });
 
+app.post("/getSiteAnalytics", async function (req, res) {
+  try {
+    const totalBookCount = await Book.countDocuments();
+    const totalUserCount = await User.countDocuments();
+    const mostCommonBook = await User.aggregate([
+      {
+        $project: {
+          bookIds: {
+            $concatArrays: [
+              { $ifNull: ["$finishedList", []] },
+              { $ifNull: ["$currentlyReadingList", []] },
+              { $ifNull: ["$toReadList", []] }
+            ]
+          }
+        }
+      },
+      {
+        $unwind: "$bookIds"
+      },
+      {
+        $group: {
+          _id: "$bookIds",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: {
+          count: -1
+        }
+      },
+      {
+        $limit: 1
+      }
+    ]);
+    const genreCounts = await Book.aggregate([
+      {
+        $unwind: "$genres"
+      },
+      {
+        $group: {
+          _id: "$genres",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: {
+          count: -1
+        }
+      },
+      {
+        $limit: 5
+      }
+    ]);
 
+
+    res.status(200).json({ 
+      totalBookCount: totalBookCount,
+      totalUserCount: totalUserCount,
+      mostCommonBook: mostCommonBook,
+      genreCounts: genreCounts
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 //  add book to to-read list controller

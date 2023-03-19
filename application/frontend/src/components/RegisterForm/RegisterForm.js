@@ -9,13 +9,8 @@ function RegisterForm() {
 
   const formState = {
     username: "",
-    forename: "",
-    surname: "",
     password: "",
-    passwordReentry: "",
-    email: "",
-    tncAgreed: false,
-    marketingAgreed: false,
+    passwordReentry: ""
   };
 
   function reducer(state, action) {
@@ -24,16 +19,6 @@ function RegisterForm() {
         return {
           ...state,
           [action.key]: action.value,
-        };
-      case "toggleTncAgreed":
-        return {
-          ...state,
-          tncAgreed: !state.tncAgreed,
-        };
-      case "toggleMarketingAgreed":
-        return {
-          ...state,
-          marketingAgreed: !state.marketingAgreed,
         };
       default:
         return state;
@@ -65,16 +50,12 @@ function RegisterForm() {
 
       e.preventDefault();
     } else {
-      let { username, forename, surname, email, password, marketingAgreed } =
+      let { username, password } =
         state;
 
       const userData = {
         username,
-        forename,
-        surname,
-        email,
         password,
-        marketingAgreed,
         accountType: "USER",
       };
 
@@ -118,54 +99,6 @@ function RegisterForm() {
             required
           />
           <br />
-          <label htmlFor="forename">Forename:</label> <br />
-          <input
-            type="text"
-            id="forename"
-            placeholder="Mohammed"
-            value={state.forename}
-            onChange={(e) =>
-              dispatch({
-                type: "update_input",
-                value: e.target.value,
-                key: "forename",
-              })
-            }
-            required
-          />
-          <br />
-          <label htmlFor="surname">Surname:</label> <br />
-          <input
-            type="text"
-            id="surname"
-            placeholder="Ali"
-            value={state.surname}
-            onChange={(e) =>
-              dispatch({
-                type: "update_input",
-                value: e.target.value,
-                key: "surname",
-              })
-            }
-            required
-          />
-          <br />
-          <label htmlFor="email">Email:</label> <br />
-          <input
-            type="email"
-            id="email"
-            placeholder="jem20gcu@uea.ac.uk"
-            value={state.email}
-            onChange={(e) =>
-              dispatch({
-                type: "update_input",
-                value: e.target.value,
-                key: "email",
-              })
-            }
-            required
-          />
-          <br />
           <label htmlFor="password">Password:</label> <br />
           <input
             type="password"
@@ -195,43 +128,6 @@ function RegisterForm() {
             }
             required
           />
-          <br />
-          <br />
-          <div className="check-box-con">
-            <input
-              type="checkbox"
-              id="tncCheck"
-              value={state.tncAgreed}
-              onChange={(e) =>
-                dispatch({
-                  type: "toggleTncAgreed",
-                })
-              }
-            />
-            <label htmlFor="tncCheck">
-              By registering, I acknowledge and agree to the terms and
-              conditions of the Ipswich Library.
-            </label>
-            <br />
-          </div>
-          <div className="check-box-con">
-            <input
-              type="checkbox"
-              id="adsCheck"
-              value={state.marketingAgreed}
-              onChange={(e) =>
-                dispatch({
-                  type: "toggleMarketingAgreed",
-                })
-              }
-            />
-
-            <label htmlFor="adsCheck">
-              I would like pereodical updates, newsletters and promotional
-              content sent to my email address.
-            </label>
-          </div>
-          <br />
           <br />
           <button type="submit" id="registerSubmit">
             Submit
