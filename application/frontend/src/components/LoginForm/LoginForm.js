@@ -24,7 +24,6 @@ function LoginForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    //alert(userData.username + userData.password);
     const { username, password } = userData;
 
     const loginData = {
@@ -51,10 +50,8 @@ function LoginForm() {
           id: res.data.user.id,
           accountType: res.data.user.accountType,
         });
-        //note to self set more things here after this logic is fixed
       })
       .then(() => {
-        console.log("submit");
         setAuth(Boolean(sessionStorage.getItem("authenticated")));
         setAccountType(sessionStorage.getItem("accountType"));
         console.log(sessionStorage.getItem("accountType"));
@@ -67,7 +64,7 @@ function LoginForm() {
         if (sessionStorage.getItem("accountType") === "ADMIN") {
           navigate("/admin");
         }
-      });
+    });
   }
 
   function getSessionDetails() {

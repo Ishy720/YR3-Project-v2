@@ -55,7 +55,7 @@ function App() {
         <Route
           path="/manager"
           element={
-            auth && accountType === "MANAGER" ? <ManagerView /> : <Home />
+            auth && (accountType === "MANAGER" || accountType === "ADMIN") ? <ManagerView /> : <Home />
           }
         />
 
