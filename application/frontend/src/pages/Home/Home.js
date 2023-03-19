@@ -19,7 +19,7 @@ function Home() {
         <div className="hero">
           <div className="hero-image"></div>
           <div className="hero-content">
-            <h2>Thousands of books at your fingertips.</h2>
+            <h2>Track thousands of books online.</h2>
             <Link to="/discover">
               <button>
                 Explore<FaArrowCircleRight />
