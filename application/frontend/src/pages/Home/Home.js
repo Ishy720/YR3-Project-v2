@@ -36,7 +36,7 @@ function Home() {
           <h2>Our Aims</h2>
           <p>
             We aim to deliver users a place to manage and keep track of books in
-            one single and safe place!
+            one single place!
           </p>
         </section>
         <section>
