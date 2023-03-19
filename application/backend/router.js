@@ -617,6 +617,28 @@ const getCustomList = async (req, res) => {
 
 };
 
+const editBookInDB = async (req, res) => {
+
+  const bookId = req.params.bookId;
+  const updates = req.body;
+
+  const excludedFields = ['avgRating', 'likedPercentage', 'ratingDistribution'];
+  
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(bookId, updates, { new: true }).select(`-_id -${excludedFields.join(' -')}`);
+  
+    if (!updatedBook) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+  
+    res.status(200).json({ message: 'Book updated successfully', book: updatedBook });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+  
+};
+
 
 
 app.post("/createcustomlist/:userId", createCustomList);
@@ -637,6 +659,8 @@ app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
 app.get("/list/finished/:userId", getFinishedList);
 
 app.patch("/delete/:userId/:bookId", deleteBookFromList);
+
+app.patch("/editBook/:bookId", editBookInDB);
 
 //for heroku
 app.get("*", function (req, res) {

@@ -1,0 +1,36 @@
+.book-card {
+    width: 300px;
+    margin: 20px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+  
+.book-card-image {
+    max-height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.book-card-content {
+    padding: 20px;
+}
+
+.book-card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.book-card-author {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.book-card-description {
+    max-height: 100px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    overflow: auto;
+  }
