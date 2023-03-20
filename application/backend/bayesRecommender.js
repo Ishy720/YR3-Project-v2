@@ -15,7 +15,7 @@ mongoose
   })
   .then(() => {
     console.log("Recommendation engine connected to MongoDB");
-    findSimilarBooks("640b6eb11024425951abbfde");
+    findSimilarBooks("640b6eb01024425951abaedd");
     //trainClassifier();
   })
   .catch((err) => {
@@ -55,8 +55,8 @@ function concatenate(tokenArrays) {
 
 const trainClassifier = async () => {
 
-  //const database = await Book.find();
-  const books = await Book.find({ genres: /Comic Book/i });
+  const books = await Book.find();
+  //const books = await Book.find({ genres: /Comic Book/i });
 
   const classifier = new natural.BayesClassifier();
   let count = 0;
@@ -91,19 +91,24 @@ const trainClassifier = async () => {
     console.log(count);
   });
 
+  const start = new Date();
+  console.log(start.toUTCString());
+
   console.log(`Training classifier...`);
   classifier.train();
+  const end = new Date();
+  console.log(end.toUTCString());
   console.log(`Trained classifier!`);
 
   const classifierJSON = JSON.stringify(classifier);
   console.log("Writing file...");
-  fs.writeFileSync('test.json', classifierJSON);
+  fs.writeFileSync('fullDBClassifer.json', classifierJSON);
   console.log("File saved!");
 
 };
   
 const loadClassifier = () => {
-    const classifierJson = fs.readFileSync('test.json');
+    const classifierJson = fs.readFileSync('fullDBClassifer.json');
     const classifier = natural.BayesClassifier.restore(JSON.parse(classifierJson));
     return classifier;
 };
@@ -159,3 +164,4 @@ const findSimilarBooks = async (bookId) => {
 
 //"640b6eb31024425951ac0c6f" New X-Men, Vol 7: Here comes tomorrow
 //"640b6eb11024425951abbfde" Batman, Volume 1: The Court of Owls
+//"640b6eb01024425951abad25" Harry Potter
