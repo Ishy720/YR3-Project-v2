@@ -60,7 +60,7 @@ async function retrieveRelatedBooks(bookId, genres) {
 }
 
 //takes array of books and returns tokenized descriptions
-function getTokenizedDescriptions(books) {
+function getTokenizedFeatures(books) {
   return books.map(book => tokenize(book.title + " " + book.description));
   //return books.map(book => tokenize(book.description));
 }
@@ -68,26 +68,26 @@ function getTokenizedDescriptions(books) {
 //returns a set of recommended books
 async function recommendFromOneRandomBook(bookId) {
 
-  const chosenRandomBook = await Book.findOne({ _id: bookId });
+  const inputBook = await Book.findOne({ _id: bookId });
 
-  console.log("Generating recommendations for " + chosenRandomBook.title);
-  const chosenRandomBookGenres = chosenRandomBook.genres;
+  console.log("Generating recommendations for " + inputBook.title);
+  const inputBookGenres = inputBook.genres;
 
-  const databaseSample = await retrieveRelatedBooks(bookId, chosenRandomBookGenres);
-  const tokenizedDescriptions = getTokenizedDescriptions(databaseSample);
+  const databaseSample = await retrieveRelatedBooks(bookId, inputBookGenres);
+  const tokenizedFeatures = getTokenizedFeatures(databaseSample);
 
   //instantiate tfidf
   const tfidf = new natural.TfIdf();
 
   //add the tokenized descriptions to the tfidf instance
-  for (const tokens of tokenizedDescriptions) {
+  for (const tokens of tokenizedFeatures) {
     tfidf.addDocument(tokens);
   }
 
   const recommendedBooks = [];
 
   //get the tf-idf score for the input book by summing TF-IDF score for each token feature
-  tfidf.tfidfs(tokenize(chosenRandomBook.title + " " + chosenRandomBook.description), (i, measure) => {
+  tfidf.tfidfs(tokenize(inputBook.title + " " + inputBook.description), (i, measure) => {
     recommendedBooks.push({
       book: databaseSample[i],
       score: measure
@@ -102,15 +102,15 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
-/*
+
 //pass a book ID into the function. The function will recommend books related to it.
 recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
     
-    /*
-    for(data in response) {
-      console.log(`Book: ${response[data].book.title} - Similarity score: ${response[data].score}`);
-    }
+    
+    //for(data in response) {
+    //  console.log(`Book: ${response[data].book.title} - Similarity score: ${response[data].score}`);
+    //}
     
 
     // Find minimum and maximum scores
@@ -126,7 +126,7 @@ recommendFromOneRandomBook("640b6eb11024425951abbfde")
     }
         
   })
-  .catch(error => console.error(error));*/
+  .catch(error => console.error(error));
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;
