@@ -15,7 +15,7 @@ mongoose
   })
   .then(() => {
     console.log("Recommendation engine connected to MongoDB");
-    findSimilarBooks("640b6eb01024425951abaedd");
+    findSimilarBooks("640b6eb11024425951abbfde");
     //trainClassifier();
   })
   .catch((err) => {
@@ -157,7 +157,7 @@ const findSimilarBooks = async (bookId) => {
     const normalizedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
     //CHECK SIM SCORES????
     if(normalizedScore > 0) {
-      console.log(`Book: ${book.title} - Similarity score: ${normalizedScore}`);
+      console.log(`Book: ${book.title} - Probability score: ${normalizedScore}`);
     }
   }
 };
