@@ -14,7 +14,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Recommendation engine connected to MongoDB");
+    console.log("Bayes recommendation engine connected to MongoDB");
     findSimilarBooks("640b6eb11024425951abbfde");
     //trainClassifier();
   })
@@ -157,7 +157,7 @@ const findSimilarBooks = async (bookId) => {
     const normalizedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
     //CHECK SIM SCORES????
     if(normalizedScore > 0) {
-      console.log(`Book: ${book.title} - Probability score: ${normalizedScore}`);
+      console.log(`Book: ${book.title} - Probability: ${normalizedScore}`);
     }
   }
 };

@@ -12,7 +12,7 @@ mongoose
   })
   .then(() => {
     console.log("Jaccard Recommendation engine connected to MongoDB");
-    retrieveRelatedBooks("640b6eb31024425951ac0c6f");
+    retrieveRelatedBooks("640b6eb11024425951abbfde");
   })
   .catch((err) => {
     console.log(err);
@@ -62,7 +62,7 @@ async function retrieveRelatedBooks(bookId) {
   
     //get Jaccard similarity coefficient between input book and retrieved books
     const results = relatedBooks.map(book => {
-      const bookTokens = tokenize(book.description);
+      const bookTokens = tokenize(book.title + ' ' + book.author + ' ' + book.description);
       const similarity = jaccardSimilarity(inputTokens, bookTokens);
       return { book, similarity };
     });
@@ -73,7 +73,23 @@ async function retrieveRelatedBooks(bookId) {
     //print top 30 books
     for (let i = 0; i < 30 && i < results.length; i++) {
       const { book, similarity } = results[i];
-      console.log(`${i+1}. ${book.title} (${similarity.toFixed(3)})`);
+      console.log(`${i}. ${book.title} - Jaccard Similarity: (${similarity.toFixed(3)})`);
     }
-  }
+}
+
+async function compareBooks(bookA, bookB) {
+
+  const inputBook = await Book.findById(bookA).exec();
+  const comparisonBook = await Book.findById(bookB).exec();
+
+  const inputTokens = tokenize(inputBook.title + ' ' + inputBook.author + ' ' + inputBook.description);
+  const comparisonTokens = tokenize(comparisonBook.title + ' ' + comparisonBook.author + ' ' + comparisonBook.description);
+
+  const score = jaccardSimilarity(inputTokens, comparisonTokens);;
+
+  console.log(`Jaccard similarity between ${inputBook.title} and ${comparisonBook.title}: ${score}`);
+}
+
+//compareBooks("640b6eb11024425951abbfde", "640b6eb11024425951abc9c8");
+
 

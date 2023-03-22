@@ -13,7 +13,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Recommendation engine connected to MongoDB");
+    console.log("TF-IDF recommendation engine connected to MongoDB");
   })
   .catch((err) => {
     console.log(err);
@@ -102,7 +102,7 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
-/*
+
 //pass a book ID into the function. The function will recommend books related to it.
 recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
@@ -122,11 +122,11 @@ recommendFromOneRandomBook("640b6eb11024425951abbfde")
       // Normalize scores between 1-100
       const normalizedScore = (response[data].score - minScore) / scoreRange * 99 + 1;
       
-      console.log(`Book: ${response[data].book.title} - Similarity score: ${normalizedScore.toFixed(2)}`);
+      console.log(`${data}: ${response[data].book.title} - Similarity score: ${normalizedScore.toFixed(2)}`);
     }
         
   })
-  .catch(error => console.error(error));*/
+  .catch(error => console.error(error));
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;
