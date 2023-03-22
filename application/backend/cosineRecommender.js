@@ -43,15 +43,15 @@ function wordCountMap(str){
   return wordCount;
 }
 
-function addWordsToDictionary(wordCountmap, dict) {
+function addWordsToDictionary(wordCountmap, dictionary) {
   for(let key in wordCountmap){
-      dict[key] = true;
+    dictionary[key] = true;
   }
 }
 
-function wordMapToVector(map, dict) {
+function wordMapToVector(map, dictionary) {
   let wordCountVector = [];
-  for (let term in dict){
+  for (let term in dictionary){
       wordCountVector.push(map[term] || 0);
   }
   return wordCountVector;
@@ -59,7 +59,7 @@ function wordMapToVector(map, dict) {
 
 function dotProduct(vecA, vecB) {
   let product = 0;
-  for(let i = 0; i< vecA.length; i++) {
+  for(let i = 0; i < vecA.length; i++) {
       product += vecA[i] * vecB[i];
   }
   return product;
@@ -73,20 +73,21 @@ function magnitude(vector) {
   return Math.sqrt(sum);
 }
 
+//cos(a,b) = a . b / ||a|| . ||b||
 function cosineSimilarity(vecA, vecB){
   return dotProduct(vecA, vecB)/ (magnitude(vecA) * magnitude(vecB));
 }
 
-function textCosineSimilarity(txtA,txtB){
+function textCosineSimilarity(txtA, txtB){
   const wordCountA = wordCountMap(txtA);
   const wordCountB = wordCountMap(txtB);
 
   let dict = {};
-  addWordsToDictionary(wordCountA,dict);
-  addWordsToDictionary(wordCountB,dict);
-  
-  const vectorA = wordMapToVector(wordCountA,dict);
-  const vectorB = wordMapToVector(wordCountB,dict);
+  addWordsToDictionary(wordCountA, dict);
+  addWordsToDictionary(wordCountB, dict);
+
+  const vectorA = wordMapToVector(wordCountA, dict);
+  const vectorB = wordMapToVector(wordCountB, dict);
 
   return cosineSimilarity(vectorA, vectorB);
 }
