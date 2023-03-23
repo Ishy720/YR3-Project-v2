@@ -157,7 +157,7 @@ const findSimilarBooks = async (bookId) => {
     const normalizedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
     //CHECK SIM SCORES????
     if(normalizedScore > 0) {
-      console.log(`Book: ${book.title} - Probability: ${normalizedScore}`);
+      console.log(`Book: ${book.title} - Probability: ${normalizedScore.toFixed(3)}`);
     }
   }
 };
