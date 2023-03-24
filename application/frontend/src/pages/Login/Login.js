@@ -3,9 +3,8 @@ import LoginForm from "../../components/LoginForm/LoginForm";
 import "./Login.css";
 
 const Login = () => {
-
   return (
-    <div>
+    <div className="login-background-con">
       <LoginForm />
     </div>
   );

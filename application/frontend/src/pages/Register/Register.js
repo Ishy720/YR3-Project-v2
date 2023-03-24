@@ -3,7 +3,7 @@ import RegisterForm from "../../components/RegisterForm/RegisterForm";
 
 const Register = () => {
   return (
-    <div>
+    <div className="login-background-con">
       <RegisterForm />
     </div>
   );

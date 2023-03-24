@@ -12,3 +12,10 @@
     font-size: 60px;
     color: rgba(255, 241, 169, 0.696);
 }
+
+.login-background-con{
+    background: url("../../images/hero2.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
