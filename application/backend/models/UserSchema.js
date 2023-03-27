@@ -1,3 +1,7 @@
+/*
+    This is the schema for my users in my MongoDB database.
+*/
+
 const { Schema, model } = require("mongoose");
 
 const UserSchema = new Schema(

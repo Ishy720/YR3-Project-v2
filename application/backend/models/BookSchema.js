@@ -1,3 +1,7 @@
+/*
+    This is the schema for my books in my MongoDB database.
+*/
+
 const { Schema, model } = require('mongoose');
 
 const BookSchema = new Schema({
