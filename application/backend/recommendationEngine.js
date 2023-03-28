@@ -102,7 +102,7 @@ async function recommendFromOneRandomBook(bookId) {
   return topBooks;
 }
 
-
+/*
 //pass a book ID into the function. The function will recommend books related to it.
 recommendFromOneRandomBook("640b6eb11024425951abbfde")
   .then(response => {
@@ -126,7 +126,7 @@ recommendFromOneRandomBook("640b6eb11024425951abbfde")
     }
         
   })
-  .catch(error => console.error(error));
+  .catch(error => console.error(error));*/
 
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;

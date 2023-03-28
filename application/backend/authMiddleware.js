@@ -1,3 +1,5 @@
+//Security middleware for protecting router endpoints
+
 function checkUser(account) {
     return function (req, res, next) {
       if(account === "USER") {
