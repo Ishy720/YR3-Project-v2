@@ -15,12 +15,6 @@ function checkUser(account) {
     }
 }
 
-function checkSession() {
-  return function (req, res, next) {
-    req.session.authenticated? next() : res.status(401).json({message: "Unauthorised, please log in"});
-  }
-};
-
 function verifyToken() {
   return function(req, res, next) {
     const bearerHeader = req.headers['authorization'];
@@ -59,7 +53,6 @@ function verifyToken(req, res, next) {
 }*/
 
 module.exports = {
-  checkSession: checkSession,
   checkUser: checkUser,
   verifyToken: verifyToken
 }
