@@ -45,6 +45,7 @@ function LoginForm() {
             accountType: res.data.user.accountType,
           })
         );
+        sessionStorage.setItem("token", res.data.token);
         setUser({
           user: res.data.user.username,
           id: res.data.user.id,

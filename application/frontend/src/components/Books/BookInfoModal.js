@@ -23,10 +23,21 @@ const BookInfoModal = () => {
       bookId: bookInformation._id,
     };
 
+    /*
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+      },
+      body: JSON.stringify(parameter),
+      signal: abortController.current.signal,
+    };*/
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + sessionStorage.getItem("token")
       },
       body: JSON.stringify(parameter),
       signal: abortController.current.signal,

@@ -11,15 +11,36 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   function logoutFunction() {
+    const token = sessionStorage.getItem("token");
+    axios
+      .get("http://localhost:8080/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        sessionStorage.removeItem("authenticated");
+        sessionStorage.removeItem("accountType");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        setAuth(false);
+        setUser(null);
+        navigate("/login");
+      });
+  }
+
+  /*
+  function logoutFunction() {
     axios.get("http://localhost:8080/logout").then((res) => {
       sessionStorage.removeItem("authenticated");
       sessionStorage.removeItem("accountType");
       sessionStorage.removeItem("user");
+      sessionStorage.removeItem("token");
       setAuth(sessionStorage.getItem("authenticated"));
       setUser(sessionStorage.getItem("user"));
       navigate("/login");
     });
-  }
+  }*/
 
   const sideBar = useRef();
 

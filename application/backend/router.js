@@ -1,8 +1,10 @@
 //Imports
 const app = require("./server.js");
 const { hashSync, compareSync } = require("bcrypt");
-const { checkUser, checkSession } = require("./authMiddleware");
+const { checkUser, checkSession, verifyToken } = require("./authMiddleware");
+const jwt = require('jsonwebtoken');
 const recommendationEngine = require('./recommendationEngine');
+require("dotenv").config();
 
 //Database asset imports
 const mongoose = require("mongoose");
@@ -19,7 +21,7 @@ app.get("/testMiddleware", checkUser("USER"), function (req, res) {
   res.status(200).json({ message: "Woah it worked" });
 });
 
-app.get("/logout", function (req, res) {
+app.get("/logout", verifyToken(), function (req, res) {
   req.session.destroy();
   res.json({ message: "Destroyed session" });
 });
@@ -39,8 +41,7 @@ app.get("/session", (req, res) => {
   res.json({ session: req.session });
 });
 
-app.post("/getBooksBySearchTerm", (req, res) => {
-  console.log(req.body);
+app.post("/getBooksBySearchTerm", verifyToken(), (req, res) => {
   const { searchTerm } = req.body;
   const bookModel = mongoose.model("Book");
   bookModel
@@ -117,6 +118,10 @@ app.post("/login", async function (req, res) {
           const { _id, username, password, accountType } = returnedDocument;
 
           if (compareSync(retrievedPassword, password)) {
+
+            // Generate JWT token
+            const token = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
+
             req.session.authenticated = true;
             req.session.accountType = accountType;
             req.session.user = {
@@ -130,6 +135,7 @@ app.post("/login", async function (req, res) {
             res.status(200).json({
               message: "You have successfully logged into your account!",
               user: { username: username, id: _id, accountType: accountType },
+              token: token
             });
           } else {
             console.log("Incorrect details");
@@ -146,7 +152,7 @@ app.post("/login", async function (req, res) {
   });
 });
 
-app.post("/getRecommendationsForOneBook", async (req, res) => {
+app.post("/getRecommendationsForOneBook", verifyToken(), async (req, res) => {
   
   const { bookId } = req.body;
 
@@ -157,7 +163,7 @@ app.post("/getRecommendationsForOneBook", async (req, res) => {
 
 });
 
-app.post("/getSiteAnalytics", async function (req, res) {
+app.post("/getSiteAnalytics", verifyToken(), async function (req, res) {
   try {
     const totalBookCount = await Book.countDocuments();
     const totalUserCount = await User.countDocuments();
@@ -641,26 +647,26 @@ const editBookInDB = async (req, res) => {
 
 
 
-app.post("/createcustomlist/:userId", createCustomList);
-app.patch("/deletecustomlist/:userId", deleteCustomList);
-app.get("/customlist/:userId", getCustomList);
+app.post("/createcustomlist/:userId", verifyToken(), createCustomList);
+app.patch("/deletecustomlist/:userId", verifyToken(), deleteCustomList);
+app.get("/customlist/:userId", verifyToken(), getCustomList);
 
-app.patch("/customlist/addbook/:userId/:bookId", addBookToCustomList);
-app.patch("/customlist/removebook/:userId/:bookId", removeBookFromCustomList);
-app.get("/recommendationbyauthor/:userId", recommendedBooksByAuthor);
-app.get("/recommendationbygenre/:userId", recommendedBooksByGenre);
+app.patch("/customlist/addbook/:userId/:bookId", verifyToken(), addBookToCustomList);
+app.patch("/customlist/removebook/:userId/:bookId", verifyToken(), removeBookFromCustomList);
+app.get("/recommendationbyauthor/:userId", verifyToken(), recommendedBooksByAuthor);
+app.get("/recommendationbygenre/:userId", verifyToken(), recommendedBooksByGenre);
 
-app.patch("/toreadlist/:userId/:bookId", addBookToReadList);
-app.patch("/currentlyreadinglist/:userId/:bookId", addToCurrentlyReadingList);
-app.patch("/finishedlist/:userId/:bookId", addToFinishedList);
+app.patch("/toreadlist/:userId/:bookId", verifyToken(), addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", verifyToken(), addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", verifyToken(), addToFinishedList);
 
-app.get("/list/toread/:userId", getToReadList);
-app.get("/list/currentlyreading/:userId", getCurrentlyReadingList);
-app.get("/list/finished/:userId", getFinishedList);
+app.get("/list/toread/:userId", verifyToken(), getToReadList);
+app.get("/list/currentlyreading/:userId", verifyToken(), getCurrentlyReadingList);
+app.get("/list/finished/:userId", verifyToken(), getFinishedList);
 
-app.patch("/delete/:userId/:bookId", deleteBookFromList);
+app.patch("/delete/:userId/:bookId", verifyToken(), deleteBookFromList);
 
-app.patch("/editBook/:bookId", editBookInDB);
+app.patch("/editBook/:bookId", verifyToken(), editBookInDB);
 
 //for heroku
 app.get("*", function (req, res) {

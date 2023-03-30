@@ -13,7 +13,8 @@ function AdminView() {
     fetch('http://localhost:8080/getSiteAnalytics', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + sessionStorage.getItem("token")
       },
       body: JSON.stringify({})
     })

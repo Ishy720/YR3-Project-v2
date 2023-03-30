@@ -1,4 +1,5 @@
 //Security middleware for protecting router endpoints
+const jwt = require('jsonwebtoken');
 
 function checkUser(account) {
     return function (req, res, next) {
@@ -20,7 +21,45 @@ function checkSession() {
   }
 };
 
+function verifyToken() {
+  return function(req, res, next) {
+    const bearerHeader = req.headers['authorization'];
+    if (typeof bearerHeader !== 'undefined') {
+      const bearerToken = bearerHeader.split(' ')[1];
+      jwt.verify(bearerToken, process.env.JWT_SECRET, function(err, decoded) {
+        if (err) {
+          res.sendStatus(403); // forbidden
+        } else {
+          req.decoded = decoded;
+          next();
+        }
+      });
+    } else {
+      res.sendStatus(401); // unauthorized
+    }
+  };
+}
+
+/*
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers['authorization'];
+  if (typeof bearerHeader !== 'undefined') {
+    const bearerToken = bearerHeader.split(' ')[1];
+    jwt.verify(bearerToken, process.env.JWT_SECRET, function(err, decoded) {
+      if (err) {
+        res.sendStatus(403); // forbidden
+      } else {
+        req.decoded = decoded;
+        next();
+      }
+    });
+  } else {
+    res.sendStatus(401); // unauthorized
+  }
+}*/
+
 module.exports = {
   checkSession: checkSession,
-  checkUser: checkUser
+  checkUser: checkUser,
+  verifyToken: verifyToken
 }

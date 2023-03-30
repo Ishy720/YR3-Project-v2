@@ -30,10 +30,20 @@ const Discover = () => {
       searchTerm: title,
     };
 
+    /*
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+      },
+      body: JSON.stringify(search),
+    };*/
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
       body: JSON.stringify(search),
     };
