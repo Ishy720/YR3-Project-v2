@@ -1,7 +1,7 @@
 //Imports
 const app = require("./server.js");
 const { hashSync, compareSync } = require("bcrypt");
-const { checkUser, checkSession, verifyToken } = require("./authMiddleware");
+const { checkUser, verifyToken } = require("./authMiddleware");
 const jwt = require('jsonwebtoken');
 const recommendationEngine = require('./recommendationEngine');
 require("dotenv").config();
@@ -41,6 +41,7 @@ app.get("/session", (req, res) => {
   res.json({ session: req.session });
 });
 
+//users, managers and admins can all access this
 app.post("/getBooksBySearchTerm", verifyToken(), (req, res) => {
   const { searchTerm } = req.body;
   const bookModel = mongoose.model("Book");
@@ -55,7 +56,9 @@ app.post("/getBooksBySearchTerm", verifyToken(), (req, res) => {
     });
 });
 
+
 //When a user registers a new account
+//anyone can call this
 app.post("/registerNewUser", async function (req, res) {
   //Get user details
   const { username, password, accountType } = req.body;
@@ -102,6 +105,7 @@ app.post("/testsession", function (req, res) {
   res.json(req.session);
 });
 
+//anyone can call this
 app.post("/login", async function (req, res) {
   const { username, password } = req.body;
   const retrievedPassword = password;
@@ -152,6 +156,7 @@ app.post("/login", async function (req, res) {
   });
 });
 
+//users, managers and admins should all access this
 app.post("/getRecommendationsForOneBook", verifyToken(), async (req, res) => {
   
   const { bookId } = req.body;
@@ -163,6 +168,7 @@ app.post("/getRecommendationsForOneBook", verifyToken(), async (req, res) => {
 
 });
 
+//admins should only access this
 app.post("/getSiteAnalytics", verifyToken(), async function (req, res) {
   try {
     const totalBookCount = await Book.countDocuments();
@@ -646,7 +652,7 @@ const editBookInDB = async (req, res) => {
 };
 
 
-
+//these controllers can be accessed by users, managers and admins
 app.post("/createcustomlist/:userId", verifyToken(), createCustomList);
 app.patch("/deletecustomlist/:userId", verifyToken(), deleteCustomList);
 app.get("/customlist/:userId", verifyToken(), getCustomList);
@@ -666,6 +672,7 @@ app.get("/list/finished/:userId", verifyToken(), getFinishedList);
 
 app.patch("/delete/:userId/:bookId", verifyToken(), deleteBookFromList);
 
+//only managers and admins should access this
 app.patch("/editBook/:bookId", verifyToken(), editBookInDB);
 
 //for heroku
