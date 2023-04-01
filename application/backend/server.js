@@ -33,9 +33,9 @@ app.use(
 //Initialise session
 app.use(
   session({
-    secret: "Reeeeeeeeeehahahahahahahaahahahaha",
+    secret: "nf8e9h02v0n2f8whoiasncd0wh101awndinadin",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { httpOnly: false },
   })
 );

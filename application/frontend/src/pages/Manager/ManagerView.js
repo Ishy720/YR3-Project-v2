@@ -11,11 +11,13 @@ function ManagerView() {
     event.preventDefault();
     setEditBook(null);
     try {
+      const token = sessionStorage.getItem("token");
       const response = await fetch(
         "http://localhost:8080/getBooksBySearchTerm",
         {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ searchTerm }),
@@ -35,11 +37,13 @@ function ManagerView() {
   const handleEditSubmit = async (event) => {
     event.preventDefault();
     try {
+      const token = sessionStorage.getItem("token");
       const response = await fetch(
         `http://localhost:8080/editBook/${editBook._id}`,
         {
           method: "PATCH",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedBook),

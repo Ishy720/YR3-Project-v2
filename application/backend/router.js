@@ -42,7 +42,7 @@ app.get("/session", (req, res) => {
 });
 
 //users, managers and admins can all access this
-app.post("/getBooksBySearchTerm", verifyToken(), (req, res) => {
+app.post("/getBooksBySearchTerm", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), (req, res) => {
   const { searchTerm } = req.body;
   const bookModel = mongoose.model("Book");
   bookModel
@@ -113,7 +113,7 @@ app.post("/login", async function (req, res) {
   User.exists({ username: username }, function (err, result) {
     if (err) {
       console.log(err);
-      res.json({ message: "Error occured trying to log in" });
+      res.status(500).json({ message: "Error occured trying to log in" });
     } else {
       if (result) {
         User.find({ username: username }, function (error, documents) {
@@ -157,7 +157,7 @@ app.post("/login", async function (req, res) {
 });
 
 //users, managers and admins should all access this
-app.post("/getRecommendationsForOneBook", verifyToken(), async (req, res) => {
+app.post("/getRecommendationsForOneBook", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), async (req, res) => {
   
   const { bookId } = req.body;
 
@@ -169,7 +169,7 @@ app.post("/getRecommendationsForOneBook", verifyToken(), async (req, res) => {
 });
 
 //admins should only access this
-app.post("/getSiteAnalytics", verifyToken(), async function (req, res) {
+app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]),async function (req, res) {
   try {
     const totalBookCount = await Book.countDocuments();
     const totalUserCount = await User.countDocuments();
@@ -653,27 +653,27 @@ const editBookInDB = async (req, res) => {
 
 
 //these controllers can be accessed by users, managers and admins
-app.post("/createcustomlist/:userId", verifyToken(), createCustomList);
-app.patch("/deletecustomlist/:userId", verifyToken(), deleteCustomList);
-app.get("/customlist/:userId", verifyToken(), getCustomList);
+app.post("/createcustomlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), createCustomList);
+app.patch("/deletecustomlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), deleteCustomList);
+app.get("/customlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getCustomList);
 
-app.patch("/customlist/addbook/:userId/:bookId", verifyToken(), addBookToCustomList);
-app.patch("/customlist/removebook/:userId/:bookId", verifyToken(), removeBookFromCustomList);
-app.get("/recommendationbyauthor/:userId", verifyToken(), recommendedBooksByAuthor);
-app.get("/recommendationbygenre/:userId", verifyToken(), recommendedBooksByGenre);
+app.patch("/customlist/addbook/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addBookToCustomList);
+app.patch("/customlist/removebook/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), removeBookFromCustomList);
+app.get("/recommendationbyauthor/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), recommendedBooksByAuthor);
+app.get("/recommendationbygenre/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), recommendedBooksByGenre);
 
-app.patch("/toreadlist/:userId/:bookId", verifyToken(), addBookToReadList);
-app.patch("/currentlyreadinglist/:userId/:bookId", verifyToken(), addToCurrentlyReadingList);
-app.patch("/finishedlist/:userId/:bookId", verifyToken(), addToFinishedList);
+app.patch("/toreadlist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addToFinishedList);
 
-app.get("/list/toread/:userId", verifyToken(), getToReadList);
-app.get("/list/currentlyreading/:userId", verifyToken(), getCurrentlyReadingList);
-app.get("/list/finished/:userId", verifyToken(), getFinishedList);
+app.get("/list/toread/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getToReadList);
+app.get("/list/currentlyreading/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getCurrentlyReadingList);
+app.get("/list/finished/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getFinishedList);
 
-app.patch("/delete/:userId/:bookId", verifyToken(), deleteBookFromList);
+app.patch("/delete/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), deleteBookFromList);
 
 //only managers and admins should access this
-app.patch("/editBook/:bookId", verifyToken(), editBookInDB);
+app.patch("/editBook/:bookId", verifyToken(), checkUser(["ADMIN", "MANAGER"]), editBookInDB);
 
 //for heroku
 app.get("*", function (req, res) {
