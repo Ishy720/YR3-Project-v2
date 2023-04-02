@@ -3,6 +3,7 @@ import { FaTrash, FaTimes } from "react-icons/fa";
 import "./BookInfoModal.css";
 import { useGlobalContext } from "../../context";
 import Carousel from "../Carousel/Carousel";
+import LoadingIcon from "../../images/LoadingIcon.svg";
 
 const BookInfoModal = () => {
   const {
@@ -102,7 +103,10 @@ const BookInfoModal = () => {
         {suggestedBooks.length > 0 ? (
           <Carousel books={suggestedBooks} />
         ) : (
-          <p>Generating...</p>
+          <>
+            <img src = {LoadingIcon} />
+            <br />
+          </>
         )}
       </div>
     </section>
