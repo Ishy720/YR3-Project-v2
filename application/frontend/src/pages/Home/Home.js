@@ -3,6 +3,7 @@ import "./Home.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useViewportScroll, useTransform, motion } from "framer-motion";
 import { FaArrowCircleRight } from "react-icons/fa";
+
 function Home() {
   let navigate = useNavigate();
   const { scrollY } = useViewportScroll();
