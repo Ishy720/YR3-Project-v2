@@ -33,8 +33,8 @@ const ToReadList = () => {
 
   const getList = async () => {
     setLoading(true);
-    const { data } = await getToReadList(userId);
-    //console.log(data);
+    const data = await getToReadList(userId);
+    console.log(data);
     setToReadList(data.toReadList);
     setLoading(false);
   };
