@@ -6,6 +6,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { AppProvider } from "./context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+document.title = 'Book Manager';
 
 root.render(
   <React.StrictMode>

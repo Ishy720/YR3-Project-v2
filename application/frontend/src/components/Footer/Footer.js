@@ -5,13 +5,14 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-section">
-        <h3 className="footer-title">Contact Information</h3>
+        <h3 className="footer-title">See any issues? Contact us at:</h3>
         <ul className="footer-list">
-          <li>Phone: 123456789</li>
-          <li>Email: email@email.com</li>
+          <li>Phone: 01603 456161</li>
+          <li>Email: jem20gcu@uea.ac.uk</li>
         </ul>
       </div>
-      <p className="footer-copyright">Copyright &copy; Your Company 2023</p>
+      <hr />
+      <p className="footer-copyright">Copyright &copy; Book Manager</p>
     </footer>
   );
 };
