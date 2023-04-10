@@ -33,6 +33,7 @@
   overflow: hidden;
   transition: all 0.5s;
   width: 0;
+  height: 100%;
 }
 
 .bookComponent .show-listCon {

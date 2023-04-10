@@ -139,8 +139,13 @@ const BookCard = ({ book }) => {
         <div className="details">
           <h5>{book.title}</h5>
           <p>{book.author}</p>
-          <p>Rating: {book.avgRating}/5</p>
-          <p>{book.likedPercentage}% of people liked this</p>
+          <h5>Genres:</h5>
+          <p>{book.genres[0]}, {book.genres[1]},</p>
+          <p>{book.genres[2]}, {book.genres[3]},</p>
+          <p>{book.genres[4]}, {book.genres[5]},</p>
+          <p>{book.genres[6]}, {book.genres[7]},</p>
+          <p>{book.genres[8]}, {book.genres[9]},</p>
+
         </div>
         <button onClick={showlistCon} className="show-listCon">
           Add to list <FaArrowAltCircleRight />
