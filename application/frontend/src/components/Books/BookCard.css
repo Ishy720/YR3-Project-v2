@@ -1,10 +1,10 @@
 .bookComponent {
-  background-color: #000;
+  background-color: aliceblue;
   /* border: solid red; */
   display: grid;
   grid-template-columns: 1fr 1fr;
   box-shadow: rgba(247, 220, 101, 0.5) 0px 5px 5px;
-  border-radius: 20px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
   max-width: 400px;
@@ -41,7 +41,7 @@
   padding: 0;
   font-weight: bold;
   height: 40px;
-  background-color: #fff1a9b1;
+  background-color: #c5ab2cb1;
   border: transparent;
   cursor: pointer;
   width: 100%;
@@ -84,7 +84,7 @@
 .bookComponent .btns button {
   font-size: 1rem;
   padding: 0;
-  border-radius: 10px;
+  border-radius: 6px;
   height: 40px;
   background-color: #fff1a9b1;
   border: transparent;
