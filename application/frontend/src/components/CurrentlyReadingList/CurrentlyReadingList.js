@@ -19,6 +19,8 @@ const CurrentlyReadingList = () => {
     setToReadList,
     finishedList,
     setFinishedList,
+    setBookInformation,
+    setShowBookInfoModal,
     user: { id: userId },
   } = useGlobalContext();
 
@@ -71,6 +73,24 @@ const CurrentlyReadingList = () => {
     }
     setQuery(false);
   };
+
+  const showInfo = (book) => {
+    setBookInformation({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      releaseDate: book.releaseDate,
+      description: book.description,
+      imgurl: book.imgurl,
+      genres: book.genres,
+      avgRating: book.avgRating,
+      likedPercentage: book.likedPercentage,
+      ratingDistribution: book.ratingDistribution,
+    });
+
+    setShowBookInfoModal(true);
+  }
+
   useEffect(() => {
     getList();
   }, []);
@@ -86,9 +106,10 @@ const CurrentlyReadingList = () => {
   if (!loading && currentlyReadingList.length > 0) {
     content = currentlyReadingList.map((book) => {
       return (
+        <>
         <div className="book-card" key={book._id}>
           <div className="image-con">
-            <img src={book.imgurl} alt={book.title} className="image" />
+            <img src={book.imgurl} alt={book.title} className="image" onClick={() => showInfo(book)} />
           </div>
           <div className="details-con">
             <h5 className="title">
@@ -123,6 +144,7 @@ const CurrentlyReadingList = () => {
           </div>
           <Toaster position="bottom-right" reverseOrder={false} />
         </div>
+        </>
       );
     });
   }

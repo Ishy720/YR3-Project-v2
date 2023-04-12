@@ -37,17 +37,17 @@ function Home() {
           <h2>Our Aims</h2>
           <p>
             We aim to deliver users a place to manage and keep track of books in
-            one single place!
+            one single place! We also aim to help users find similar books to
+            their interested books by showing similar recommendations on books!
           </p>
         </section>
         <section>
-          <h2>Our Story</h2>
+          <h2>Our Website</h2>
           <p>
-            We're book lovers, and we've made this website for all of the book
-            lovers out there! It's not always easy to remember the books we've
+            It's not always easy to remember the books we've
             read, and we understand the struggles of trying to find new books to
-            read when there's so many to explore. Our website will help you
-            overcome these struggles and provide you with a pleasant experience
+            read when there's so many to explore. You can use this website to 
+            manage your books and find similar books to whatever book you like!
           </p>
         </section>
         <section>
@@ -59,13 +59,10 @@ function Home() {
           </p>
         </section>
         <section>
-          <h2>Our Helping Hand</h2>
+          <h2>Our Maintenence</h2>
           <p>
-            Don't know what to read? Looking for something new, or perhaps more
-            books from authors that you are interested in? Sign in now and start
-            adding books to your reading lists! We'll suggest a range of books
-            to you that you may be interested in using our own content filtering
-            algorithms!
+            We have managers working behind the scenes on the website to make sure
+            book fields are correct and accurately represent their real counterparts!
           </p>
         </section>
       </div>

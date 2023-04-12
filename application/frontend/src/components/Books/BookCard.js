@@ -100,7 +100,6 @@ const BookCard = ({ book }) => {
   };
 
   const showInfo = (book) => {
-    console.log(book);
     setBookInformation({
       _id: book._id,
       title: book.title,

@@ -20,6 +20,8 @@ const ToReadList = () => {
     setToReadList,
     toreadlist,
     getToReadList,
+    setBookInformation,
+    setShowBookInfoModal,
     user: { id: userId },
   } = useGlobalContext();
 
@@ -34,7 +36,6 @@ const ToReadList = () => {
   const getList = async () => {
     setLoading(true);
     const data = await getToReadList(userId);
-    console.log(data);
     setToReadList(data.toReadList);
     setLoading(false);
   };
@@ -42,7 +43,6 @@ const ToReadList = () => {
   const handleAddToCurrentlyReadingList = async (userId, bookId) => {
     setQuery(true);
     const data = await addToCurrentlyReadingList(userId, bookId);
-    console.log(data);
     if (data.status !== 200) {
       //alert(data.data.message);
       notifyError(data.data.message);
@@ -58,7 +58,6 @@ const ToReadList = () => {
   const handleAddToFinishedList = async (userId, bookId) => {
     setQuery(true);
     const data = await addToFinishedList(userId, bookId);
-    console.log(data);
     if (data.status !== 200) {
       //alert(data.data.message);
       notifyError(data.data.message);
@@ -70,6 +69,23 @@ const ToReadList = () => {
     }
     setQuery(false);
   };
+
+  const showInfo = (book) => {
+    setBookInformation({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      releaseDate: book.releaseDate,
+      description: book.description,
+      imgurl: book.imgurl,
+      genres: book.genres,
+      avgRating: book.avgRating,
+      likedPercentage: book.likedPercentage,
+      ratingDistribution: book.ratingDistribution,
+    });
+
+    setShowBookInfoModal(true);
+  }
 
   // const controller = new AbortController();
   // const signal = controller.signal;
@@ -84,7 +100,7 @@ const ToReadList = () => {
   let content;
 
   if (loading) {
-    content = <p className="other-message">Loading......</p>;
+    content = <p className="other-message">Loading...</p>;
   }
   if (toreadlist.length === 0) {
     content = <p className="other-message">Looks like you aren't tracking any books here! Add a book to get started!</p>;
@@ -93,9 +109,10 @@ const ToReadList = () => {
   if (!loading && toreadlist.length > 0) {
     content = toreadlist.map((book) => {
       return (
+        <>
         <div className="book-card" key={book._id}>
           <div className="image-con">
-            <img src={book.imgurl} alt={book.title} className="image" />
+            <img src={book.imgurl} alt={book.title} className="image" onClick={() => showInfo(book)} />
           </div>
           <div className="details-con">
             <h5 className="title">
@@ -132,7 +149,7 @@ const ToReadList = () => {
           </div>
           <Toaster position="bottom-right" reverseOrder={false} />
         </div>
-        
+        </>
       );
     });
   }

@@ -9,7 +9,7 @@ function BooksDisplayArea(props) {
 
     return (
         <>
-        {showBookInfoModal && <BookInfoModal  />}
+        
 
         {
             props.books?.length > 0

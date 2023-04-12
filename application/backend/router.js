@@ -462,11 +462,7 @@ const recommendedBooksByGenre = async (req, res) => {
 
   let genre = [];
   joinedBooks.map((book) => (genre = genre.concat(book.genres)));
-
-  console.log(genre);
-
   const uniqueGenre = [...new Set(genre)].slice(0, 5);
-  console.log(uniqueGenre.length);
   const books = await Book.find({ genres: { $all: uniqueGenre } });
 
   const filterBooks = books

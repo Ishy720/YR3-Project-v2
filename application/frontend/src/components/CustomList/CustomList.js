@@ -19,6 +19,8 @@ const CustomList = () => {
     setToReadList,
     finishedList,
     setFinishedList,
+    setBookInformation,
+    setShowBookInfoModal,
     user: { id: userId },
     getCustomList,
     customListNames,
@@ -47,6 +49,23 @@ const CustomList = () => {
     getCustomList(userId);
   };
 
+  const showInfo = (book) => {
+    setBookInformation({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      releaseDate: book.releaseDate,
+      description: book.description,
+      imgurl: book.imgurl,
+      genres: book.genres,
+      avgRating: book.avgRating,
+      likedPercentage: book.likedPercentage,
+      ratingDistribution: book.ratingDistribution,
+    });
+
+    setShowBookInfoModal(true);
+  }
+
   let content;
   if (loading) {
     content = <p className="other-message">Loading......</p>;
@@ -71,9 +90,10 @@ const CustomList = () => {
       } else {
         let booklist = bookData.map((book) => {
           return (
+            <>
             <div className="book-card" key={book._id}>
               <div className="image-con">
-                <img src={book.imgurl} alt={book.title} className="image" />
+                <img src={book.imgurl} alt={book.title} className="image" onClick={() => showInfo(book)} />
               </div>
               <div className="details-con">
                 <h5 className="title">
@@ -92,6 +112,7 @@ const CustomList = () => {
                 </footer>
               </div>
             </div>
+            </>
           );
         });
         return (

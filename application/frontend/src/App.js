@@ -21,11 +21,11 @@ import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import AddCustomListModal from "./components/AddCustomListModal/AddCustomListModal";
 import SelectCustomListModal from "./components/SelectCustomListModal/SelectCustomListModal";
-//import BookInfoModal from "./components/Books/BookInfoModal";
+import BookInfoModal from "./components/Books/BookInfoModal";
 
 //Baseline
 function App() {
-  const { auth, accountType, showModal, setShowModal, showSelectListModal} =
+  const { auth, accountType, showModal, setShowModal, showSelectListModal, showBookInfoModal} =
     useGlobalContext();
 
   return (
@@ -33,6 +33,7 @@ function App() {
       <Navbar />
       {showModal && <AddCustomListModal />}
       {showSelectListModal && <SelectCustomListModal />}
+      {showBookInfoModal && <BookInfoModal  />}
 
       <Routes>
         <Route path="/" element={<Home />} />

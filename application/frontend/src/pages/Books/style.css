@@ -192,7 +192,7 @@
   font-size: 1rem;
   padding: 0;
   height: 40px;
-  background-color: #fff1a9b1;
+  background-color: #fff1ac37;
   border: transparent;
   cursor: pointer;
   border-right: solid 1px #000;
@@ -203,7 +203,7 @@
 
 .active-tab {
   position: relative;
-  background-color: #f7dc65c1 !important;
+  background-color: #ffd30ec1 !important;
 }
 
 .active-tab::after {

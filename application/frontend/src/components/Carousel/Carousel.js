@@ -6,11 +6,26 @@ import { useGlobalContext } from "../../context";
 
 
 const BookCarousel = ({ books }) => {
-  const { setBookInformation } = useGlobalContext();
+  const { setBookInformation, showBookInfoModal, setShowBookInfoModal } = useGlobalContext();
 
   const handleClick = (book) => {
-    setBookInformation(book);
+    //alert(book.title);
+    setBookInformation({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      releaseDate: book.releaseDate,
+      description: book.description,
+      imgurl: book.imgurl,
+      genres: book.genres,
+      avgRating: book.avgRating,
+      likedPercentage: book.likedPercentage,
+      ratingDistribution: book.ratingDistribution,
+    });
+
+    setShowBookInfoModal(true);
   };
+
 
   return (
     <Carousel

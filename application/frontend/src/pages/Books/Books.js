@@ -34,7 +34,10 @@ const Books = () => {
   };
 
   return (
+    <>
+    <br></br>
     <div className="booklist-component">
+      <h1 id="pageTitle">Your Inventory</h1>
       <div className="tab-btns">
         <button onClick={(e) => toggleTab(e, "to read")} ref={toReadTab}>
           To read
@@ -51,7 +54,7 @@ const Books = () => {
       </div>
 
       {tab == "to read" && (
-        <div style={{ background: "#f7dc65c1", minHeight: "80vh" }}>
+        <div style={{ minHeight: "80vh" }}>
           {/* <h2 className="section-title">To read:</h2> */}
           <section className="main-con">
             <ToReadList />
@@ -60,7 +63,7 @@ const Books = () => {
       )}
 
       {tab == "reading" && (
-        <div style={{ background: "#f7dc65c1", minHeight: "80vh" }}>
+        <div style={{ minHeight: "80vh" }}>
           {/* <h2 className="section-title">Currently reading:</h2> */}
           <section className="main-con">
             <CurrentlyReadingList />
@@ -69,7 +72,7 @@ const Books = () => {
       )}
 
       {tab == "finished" && (
-        <div style={{ background: "#f7dc65c1", minHeight: "80vh" }}>
+        <div style={{ minHeight: "80vh" }}>
           {/* <h2 className="section-title">Finished:</h2> */}
           <section className="main-con">
             <FinishedList />
@@ -78,7 +81,8 @@ const Books = () => {
       )}
 
       {tab == "custom" && (
-        <div style={{ background: "#f7dc65c1", minHeight: "80vh" }}>
+        <div style={{ minHeight: "80vh" }}>
+          {/* <div style={{ background: "#f7dc65c1", minHeight: "80vh" }}> */}
           {/* <h2 className="section-title">Custom list:</h2> */}
           <div>
             <button className="btn" onClick={closeModal}>
@@ -92,6 +96,7 @@ const Books = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
