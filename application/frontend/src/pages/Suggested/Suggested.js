@@ -12,7 +12,7 @@ const Suggested = () => {
   } = useGlobalContext();
 
   useEffect(() => {
-    //getSuggestionsByGenre(userId);
+    getSuggestionsByGenre(userId);
     getSuggestionsByAuthor(userId);
   }, []);
 
