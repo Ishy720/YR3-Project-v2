@@ -37,7 +37,7 @@ const Books = () => {
     <>
     <br></br>
     <div className="booklist-component">
-      <h1 id="pageTitle">Your Inventory</h1>
+      <h1 id="pageTitle">My Books</h1>
       <div className="tab-btns">
         <button onClick={(e) => toggleTab(e, "to read")} ref={toReadTab}>
           To read

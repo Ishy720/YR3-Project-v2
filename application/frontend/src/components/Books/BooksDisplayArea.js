@@ -1,15 +1,11 @@
 import BookCard from "./BookCard";
-import BookInfoModal from "./BookInfoModal";
 import './BooksDisplayArea.css'
-import { useGlobalContext } from "../../context.js";
 
 function BooksDisplayArea(props) {
 
-  const { bookInformation, setBookInformation, showBookInfoModal, setShowBookInfoModal} = useGlobalContext();
 
     return (
         <>
-        
 
         {
             props.books?.length > 0

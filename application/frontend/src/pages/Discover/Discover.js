@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Discover.css";
-import BookCarousel from "../../components/Books/BookCarousel";
 import SearchIcon from "../../images/SearchIcon.svg";
-import SearchFilters from "../../components/Books/SearchFilters";
 import BooksDisplayArea from "../../components/Books/BooksDisplayArea";
 import LoadingIcon from "../../images/LoadingIcon.svg";
 
@@ -93,10 +91,12 @@ const Discover = () => {
 
   return (
     <div className="searchPage">
+      <br></br>
+      <h1 id="pageTitle">Search</h1>
       <div className="searchDiv">
         <input
           id="searchBar"
-          placeholder="Search for books"
+          placeholder="Search for books by title..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
