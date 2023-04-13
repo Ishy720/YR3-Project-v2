@@ -40,12 +40,12 @@ function App() {
         {/* <Route path="/about" element={<About />} /> */}
         <Route
           path="/register"
-          element={auth ? <Navigate to="/discover" /> : <Register />}
+          element={auth ? <Navigate to="/searchPage" /> : <Register />}
         />
 
         <Route
           path="/login"
-          element={auth ? <Navigate to="/discover" /> : <Login />}
+          element={auth ? <Navigate to="/searchPage" /> : <Login />}
         />
 
         <Route
@@ -63,7 +63,7 @@ function App() {
         <Route path="/*" element={<Home />} />
 
         <Route
-          path="/discover"
+          path="/searchPage"
           element={
             <Protected>
               <Discover />
@@ -72,7 +72,7 @@ function App() {
         />
 
         <Route
-          path="/books"
+          path="/myBooksPage"
           element={
             <Protected>
               <Books />
@@ -81,7 +81,7 @@ function App() {
         />
 
         <Route
-          path="/suggested"
+          path="/relatedBooksPage"
           element={
             <Protected>
               <Suggested />

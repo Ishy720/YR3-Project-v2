@@ -57,7 +57,7 @@ function LoginForm() {
         setAccountType(sessionStorage.getItem("accountType"));
         console.log(sessionStorage.getItem("accountType"));
         if (sessionStorage.getItem("accountType") === "USER") {
-          navigate("/discover");
+          navigate("/searchPage");
         }
         if (sessionStorage.getItem("accountType") === "MANAGER") {
           navigate("/manager");

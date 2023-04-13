@@ -21,7 +21,7 @@ function Home() {
           <div className="hero-image"></div>
           <div className="hero-content">
             <h2>Track thousands of books online.</h2>
-            <Link to="/discover">
+            <Link to="/searchPage">
               <button>
                 Explore<FaArrowCircleRight />
               </button>
