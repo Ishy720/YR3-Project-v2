@@ -169,7 +169,7 @@ app.post("/getRecommendationsForOneBook", verifyToken(), checkUser(["USER", "ADM
 });
 
 //admins should only access this
-app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]),async function (req, res) {
+app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]), async function (req, res) {
   try {
     const totalBookCount = await Book.countDocuments();
     const totalUserCount = await User.countDocuments();

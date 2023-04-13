@@ -60,17 +60,17 @@ const Navbar = () => {
           </li>
           {user && (
             <li onClick={handleToggleSideBar}>
-              <Link to="/discover">Discover</Link>
+              <Link to="/discover">Search</Link>
             </li>
           )}
           {user && (
             <li onClick={handleToggleSideBar}>
-              <Link to="/books">Books</Link>
+              <Link to="/books">My Books</Link>
             </li>
           )}
           {user && (
             <li onClick={handleToggleSideBar}>
-              <Link to="/suggested">Suggested</Link>
+              <Link to="/suggested">Related</Link>
             </li>
           )}
           {user && accountType == "MANAGER" && (

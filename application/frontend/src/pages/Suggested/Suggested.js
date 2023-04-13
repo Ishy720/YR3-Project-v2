@@ -12,27 +12,27 @@ const Suggested = () => {
   } = useGlobalContext();
 
   useEffect(() => {
-    getSuggestionsByGenre(userId);
+    //getSuggestionsByGenre(userId);
     getSuggestionsByAuthor(userId);
   }, []);
 
   return (
     <div>
       <br></br>
-      <h1 id="pageTitle">Suggested Reads</h1>
+      <h1 id="pageTitle">Related Reads</h1>
 
-      <h1 className="carousel-title">Books with the same genres in your reading lists:</h1>
-      {suggestionsByGenre.length == 0 ? (
-        <p> Add books to your reading lists to see these books!</p>
-      ) : (
-        <Carousel books={suggestionsByGenre} />
-      )}
-
-      <h1 className="carousel-title">Books with the same authors in your reading lists:</h1>
+      <h1 className="carousel-title">Authors in your reading lists have also wrote:</h1>
       {suggestionsByAuthor.length == 0 ? (
         <p> Add books to your reading lists to see these books!</p>
       ) : (
         <Carousel books={suggestionsByAuthor} />
+      )}
+
+      <h1 className="carousel-title">Books with matching genres in your reading lists:</h1>
+      {suggestionsByGenre.length == 0 ? (
+        <p> Add books to your reading lists to see these books!</p>
+      ) : (
+        <Carousel books={suggestionsByGenre} />
       )}
     </div>
   );
