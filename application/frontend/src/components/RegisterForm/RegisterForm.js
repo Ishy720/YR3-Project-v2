@@ -33,6 +33,7 @@ function RegisterForm() {
 
   function notifySuccess(message) {
     toast.success(message);
+    navigate("/login");
   }
 
   //Function responsible for checking input data is valid, sends to backend

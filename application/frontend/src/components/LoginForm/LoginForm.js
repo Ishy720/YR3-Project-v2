@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../../context";
+import toast, { Toaster } from "react-hot-toast";
 
 function LoginForm() {
   const { setUser, setAuth, setAccountType } = useGlobalContext();
@@ -65,6 +66,8 @@ function LoginForm() {
         if (sessionStorage.getItem("accountType") === "ADMIN") {
           navigate("/admin");
         }
+    }).catch(() => {
+      toast.error("Incorrect details!");;
     });
   }
 
@@ -126,6 +129,7 @@ function LoginForm() {
           </span>
         </h4>
       </div>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </div>
   );
 }
