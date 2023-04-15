@@ -7,12 +7,11 @@ const Footer = () => {
       <div className="footer-section">
         <h3 className="footer-title">See any issues? Contact us at:</h3>
         <ul className="footer-list">
-          <li>Phone: 01603 456161</li>
           <li>Email: jem20gcu@uea.ac.uk</li>
         </ul>
       </div>
       <hr />
-      <p className="footer-copyright">Copyright &copy; Book Manager</p>
+      <p className="footer-copyright">MyLibrary</p>
     </footer>
   );
 };

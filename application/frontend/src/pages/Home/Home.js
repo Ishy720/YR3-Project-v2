@@ -23,7 +23,7 @@ function Home() {
             <h2>Track thousands of books online.</h2>
             <Link to="/searchPage">
               <button>
-                Explore<FaArrowCircleRight />
+                Explore now<FaArrowCircleRight />
               </button>
             </Link>
           </div>
@@ -31,7 +31,7 @@ function Home() {
       </motion.section>
 
       <div className="about">
-        <h1>About us</h1>
+        <h1>About MyLibrary</h1>
 
         <section>
           <h2>Our Aims</h2>
@@ -46,7 +46,7 @@ function Home() {
           <p>
             It's not always easy to remember the books we've
             read, and we understand the struggles of trying to find new books to
-            read when there's so many to explore. You can use this website to 
+            read when there's so many to explore. You can use our free website to 
             manage your books and find similar books to whatever book you like!
           </p>
         </section>

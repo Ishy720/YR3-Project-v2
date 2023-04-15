@@ -135,7 +135,7 @@ nav {
   width: 100%;
   top: 0;
   background-color: black;
-  max-width: 400px;
+  max-width: 600px;
   margin: 0;
   left: -100%;
   padding: 0;
@@ -186,7 +186,6 @@ nav {
   align-items: center;
 }
 
-.logout-btn,
 .login-btn,
 .register-btn {
   font-size: 1rem;
@@ -201,8 +200,21 @@ nav {
   cursor: pointer;
 }
 
+.logout-btn {
+  font-size: 1rem;
+  padding: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 100px;
+  height: 40px;
+  letter-spacing: 0.1rem;
+  background-color: #ff0000d6;
+  border: transparent;
+  cursor: pointer;
+}
+
 .logout-btn:hover {
-  background-color: #f7dc65c1;
+  background-color: #ff0000;
 }
 
 .welcome-text {
