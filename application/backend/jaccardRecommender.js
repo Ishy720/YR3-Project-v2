@@ -12,7 +12,7 @@ mongoose
   })
   .then(() => {
     console.log("Jaccard Recommendation engine connected to MongoDB");
-    retrieveRelatedBooks("640b6eb11024425951abbfde");
+    //retrieveRelatedBooks("640b6eb11024425951abbfde");
   })
   .catch((err) => {
     console.log(err);
@@ -44,6 +44,15 @@ function jaccardSimilarity(set1, set2) {
   const union = new Set([...set1, ...set2]);
   return intersection.size / union.size;
 }
+
+function test() {
+  const A = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
+  const B = tokenize("Harry Potter Deathly Hallows JKRowling Voldemort School");
+  const C = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
+  console.log(jaccardSimilarity(A, B));
+}
+
+test();
 
 //takes an array of genres and retrieves randomized sample of books which regex match the input genres array
 async function retrieveRelatedBooks(bookId) {

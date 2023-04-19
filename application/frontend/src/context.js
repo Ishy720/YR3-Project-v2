@@ -35,7 +35,7 @@ const AppProvider = ({ children }) => {
     ratingDistribution: []
   });
 
-  //suggestion states
+  //related 'suggestion' states
   const [selectedBook, setSelectedBook] = useState("");
   const [suggestionsByGenre, setSuggestionsByGenre] = useState([]);
   const [suggestionsByAuthor, setSuggestionsByAuthor] = useState([]);
@@ -368,7 +368,7 @@ const AppProvider = ({ children }) => {
     };
   
     return axios
-      .get(`http://localhost:8080/recommendationbygenre/${userId}`, config)
+      .get(`http://localhost:8080/relatedbygenre/${userId}`, config)
       .then((res) => {
         console.log(res.data);
         if (res.data.filterBooks) {
@@ -401,7 +401,7 @@ const AppProvider = ({ children }) => {
   const getSuggestionsByAuthor = async (userId) => {
     const token = sessionStorage.getItem("token");
     return axios
-      .get(`http://localhost:8080/recommendationbyauthor/${userId}`, {
+      .get(`http://localhost:8080/relatedbyauthor/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

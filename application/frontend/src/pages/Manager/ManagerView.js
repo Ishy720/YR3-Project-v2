@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import "./ManagerView.css";
 
 function ManagerView() {
+
+  //stats states
+  const [totalBookCount, setTotalBookCount] = useState(0);
+  const [totalUserCount, setTotalUserCount] = useState(0);
+  const [mostCommonBook, setMostCommonBook] = useState({});
+  const [registrations, setRegistrations] = useState({});
+  //const [topGenres, setTopGenres] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  //book editing states
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [editBook, setEditBook] = useState(null);
@@ -34,6 +44,7 @@ function ManagerView() {
     setEditBook({ ...book });
     setUpdatedBook({ ...book });
   };
+
   const handleEditSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -67,6 +78,33 @@ function ManagerView() {
     const { name, value } = event.target;
     setUpdatedBook({ ...updatedBook, [name]: value });
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    
+    fetch('http://localhost:8080/getSiteAnalytics', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + sessionStorage.getItem("token")
+      },
+      body: JSON.stringify({})
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setTotalBookCount(data.totalBookCount);
+        setTotalUserCount(data.totalUserCount);
+        setMostCommonBook(data.mostCommonBook);
+        setRegistrations(data.registrations)
+        //setTopGenres(data.genreCounts);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <main className="manager-page-main">
@@ -109,7 +147,7 @@ function ManagerView() {
         ) : searchResults && searchResults.length == 0 ? (
           <p className="other-message">No Books found </p>
         ) : (
-          <p className="other-message">Search Books</p>
+          <p className="other-message">Search results will appear here</p>
         )}
 
         {editBook && (
@@ -156,6 +194,51 @@ function ManagerView() {
           </div>
         )}
       </div>
+
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ):
+        <div id="stats">
+        <h1 id="pageTitle">Website statistics</h1>
+        <br></br>
+    
+        <div id="cardsContainer">
+          <div className="card">
+            <h3>Total registered books in the website:</h3>
+            <p>{totalBookCount}</p>
+          </div>
+    
+          <div className="card">
+            <h3>Total number of accounts registered with the website:</h3>
+            <p>{totalUserCount}</p>
+          </div>
+    
+          <div className="card">
+            <h3>Most commonly found book across all users:</h3>
+            <img src={mostCommonBook[0]._id.imgurl} alt="Book cover" />
+            <p>{mostCommonBook[0]._id.title}, written by {mostCommonBook[0]._id.author}</p>
+            <p>A total of {mostCommonBook[0].count} users have this book in their core lists</p>
+          </div>
+    
+          <div className="card">
+            <h3>Registration counts over the past 6 months:</h3>
+            {registrations && Object.entries(registrations).length > 0 ? (
+              <ul>
+                {Object.entries(registrations).map(([month, count]) => (
+                  <li key={month}>
+                    {month}: {count} users registered
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No new registrations over the past 6 months!</p>
+            )}
+          </div>
+
+
+        </div>
+      </div>
+      }
     </main>
   );
 }

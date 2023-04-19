@@ -1,11 +1,12 @@
 //Imports
 const { removeStopwords, eng } = require('stopword')
 const Book = require("./models/BookSchema.js");
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 const natural = require('natural');
 
 require("dotenv").config();
 
+/*
 //DB Connection
 mongoose
   .connect(process.env.DB_URI, {
@@ -17,7 +18,7 @@ mongoose
   })
   .catch((err) => {
     console.log(err);
-});
+});*/
 
 //takes in text and removes stopwords, then tokenizes them (splits text into array of words)
 function tokenize(text) {
@@ -127,7 +128,6 @@ recommendFromOneRandomBook("640b6eb11024425951abbfde")
         
   })
   .catch(error => console.error(error));*/
-
 
 exports.recommendFromOneRandomBook = recommendFromOneRandomBook;
 

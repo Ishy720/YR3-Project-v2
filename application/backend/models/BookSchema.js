@@ -12,9 +12,9 @@ const BookSchema = new Schema({
     description: {type:String, required:true},
     imgurl: {type:String, required:true},
     genres: {type: [String], required: true}, 
-    avgRating: {type:Number, required:true},
-    likedPercentage: {type:Number, required: true},
-    ratingDistribution: {type: [Number], required: true}
+    avgRating: {type:Number, required:true} //only used for sorting related books in router
+    //likedPercentage: {type:Number, required: true}, //do not use
+    //ratingDistribution: {type: [Number], required: true} //do not use
 
 }, {timestamps: true})
 

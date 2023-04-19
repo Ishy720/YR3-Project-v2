@@ -1,7 +1,7 @@
 //Imports
 const app = require("./server.js");
 const { hashSync, compareSync } = require("bcrypt");
-const { checkUser, verifyToken } = require("./authMiddleware");
+const { checkUser, verifyToken, limitCallRate } = require("./authMiddleware");
 const jwt = require('jsonwebtoken');
 const recommendationEngine = require('./recommendationEngine');
 require("dotenv").config();
@@ -17,13 +17,13 @@ app.get("/test", function (req, res) {
   res.status(200).json({ message: "Success!" });
 });
 
-app.get("/testMiddleware", checkUser("USER"), function (req, res) {
+app.get("/testMiddleware", limitCallRate, function (req, res) {
   res.status(200).json({ message: "Woah it worked" });
 });
 
-app.get("/logout", verifyToken(), function (req, res) {
+app.get("/logout", limitCallRate, verifyToken(), function (req, res) {
   req.session.destroy();
-  res.json({ message: "Destroyed session" });
+  res.status(200).json({ message: "Destroyed session" });
 });
 
 app.post("/uploadUser", function (req, res) {
@@ -41,8 +41,8 @@ app.get("/session", (req, res) => {
   res.json({ session: req.session });
 });
 
-//users, managers and admins can all access this
-app.post("/getBooksBySearchTerm", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), (req, res) => {
+//users, managers can all access this
+app.post("/getBooksBySearchTerm", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), (req, res) => {
   const { searchTerm } = req.body;
   const bookModel = mongoose.model("Book");
   bookModel
@@ -59,25 +59,22 @@ app.post("/getBooksBySearchTerm", verifyToken(), checkUser(["USER", "ADMIN", "MA
 
 //When a user registers a new account
 //anyone can call this
-app.post("/registerNewUser", async function (req, res) {
+app.post("/registerNewUser", limitCallRate, async function (req, res) {
   //Get user details
-  const { username, password, accountType } = req.body;
-
-  //Validate inputs!!!
+  const { username, password } = req.body;
 
   //Check if username already exists
   User.exists({ username: username }, async function (error, result) {
     if (error) throw error;
 
     if (!result) {
-      //Encrypt password
 
       const encryptedPassword = hashSync(password, 10);
 
       const newUser = User({
         username: username,
         password: encryptedPassword,
-        accountType: accountType
+        accountType: "USER"
       });
 
       try {
@@ -95,7 +92,7 @@ app.post("/registerNewUser", async function (req, res) {
       res.status(200).json({ message: "Successfully registered!" });
     } else {
       //Send back response
-      res.status(201).json({ message: "Username already taken!" });
+      res.status(400).json({ message: "Username already taken!" });
     }
   });
 });
@@ -106,7 +103,7 @@ app.post("/testsession", function (req, res) {
 });
 
 //anyone can call this
-app.post("/login", async function (req, res) {
+app.post("/login", limitCallRate, async function (req, res) {
   const { username, password } = req.body;
   const retrievedPassword = password;
 
@@ -143,21 +140,21 @@ app.post("/login", async function (req, res) {
             });
           } else {
             console.log("Incorrect details");
-            //Tell them wrong username/password (its really the password but we don't tell them)
-            res.status(401).json({ message: "Incorrect username/password" });
+            res.status(401).json({ message: "Incorrect details" });
           }
         });
-      } else {
+      } 
+      else {
         console.log("Couldn't find the user account");
-        //User doesn't exist, tell them that doesn't work
-        res.status(404).json({ message: "That user does not exist" });
+        //User doesn't exist
+        res.status(401).json({ message: "Incorrect details" });
       }
     }
   });
 });
 
-//users, managers and admins should all access this
-app.post("/getRecommendationsForOneBook", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), async (req, res) => {
+//users, managers should all access this
+app.post("/getRecommendationsForOneBook", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), async (req, res) => {
   
   const { bookId } = req.body;
 
@@ -168,8 +165,8 @@ app.post("/getRecommendationsForOneBook", verifyToken(), checkUser(["USER", "ADM
 
 });
 
-//admins should only access this
-app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]), async function (req, res) {
+//managers should only access this
+app.post("/getSiteAnalytics", limitCallRate, verifyToken(),  checkUser(["MANAGER"]), async function (req, res) {
   try {
     const totalBookCount = await Book.countDocuments();
     const totalUserCount = await User.countDocuments();
@@ -203,6 +200,8 @@ app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]), async functi
         $limit: 1
       }
     ]);
+
+    /*
     const genreCounts = await Book.aggregate([
       {
         $unwind: "$genres"
@@ -221,14 +220,60 @@ app.post("/getSiteAnalytics", verifyToken(),  checkUser(["ADMIN"]), async functi
       {
         $limit: 5
       }
+    ]);*/
+
+    const prevSixMonths = new Date();
+    prevSixMonths.setUTCMonth(prevSixMonths.getUTCMonth() - 6);
+
+    const userCountsByMonth = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: prevSixMonths }
+        }
+      },
+      {
+        $project: {
+          month: { $month: "$createdAt" }
+        }
+      },
+      {
+        $group: {
+          _id: "$month",
+          count: { $sum: 1 }
+        }
+      }
     ]);
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    const registrations = {};
+
+    //map month names to the counts
+    for (const userCount of userCountsByMonth) {
+      const monthName = monthNames[userCount._id - 1];
+      registrations[monthName] = userCount.count;
+    }
 
 
     res.status(200).json({ 
       totalBookCount: totalBookCount,
       totalUserCount: totalUserCount,
       mostCommonBook: mostCommonBook,
-      genreCounts: genreCounts
+      registrations: registrations
+      //genreCounts: genreCounts
     });
 
   } catch (err) {
@@ -417,7 +462,7 @@ const deleteBookFromList = async (req, res) => {
   res.status(200).json(updatedUser);
 };
 
-const recommendedBooksByAuthor = async (req, res) => {
+const relatedBooksByAuthor = async (req, res) => {
   const { userId } = req.params;
 
   const user = await User.findOne({ _id: userId });
@@ -442,7 +487,7 @@ const recommendedBooksByAuthor = async (req, res) => {
   });
 };
 
-const recommendedBooksByGenre = async (req, res) => {
+const relatedBooksByGenre = async (req, res) => {
 
   const { userId } = req.params;
 
@@ -456,24 +501,20 @@ const recommendedBooksByGenre = async (req, res) => {
 
   if (joinedBooks.length == 0) {
     return res.status(200).json({
-      message: "No recommendations yet, please add books to your list",
+      message: "No related books to find yet, please add books to your reading lists!",
     });
   }
 
   let genre = [];
   joinedBooks.map((book) => (genre = genre.concat(book.genres)));
   const uniqueGenre = [...new Set(genre)].slice(0, 5);
+
   const books = await Book.find({ genres: { $all: uniqueGenre } });
 
   const filterBooks = books
     .filter((x) => !joinedBooks.find((y) => y.title === x.title))
     .sort((a, b) => b.avgRating - a.avgRating)
     .slice(0, 20);
-
-  // res.status(200).json({
-  //   filterBooks,
-  //   length: filterBooks.length,
-  // });
 
   res.json({ filterBooks, length: filterBooks.length });
 };
@@ -649,27 +690,27 @@ const editBookInDB = async (req, res) => {
 
 
 //these controllers can be accessed by users, managers and admins
-app.post("/createcustomlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), createCustomList);
-app.patch("/deletecustomlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), deleteCustomList);
-app.get("/customlist/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getCustomList);
+app.post("/createcustomlist/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), createCustomList);
+app.patch("/deletecustomlist/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), deleteCustomList);
+app.get("/customlist/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), getCustomList);
 
-app.patch("/customlist/addbook/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addBookToCustomList);
-app.patch("/customlist/removebook/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), removeBookFromCustomList);
-app.get("/recommendationbyauthor/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), recommendedBooksByAuthor);
-app.get("/recommendationbygenre/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), recommendedBooksByGenre);
+app.patch("/customlist/addbook/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), addBookToCustomList);
+app.patch("/customlist/removebook/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), removeBookFromCustomList);
+app.get("/relatedbyauthor/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), relatedBooksByAuthor);
+app.get("/relatedbygenre/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), relatedBooksByGenre);
 
-app.patch("/toreadlist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addBookToReadList);
-app.patch("/currentlyreadinglist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addToCurrentlyReadingList);
-app.patch("/finishedlist/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addToFinishedList);
+app.patch("/toreadlist/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), addBookToReadList);
+app.patch("/currentlyreadinglist/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), addToCurrentlyReadingList);
+app.patch("/finishedlist/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), addToFinishedList);
 
-app.get("/list/toread/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getToReadList);
-app.get("/list/currentlyreading/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getCurrentlyReadingList);
-app.get("/list/finished/:userId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), getFinishedList);
+app.get("/list/toread/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), getToReadList);
+app.get("/list/currentlyreading/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), getCurrentlyReadingList);
+app.get("/list/finished/:userId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), getFinishedList);
 
-app.patch("/delete/:userId/:bookId", verifyToken(), checkUser(["USER", "ADMIN", "MANAGER"]), deleteBookFromList);
+app.patch("/delete/:userId/:bookId", limitCallRate, verifyToken(), checkUser(["USER", "MANAGER"]), deleteBookFromList);
 
 //only managers and admins should access this
-app.patch("/editBook/:bookId", verifyToken(), checkUser(["ADMIN", "MANAGER"]), editBookInDB);
+app.patch("/editBook/:bookId", limitCallRate, verifyToken(), checkUser(["MANAGER"]), editBookInDB);
 
 //for heroku
 app.get("*", function (req, res) {

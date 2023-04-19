@@ -78,16 +78,6 @@ const Navbar = () => {
               <Link to="/manager">Manage</Link>
             </li>
           )}
-          {user && accountType == "ADMIN" && (
-            <li onClick={handleToggleSideBar}>
-              <Link to="/manager">Manage</Link>
-            </li>
-          )}
-          {user && accountType == "ADMIN" && (
-            <li onClick={handleToggleSideBar}>
-              <Link to="/admin">Admin</Link>
-            </li>
-          )}
         </ul>
         <div className="auth">
           {user ? (

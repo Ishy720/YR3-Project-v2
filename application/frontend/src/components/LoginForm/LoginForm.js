@@ -63,9 +63,10 @@ function LoginForm() {
         if (sessionStorage.getItem("accountType") === "MANAGER") {
           navigate("/manager");
         }
+        /*
         if (sessionStorage.getItem("accountType") === "ADMIN") {
           navigate("/admin");
-        }
+        }*/
     }).catch(() => {
       toast.error("Incorrect details!");;
     });

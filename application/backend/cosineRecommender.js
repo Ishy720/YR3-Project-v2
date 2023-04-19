@@ -75,6 +75,7 @@ function magnitude(vector) {
 
 //cos(a,b) = a . b / ||a|| . ||b||
 function cosineSimilarity(vecA, vecB){
+  console.log(`Dot Product: ${dotProduct(vecA, vecB)}, Magnitudes: ${magnitude(vecA)}, ${magnitude(vecB)}`)
   return dotProduct(vecA, vecB)/ (magnitude(vecA) * magnitude(vecB));
 }
 
@@ -95,6 +96,16 @@ function textCosineSimilarity(txtA, txtB){
 function getSimilarityScore(value){
   return Math.round(value * 100)
 }
+
+/*
+function test() {
+  const A = "Harry Potter Chamber Secrets JKRowling Hogwarts School";
+  const B = "Harry Potter Deathly Hallows JKRowling Voldemort School";
+  const C = "Harry Potter Chamber Secrets JKRowling Hogwarts School";
+  console.log(textCosineSimilarity(A, B));
+}
+
+test();*/
 
 async function compareBooks(bookA, bookB) {
 

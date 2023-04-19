@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import "./Discover.css";
 import BookCarousel from "../../components/Books/BookCarousel";
 import SearchIcon from "../../images/SearchIcon.svg";
-import SearchFilters from "../../components/Books/SearchFilters";
 import BooksDisplayArea from "../../components/Books/BooksDisplayArea";
 import LoadingIcon from "../../images/LoadingIcon.svg";
 
 const Discover = () => {
-  const [hasSearched, setHasSearched] = useState(false);
+  //const [hasSearched, setHasSearched] = useState(false);
 
   //State to hold book results array from API, view component will re-render everytime this state is updated via setBooks
   const [books, setBooks] = useState([]);
@@ -18,8 +17,6 @@ const Discover = () => {
   //State to hold the current animation state of the search button
   const [iconState, setIconState] = useState(SearchIcon);
   const [loading, setLoading] = useState(false);
-  //State to hold the current filter option the user wants, default is all types
-  //const [filter, setFilter] = useState('all');
 
   //Fetches search term query results from API and places into books state
   const searchBooks = async (title) => {
@@ -29,15 +26,6 @@ const Discover = () => {
     const search = {
       searchTerm: title,
     };
-
-    /*
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(search),
-    };*/
 
     const options = {
       method: "POST",
@@ -56,22 +44,17 @@ const Discover = () => {
 
     setBooks(data.books);
     setIconState(SearchIcon);
-    setHasSearched(true);
+    //setHasSearched(true);
     setLoading(false);
   };
-
-  /*
-  //Function for child search component to call with filter result
-  function updateFilter(newFilter) {
-    setFilter(newFilter);
-  }
-  */
 
   //When view component is rendered, load default search results
   useEffect(() => {
     searchBooks("a");
   }, []);
+
   let content;
+
   if (loading) {
     content = <h1 className="loading-status">Loading...</h1>;
   }
@@ -113,23 +96,3 @@ const Discover = () => {
 };
 
 export default Discover;
-
-{
-  /* {hasSearched ? (
-        <>
-          {books.length > 0 ? (
-            <>
-              <BooksDisplayArea books={books} />
-            </>
-          ) : (
-            <>
-              <h1>No results found.</h1>
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <h1>Results will appear here.</h1>
-        </>
-      )} */
-}

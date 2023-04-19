@@ -56,8 +56,8 @@ function RegisterForm() {
 
       const userData = {
         username,
-        password,
-        accountType: "USER",
+        password
+        //accountType: "USER",
       };
 
       const options = {
@@ -74,7 +74,7 @@ function RegisterForm() {
       );
       const resMessage = await response.json();
       if (response.status == 200) notifySuccess(resMessage.message);
-      if (response.status == 201) notifyError(resMessage.message);
+      if (response.status == 400) notifyError(resMessage.message);
     }
   }
 

@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useGlobalContext } from "./context";
 import "./index.css"
+
 //import pages
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
@@ -8,13 +9,13 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import Discover from "./pages/Discover/Discover";
 import Books from "./pages/Books/Books";
-import AdminView from "./pages/Admin/AdminView";
+//import AdminView from "./pages/Admin/AdminView";
 import ManagerView from "./pages/Manager/ManagerView";
 import Suggested from "./pages/Suggested/Suggested";
 import Protected from "./components/ProtectedRoutes/Protected";
-import UserProtected from "./components/ProtectedRoutes/UserProtected";
-import AdminProtected from "./components/ProtectedRoutes/AdminProtected";
-import ManagerProtected from "./components/ProtectedRoutes/ManagerProtected";
+//import UserProtected from "./components/ProtectedRoutes/UserProtected";
+//import AdminProtected from "./components/ProtectedRoutes/AdminProtected";
+//import ManagerProtected from "./components/ProtectedRoutes/ManagerProtected";
 
 //import components
 import Navbar from "./components/Navbar/Navbar";
@@ -49,14 +50,9 @@ function App() {
         />
 
         <Route
-          path="/admin"
-          element={auth && accountType === "ADMIN" ? <AdminView /> : <Home />}
-        />
-
-        <Route
           path="/manager"
           element={
-            auth && (accountType === "MANAGER" || accountType === "ADMIN") ? <ManagerView /> : <Home />
+            auth && (accountType === "MANAGER") ? <ManagerView /> : <Home />
           }
         />
 
