@@ -1,3 +1,7 @@
+/*
+  This file contains the implementation for the jaccard recommendation system.
+*/
+
 //Imports
 const { removeStopwords, eng } = require('stopword')
 const Book = require("./models/BookSchema.js");
@@ -12,7 +16,7 @@ mongoose
   })
   .then(() => {
     console.log("Jaccard Recommendation engine connected to MongoDB");
-    //retrieveRelatedBooks("640b6eb11024425951abbfde");
+    //recommendForBook("640b6eb01024425951abb166");
   })
   .catch((err) => {
     console.log(err);
@@ -25,6 +29,7 @@ function tokenize(text) {
   const tokenSet = new Set();
 
   for (const word of relevantWordsArray) {
+    //removes punctuation from word and converts word to lowercase
     const cleanedWord = word.replace(/[^\w\s]|_/g, "").trim().toLowerCase();
 
     if (cleanedWord !== "") {
@@ -35,41 +40,46 @@ function tokenize(text) {
   return tokenSet;
 }
 
+async function retrieveRelatedBooks(bookId, genres) {
+
+  const books = await Book.aggregate([
+    //books which match at least one genre to the genres input array
+    { $match: { genres: { $in: genres } } },
+    //books that don't match the input book id
+    { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
+    //retrieve their information
+    { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
+  ]);
+  
+  return books;
+}
+
+
 //calculate Jaccard similarity coefficient between two sets (books)
 //J(A, B) = |A ∩ B| / |A ∪ B|
 //where A and B are sets of elements, and |A| and |B| denote the number of elements in each set
-
 function jaccardSimilarity(set1, set2) {
   const intersection = new Set([...set1].filter(x => set2.has(x)));
   const union = new Set([...set1, ...set2]);
   return intersection.size / union.size;
 }
 
-function test() {
-  const A = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
-  const B = tokenize("Harry Potter Deathly Hallows JKRowling Voldemort School");
-  const C = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
-  console.log(jaccardSimilarity(A, B));
-}
+//returns recommended books for given input book id
+async function recommendForBook(bookId) {
 
-test();
+    //get the input book from the book database by its ID
+    const inputBook = await Book.findById(bookId);
+    console.log(`Generating recommendations for ${inputBook.title}...`);
 
-//takes an array of genres and retrieves randomized sample of books which regex match the input genres array
-async function retrieveRelatedBooks(bookId) {
-
-    const inputBook = await Book.findById(bookId).exec();
     const genres = inputBook.genres;
+
+    //get the bag of words representation of the input book
     const inputTokens = tokenize(inputBook.title + ' ' + inputBook.author + ' ' + inputBook.description);
 
-    //const relatedBooks = await Book.find({});
-    
-    //get related books in terms of genre
-    const relatedBooks = await Book.aggregate([
-      { $match: { genres: { $in: genres } } },
-      { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
-    ]).exec();
+    //get books to compare against which have at least one matching genre
+    const relatedBooks = await retrieveRelatedBooks(bookId, genres);
   
-    //get Jaccard similarity coefficient between input book and retrieved books
+    //get Jaccard similarity coefficient between input book and retrieved book bag of word representations
     const results = relatedBooks.map(book => {
       const bookTokens = tokenize(book.title + ' ' + book.author + ' ' + book.description);
       const similarity = jaccardSimilarity(inputTokens, bookTokens);
@@ -78,14 +88,45 @@ async function retrieveRelatedBooks(bookId) {
   
     //sort books by descending similarity
     results.sort((a, b) => b.similarity - a.similarity);
-  
-    //print top 30 books
-    for (let i = 0; i < 30 && i < results.length; i++) {
+    return results.splice(0, 10);
+    /*
+    //print top 6 books
+    for (let i = 0; i < 6 && i < results.length; i++) {
       const { book, similarity } = results[i];
-      console.log(`${i}. ${book.title} - Jaccard Similarity: (${similarity.toFixed(3)})`);
-    }
+      console.log(`${i + 1}. ${book.title} - Jaccard Similarity: (${similarity.toFixed(3)})`);
+    }*/
 }
 
+recommendForBook("640b6eb01024425951abb166")
+.then((result) => {
+  result.forEach((book) => {
+    console.log(book.book.title + "  " + book.similarity);
+  });
+})
+
+exports.recommendForBook = recommendForBook;
+
+//this function is used to test the time and memory performance of the recommendation system.
+async function runTest() {
+  //measure the initial memory usage and time
+  const memoryBefore = process.memoryUsage().heapUsed
+  const start = Date.now()
+  recommendForBook("640b6eb01024425951abb166")
+    .then((result) => {
+      const end = Date.now()
+      const memoryAfter = process.memoryUsage().heapUsed
+      //print the measured time taken and memory used
+      console.log('Time', (end - start) / 1000, 's', '||', 'Memory used:', (memoryAfter - memoryBefore) / (1024 * 1024), 'MB');
+      //print the books that were recommended
+      result.forEach((book) => {
+        console.log(book.book.title + "  " + book.similarity);
+      });
+    })
+}
+
+//runTest();
+
+//test function to compare two books specifically
 async function compareBooks(bookA, bookB) {
 
   const inputBook = await Book.findById(bookA).exec();
@@ -101,4 +142,13 @@ async function compareBooks(bookA, bookB) {
 
 //compareBooks("640b6eb11024425951abbfde", "640b6eb11024425951abc9c8");
 
+
+function test() {
+  const A = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
+  const B = tokenize("Harry Potter Deathly Hallows JKRowling Voldemort School");
+  const C = tokenize("Harry Potter Chamber Secrets JKRowling Hogwarts School");
+  console.log(jaccardSimilarity(A, B));
+}
+
+//test();
 

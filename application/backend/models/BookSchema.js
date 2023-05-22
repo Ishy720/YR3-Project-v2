@@ -1,5 +1,5 @@
 /*
-    This is the schema for my books in my MongoDB database.
+    This is the schema for the books table in the MongoDB database.
 */
 
 const { Schema, model } = require('mongoose');

@@ -15,7 +15,7 @@ mongoose
   })
   .then(() => {
     console.log("Bayes recommendation engine connected to MongoDB");
-    findSimilarBooks("640b6eb11024425951abbfde");
+    //findSimilarBooks("640b6eb01024425951abacea");
     //trainClassifier();
   })
   .catch((err) => {
@@ -31,19 +31,20 @@ const getBooksByIds = async (bookIds) => {
 function tokenize(text) {
     const splitText = text.split(" ");
     const relevantWordsArray = removeStopwords(splitText, eng);
-    const tokenSet = new Set();
+    const tokens = [];
 
     for (const word of relevantWordsArray) {
+      //removes punctuation from word and converts word to lowercase
       const cleanedWord = word.replace(/[^\w\s]|_/g, "").trim();
   
       if (cleanedWord !== "") {
-        tokenSet.add(cleanedWord);
+        tokens.push(cleanedWord);
       }
     }
-  
-    return Array.from(tokenSet);
+    return tokens;
 }
 
+//concatenates arrays together into one single string
 function concatenate(tokenArrays) {
     const concatenated = [];
     for (const tokenArray of tokenArrays) {
@@ -55,40 +56,45 @@ function concatenate(tokenArrays) {
 
 const trainClassifier = async () => {
 
+  //get all the books from the book database
   const books = await Book.find();
-  //const books = await Book.find({ genres: /Comic Book/i });
 
+  //instantiate the bayes classifier from the natural library
   const classifier = new natural.BayesClassifier();
-  let count = 0;
+  //let count = 0;
 
+  //iterate through each retrieved book from the database
   books.forEach(book => {
     
+    //get bag of words representations for title, author, description fields
     const titleTokens = tokenize(book.title.toLowerCase());
     const authorTokens = tokenize(book.author.toLowerCase());
     const descriptionTokens = tokenize(book.description.toLowerCase());
+
+    //get raw fields
     const rawTitle = book.title;
     const rawAuthor = book.author;
     const rawDescription = book.description;
 
+    //convert bag of words representations to strings instead of arrays
     const titleFeatures = concatenate([titleTokens]);
     const authorFeatures = concatenate([authorTokens]);
     const descriptionFeatures = concatenate([descriptionTokens]);
-    const fullFeatures = concatenate([titleTokens, authorTokens, descriptionTokens]);
 
-    
+    //concatenate all bag of words into one string
+    const fullFeatures = concatenate([titleTokens, authorTokens, descriptionTokens, book.genres]);
+
+    //add the different permutations of the book's text fields to the classifier
     classifier.addDocument(titleFeatures, book._id.toString());
     classifier.addDocument(authorFeatures, book._id.toString());
     classifier.addDocument(descriptionFeatures, book._id.toString());
     classifier.addDocument(fullFeatures, book._id.toString());
-    
-
     classifier.addDocument(rawTitle.toLowerCase(), book._id.toString());
     classifier.addDocument(rawAuthor.toLowerCase(), book._id.toString());
     classifier.addDocument(rawDescription.toLowerCase(), book._id.toString());
 
-
-    count++;
-    console.log(count);
+    //count++;
+    //console.log(count);
   });
 
   const start = new Date();
@@ -102,33 +108,38 @@ const trainClassifier = async () => {
 
   const classifierJSON = JSON.stringify(classifier);
   console.log("Writing file...");
-  fs.writeFileSync('fullDBClassifer.json', classifierJSON);
+  fs.writeFileSync('bookClassifier.json', classifierJSON);
   console.log("File saved!");
 
 };
   
 const loadClassifier = () => {
-    const classifierJson = fs.readFileSync('fullDBClassifer.json');
+    const classifierJson = fs.readFileSync('bookClassifier.json');
     const classifier = natural.BayesClassifier.restore(JSON.parse(classifierJson));
     return classifier;
 };
 
-
+//returns predicted similar books as recommendations for given input book id
 const findSimilarBooks = async (bookId) => {
+
+  //load the trained bayes classifier model
   const classifier = loadClassifier();
+
+  //get the input book by its ID
   const inputBook = await Book.findById(bookId);
 
+  //get bag of words representation of input book
   const titleTokens = tokenize(inputBook.title.toLowerCase());
-  const authorTokens = tokenize(inputBook.author.toLowerCase());
-  const descriptionTokens = tokenize(inputBook.description.toLowerCase());
+  //const authorTokens = tokenize(inputBook.author.toLowerCase());
+  //const descriptionTokens = tokenize(inputBook.description.toLowerCase());
 
-  //const inputFeatures = concatenate([titleTokens, authorTokens, descriptionTokens]);
-  //const inputFeatures = concatenate([titleTokens, descriptionTokens]);
   const inputFeatures = concatenate([titleTokens]);
+  //const inputFeatures = concatenate([authorTokens]);
 
+  //retrieve the book classifications the classifier predicts using the input features, limited to a max of 10
   const categories = classifier.getClassifications(inputFeatures)
     .sort((a, b) => b.value - a.value)
-    .slice(0, 30)
+    .slice(0, 10)
     .map((classification) => {
       return {
         id: classification.label,
@@ -136,32 +147,48 @@ const findSimilarBooks = async (bookId) => {
       };
     });
 
-  // Find min and max similarity scores
+  //find min and max similarity scores
   const minScore = categories[categories.length - 1].score;
   const maxScore = categories[0].score;
 
-  console.log(`Top 30 similar books for ${inputBook.title}:`);
+  //retrieve the books from the book database that were predicted by the classifier
   const results = await getBooksByIds(categories.map((category) => category.id));
 
-  // Normalize and sort results
+  //normalise and sort book results to show probability match out of 100
   results.sort((a, b) => {
     const scoreA = categories.find((category) => category.id === a.id).score;
     const scoreB = categories.find((category) => category.id === b.id).score;
-    const normalizedScoreA = (scoreA - minScore) / (maxScore - minScore);
-    const normalizedScoreB = (scoreB - minScore) / (maxScore - minScore);
-    return normalizedScoreB - normalizedScoreA;
+    const normalisedScoreA = (scoreA - minScore) / (maxScore - minScore);
+    const normalisedScoreB = (scoreB - minScore) / (maxScore - minScore);
+    return normalisedScoreB - normalisedScoreA;
   });
 
+  //print out the predicted books with their normalised classification similarity score
   for (const book of results) {
     const similarityScore = categories.find((category) => category.id === book.id).score;
-    const normalizedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
-    //CHECK SIM SCORES????
-    if(normalizedScore > 0) {
-      console.log(`Book: ${book.title} - Probability: ${normalizedScore.toFixed(3)}`);
+    const normalisedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
+    if(normalisedScore > 0) {
+      console.log(`Book: ${book.title} - Probability: ${normalisedScore.toFixed(3)}`);
     }
   }
+
+  return results;
 };
 
-//"640b6eb31024425951ac0c6f" New X-Men, Vol 7: Here comes tomorrow
-//"640b6eb11024425951abbfde" Batman, Volume 1: The Court of Owls
-//"640b6eb01024425951abad25" Harry Potter
+findSimilarBooks("640b6eb01024425951abacea");
+
+async function runTest() {
+  const memoryBefore = process.memoryUsage().heapUsed
+  const start = Date.now()
+  findSimilarBooks("640b6eb01024425951abacea")
+    .then((result) => {
+      const end = Date.now()
+      const memoryUsed = process.memoryUsage().heapUsed
+      console.log('Time taken:', (end - start)/1000, 's', '||', 'Memory used:', (memoryUsed - memoryBefore)/(1024 * 1024), 'MB');
+      result.forEach((book) => {
+        console.log(book.title);
+      });
+    })
+}
+
+//runTest();

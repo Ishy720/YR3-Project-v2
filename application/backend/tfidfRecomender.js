@@ -1,3 +1,7 @@
+/*
+  This file is where I tried to make the TF-IDF recommendation system without third party imports to assist in my calculations.
+*/
+
 //Imports
 const { removeStopwords, eng } = require('stopword')
 const Book = require("./models/BookSchema.js");
@@ -12,11 +16,21 @@ mongoose
   })
   .then(() => {
     console.log("TF-IDF engine connected to MongoDB");
-    //run("640b6eb11024425951abbfde");
+    getRecommendations("640b6eb11024425951abbfde");
   })
   .catch((err) => {
     console.log(err);
 });
+
+async function retrieveRelatedBooks(genres) {
+
+  const books = await Book.aggregate([
+    { $match: { genres: { $in: genres } } },
+    { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
+  ]).exec();
+  
+  return books;
+}
 
 //takes in text and removes stopwords, then tokenizes them (splits text into array of words)
 function tokenize(text) {
@@ -25,6 +39,7 @@ function tokenize(text) {
   const tokens = [];
 
   for (const word of relevantWordsArray) {
+    //removes punctuation from word and converts word to lowercase
     const cleanedWord = word.replace(/[^\w\s]|_/g, "").trim().toLowerCase();
 
     if (cleanedWord !== "") {
@@ -32,68 +47,75 @@ function tokenize(text) {
     }
   }
 
-  //console.log(tokens);
   return tokens;
 }
 
-function fakeTokenize(document) {
-  const arr = [];
-  const splitText = document.split(" ");
-  for(const word of splitText) {
-    arr.push(word.toLowerCase());
-  }
-  return arr;
-}
-
-// compute the term frequency (tf) for a given word in a document
+//compute the term frequency (tf) for a given word in a document
 function tf(word, document) {
-  const words = fakeTokenize(document);
-  //const words = tokenize(document);
-  const count = words.reduce((acc, w) => w === word ? acc + 1 : acc, 0); // count how many times the word appears in the document
-  //console.log("TF: words = " + words.length + ", no. of appearances = " + count);
-  return count / words.length; // divide the count by the total number of words in the document to get the term frequency
+  const words = tokenize(document);
+  let count = 0;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === word) {
+      count++;
+    }
+  }
+  return count / words.length; //divide the count by the total number of words in the document to get the term frequency
 }
 
-// compute the inverse document frequency (idf) for a given word across all documents
+//compute the inverse document frequency (idf) for a given word across all documents
 function idf(word, documents) {
-  const docsContainingWord = documents.reduce((count, doc) => fakeTokenize(doc).includes(word) ? count + 1 : count, 0); // count how many documents contain the word
-  //console.log("Docs containing word " + docsContainingWord);
-  //console.log("Number of docs " + documents.length);
-  //console.log(Math.log10(documents.length / docsContainingWord));
-  //return Math.log10(documents.length / (1 + docsContainingWord)); // calculate the inverse document frequency
+  let docsContainingWord = 0;
+  for (let i = 0; i < documents.length; i++) {
+    let wordsInDoc = tokenize(documents[i]);
+    if (wordsInDoc.includes(word)) {
+      docsContainingWord++;
+    }
+  }
   return (Math.log10(documents.length / (docsContainingWord)));
 }
 
-// compute the tf-idf score for a given word in a document
+//compute the tf-idf score for a given word in a document
 function tfIdf(word, document, documents) {
   const tfScore = tf(word, document);
   const idfScore = idf(word, documents);
-  console.log(`TF = ${tfScore}, IDF = ${idfScore}`);
+  //console.log(`TF = ${tfScore}, IDF = ${idfScore}`);
   return tfScore * idfScore;
 }
 
-/*
-async function run() {
-  //const documents = ["This is the first document", "This is the second document with a cat", "And this is the third document"];
-  const documents = ["Batman Strikes Again in this novel batman and robin fight muder", "Batman and superman fight side by side", "Robin fights criminals and murder part of series far back"];
+
+async function getRecommendations(bookId) {
   
+  const inputBook = await Book.findOne({ _id: bookId });
+  //get the bag of words representation for the input book
+  const inputBookTokens = tokenize(inputBook.title + " " +  inputBook.author + " " + inputBook.description);
 
-  const inputBook = await Book.findOne({ _id: "640b6eb11024425951abbfde" });
-  const tokens = tokenize(inputBook.title + " " + inputBook.description);
-  console.log(tokens);
+  //get books to compare against which have at least one matching genre
+  const databaseSample = await retrieveRelatedBooks(inputBook.genres);
 
-  let total = 0;
+  //array to hold book tfidf scores
+  const bookScores = {};
 
-  for(let i = 0; i < documents.length; i++) {
+  //loop through each word of the input book bag of words
+  for (const token of inputBookTokens) {
+    console.time(`Token ${token} comparison`);
+    for (const book of databaseSample) {
+      //get bag of words representation for comparison book
+      const bookTokens = tokenize(book.title + " " + book.author + " " + book.description);
+      //calculate tf-idf weighting for the input book token against the words found in the comparison book bag of words.
+      const tfIdfScore = tfIdf(token, bookTokens.join(" "), databaseSample.map(b => b.title + " " + b.author + " " + b.description));
 
-    for(let j = 0; j < tokens.length; j++) {
-      total += tfIdf(tokens[j], documents[i], documents);
+      //add the token scores to the book array
+      if (book._id in bookScores) {
+        bookScores[book._id] += tfIdfScore;
+      } 
+      else {
+        bookScores[book._id] = tfIdfScore;
+      }
     }
-
+    console.timeEnd(`Token ${token} comparison`);
   }
-  console.log(total);
 
-}*/
+}
 
 
 //640b6eb11024425951abbfde batman vol 1
@@ -104,7 +126,7 @@ async function run() {
 
   const tokenizedInputDocument = tokenize(inputBook.title + ' ' + inputBook.description); // tokenize the input book's title and description*/
 
-
+/*
 const documents = ["This is the first document", "This is the second document with a cat", "And this is the third document"];
 const word = "cat";
 const documentIndex = 1;

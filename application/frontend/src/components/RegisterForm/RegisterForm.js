@@ -1,18 +1,23 @@
+//Imports
 import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterForm.css";
 import { validateRegistrationDetails } from "../../common/data_validation";
 import toast, { Toaster } from "react-hot-toast";
 
+//RegisterForm Component, used to render the login form for the user to register with the application
 function RegisterForm() {
+
   let navigate = useNavigate();
 
+  //variables to hold the user's input of username and password and password recheck
   const formState = {
     username: "",
     password: "",
     passwordReentry: ""
   };
 
+  //function to update the formState's variables dynamically
   function reducer(state, action) {
     switch (action.type) {
       case "update_input":
@@ -24,7 +29,6 @@ function RegisterForm() {
         return state;
     }
   }
-
   const [state, dispatch] = useReducer(reducer, formState);
 
   function notifyError(message) {
@@ -33,17 +37,17 @@ function RegisterForm() {
 
   function notifySuccess(message) {
     toast.success(message);
-    navigate("/login");
+    //navigate("/login");
   }
 
-  //Function responsible for checking input data is valid, sends to backend
+  //function responsible for checking input data is valid, sends to backend
   async function handleSubmit(e) {
     e.preventDefault();
 
     const response = validateRegistrationDetails(state);
 
     if (response.length > 0) {
-      //prevent the event from firing to server
+      //prevent the form submission event from automatically firing to server
       //alert(response);
       for (let i = 0; i < response.length; i++) {
         notifyError(response[i]);
@@ -57,7 +61,6 @@ function RegisterForm() {
       const userData = {
         username,
         password
-        //accountType: "USER",
       };
 
       const options = {
@@ -68,16 +71,17 @@ function RegisterForm() {
         body: JSON.stringify(userData),
       };
 
-      const response = await fetch(
-        "http://localhost:8080/registerNewUser",
-        options
-      );
+      //send the user's account details to the server and await response
+      const response = await fetch("http://localhost:8080/register", options);
       const resMessage = await response.json();
+
+      //notify registration operation success or error
       if (response.status == 200) notifySuccess(resMessage.message);
       if (response.status == 400) notifyError(resMessage.message);
     }
   }
 
+  //return function containing JSX markup to display the UI elements
   return (
     <div id="registerContainer">
       <div id="registerFormContainer">

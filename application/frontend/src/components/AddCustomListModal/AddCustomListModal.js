@@ -1,19 +1,21 @@
+//Imports
 import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import { FaTrash, FaTimes } from "react-icons/fa";
 import { useGlobalContext } from "../../context";
 import toast, { Toaster } from "react-hot-toast";
 
+
 const AddCustomListModal = () => {
+
+  //import required states/functions from context file
   const {
     createCustomList,
     getCustomList,
     user,
     customListNames,
-    customList,
     deleteCustomList,
-    showModal,
-    setShowModal,
+    setShowCustomListModal,
   } = useGlobalContext();
 
   function notifySuccess(message) {
@@ -23,14 +25,16 @@ const AddCustomListModal = () => {
   const [listName, setListName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  //on render get the user's custom list using their id
   useEffect(() => {
     getCustomList(user.id);
   }, []);
 
   const closeModal = () => {
-    setShowModal(false);
+    setShowCustomListModal(false);
   };
 
+  //event handler to create a new custom reading list
   const handleCreateList = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -41,6 +45,7 @@ const AddCustomListModal = () => {
     getCustomList(user.id);
   };
 
+  //event handler to delete a custom reading list
   const handleDeleteList = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -52,6 +57,7 @@ const AddCustomListModal = () => {
     getCustomList(user.id);
   };
 
+  //return function containing JSX markup to display the UI elements
   return (
     <section className="main-sec">
       <div className="modal-content">

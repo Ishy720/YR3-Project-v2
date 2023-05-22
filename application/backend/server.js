@@ -1,3 +1,7 @@
+/*
+  This file sets up the application's server. It is responsible for configurations and imports.
+*/
+
 //Modules
 const express = require("express");
 const cors = require("cors");
@@ -17,7 +21,7 @@ const mongoose = require("mongoose");
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000", // the origin of the client
+    origin: "http://localhost:3000", //the origin of the client
   })
 );
 app.use(cookieParser());

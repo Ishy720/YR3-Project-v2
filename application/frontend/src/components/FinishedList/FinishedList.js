@@ -1,25 +1,25 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-
 import { useGlobalContext } from "../../context";
 
+//FinishedList Component, used for rendering the user's finished reading core list and the books inside it, with options to transfer the books to other core lists 
 const FinishedList = () => {
+
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState(false);
+
+  //import required states/functions from context file
   const {
     deleteBook,
     finishedList,
     setFinishedList,
-    addToFinishedList,
     addToCurrentlyReadingList,
-    currentlyReadingList,
     setCurrentlyReadingList,
     setToReadList,
-    toreadlist,
-    getToReadList,
-    addToreadList,
+    addToReadList,
     getFinishedList,
     setBookInformation,
     setShowBookInfoModal,
@@ -34,6 +34,7 @@ const FinishedList = () => {
     toast.success(message);
   }
 
+  //event handler for getting the user's finished reading list of books
   const getList = async () => {
     setLoading(true);
     const { data } = await getFinishedList(userId);
@@ -42,6 +43,7 @@ const FinishedList = () => {
     setLoading(false);
   };
 
+  //event handler to add a specific book to the user's currently-reading list
   const handleAddToCurrentlyReadingList = async (userId, bookId) => {
     setQuery(true);
     const data = await addToCurrentlyReadingList(userId, bookId);
@@ -58,9 +60,10 @@ const FinishedList = () => {
     setQuery(false);
   };
 
+  //event handler to add a specific book to the user's to-read list
   const handleAddToReadList = async (userId, bookId) => {
     setQuery(true);
-    const data = await addToreadList(userId, bookId);
+    const data = await addToReadList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
       //alert(data.data.message);
@@ -95,6 +98,7 @@ const FinishedList = () => {
     getList();
   }, []);
 
+  //content variable to hold UI markup depending on if there are any books to render or not
   let content;
 
   if (loading) {

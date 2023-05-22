@@ -95,4 +95,5 @@ h4 {
   right: 10px;
   margin-right: 2rem;
   cursor: pointer;
+  z-index: 999;
 }

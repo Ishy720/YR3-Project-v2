@@ -1,7 +1,10 @@
+//Imports
 import React, { useState, useEffect, useRef } from 'react';
 import "./BookCarousel.css";
 
+//BookCarousel Component, used to render an array of book objects as a carousel
 const BookCarousel = ({ books }) => {
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [slideAmount, setSlideAmount] = useState(0);
     const [transitioning, setTransitioning] = useState(false);
@@ -20,6 +23,7 @@ const BookCarousel = ({ books }) => {
         setDirection(-1);
     };
 
+    //used to move the carousel of books along for a transition effect
     useEffect(() => {
         if (transitioning) {
           let start;
@@ -45,6 +49,7 @@ const BookCarousel = ({ books }) => {
         }
       }, [currentIndex, slideAmount, transitioning, direction, books.length]);
 
+    //return function containing JSX markup to display the UI elements
     return (
         <div className="carousel">
             <button onClick={handlePrev}>Prev</button>

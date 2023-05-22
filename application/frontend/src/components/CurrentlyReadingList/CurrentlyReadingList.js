@@ -1,23 +1,25 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-
 import { useGlobalContext } from "../../context";
 
+//CurrentlyReadingList Component, used for rendering the user's currently reading core list and the books inside it, with options to transfer the books to other core lists
 const CurrentlyReadingList = () => {
+
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState(false);
+
+  //import required states/functions from context file
   const {
     deleteBook,
-    addToreadList,
+    addToReadList,
     addToFinishedList,
-    toreadlist,
     currentlyReadingList,
     getCurrentlyReadingList,
     setCurrentlyReadingList,
     setToReadList,
-    finishedList,
     setFinishedList,
     setBookInformation,
     setShowBookInfoModal,
@@ -32,7 +34,7 @@ const CurrentlyReadingList = () => {
     toast.success(message);
   }
 
-
+  //event handler for getting the user's currently reading list of books
   const getList = async () => {
     setLoading(true);
     const { data } = await getCurrentlyReadingList(userId);
@@ -41,9 +43,10 @@ const CurrentlyReadingList = () => {
     setLoading(false);
   };
 
+  //event handler to add a specific book to the user's to-read list
   const handleAddToReadList = async (userId, bookId) => {
     setQuery(true);
-    const data = await addToreadList(userId, bookId);
+    const data = await addToReadList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
       //alert(data.data.message);
@@ -57,6 +60,7 @@ const CurrentlyReadingList = () => {
     setQuery(false);
   };
 
+  //event handler to add a specific book to the user's finished-reading list
   const handleAddToFinishedList = async (userId, bookId) => {
     setQuery(true);
 
@@ -95,7 +99,9 @@ const CurrentlyReadingList = () => {
     getList();
   }, []);
 
+  //content variable to hold UI markup depending on if there are any books to render or not
   let content;
+
   if (loading) {
     content = <p className="other-message">Loading......</p>;
   }
@@ -103,6 +109,7 @@ const CurrentlyReadingList = () => {
   if (currentlyReadingList.length === 0) {
     content = <p className="other-message">Looks like you aren't tracking any books here! Add a book to get started!</p>;
   }
+
   if (!loading && currentlyReadingList.length > 0) {
     content = currentlyReadingList.map((book) => {
       return (

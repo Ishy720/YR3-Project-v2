@@ -1,9 +1,11 @@
+//Imports
 import React, { useState, useEffect } from 'react';
 import "./ManagerView.css";
 
+//ManagerView Component
 function ManagerView() {
 
-  //stats states
+  //statistic states
   const [totalBookCount, setTotalBookCount] = useState(0);
   const [totalUserCount, setTotalUserCount] = useState(0);
   const [mostCommonBook, setMostCommonBook] = useState({});
@@ -17,20 +19,21 @@ function ManagerView() {
   const [editBook, setEditBook] = useState(null);
   const [updatedBook, setUpdatedBook] = useState(null);
 
+  //function to handle and render book search results
   const handleSearch = async (event) => {
     event.preventDefault();
     setEditBook(null);
+    //send HTTP request to server to search books
     try {
       const token = sessionStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:8080/getBooksBySearchTerm",
+        `http://localhost:8080/books/search/${searchTerm}`,
         {
-          method: "POST",
+          method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ searchTerm }),
         }
       );
       const data = await response.json();
@@ -40,13 +43,16 @@ function ManagerView() {
     }
   };
 
+  //event handler for edit buttons
   const handleEditClick = (book) => {
     setEditBook({ ...book });
     setUpdatedBook({ ...book });
   };
 
+  //event handler for submitting an edited book
   const handleEditSubmit = async (event) => {
     event.preventDefault();
+    //send HTTP request to server to edit the specified book in the database
     try {
       const token = sessionStorage.getItem("token");
       const response = await fetch(
@@ -63,6 +69,7 @@ function ManagerView() {
       const data = await response.json();
       setUpdatedBook(data.book);
       setEditBook(null);
+      //render updated books
       setSearchResults(
         searchResults.map((book) =>
           book._id === data.book._id ? data.book : book
@@ -74,6 +81,7 @@ function ManagerView() {
     }
   };
 
+  //handles the text field updates when editting books
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUpdatedBook({ ...updatedBook, [name]: value });
@@ -82,17 +90,18 @@ function ManagerView() {
   useEffect(() => {
     setIsLoading(true);
     
-    fetch('http://localhost:8080/getSiteAnalytics', {
-      method: 'POST',
+    //send HTTP request to server to get analytics
+    fetch('http://localhost:8080/analytics', {
+      method: 'GET',
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + sessionStorage.getItem("token")
-      },
-      body: JSON.stringify({})
+      }
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        //console.log(data);
+        //set the data in their respective states
         setTotalBookCount(data.totalBookCount);
         setTotalUserCount(data.totalUserCount);
         setMostCommonBook(data.mostCommonBook);
@@ -106,6 +115,7 @@ function ManagerView() {
       });
   }, []);
 
+  //return function containing JSX markup to display the UI elements
   return (
     <main className="manager-page-main">
       <div className="manager-page-heading">

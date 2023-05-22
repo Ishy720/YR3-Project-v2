@@ -1,16 +1,13 @@
+//Imports
 import BookCard from "./BookCard";
-import BookInfoModal from "./BookInfoModal";
 import './BooksDisplayArea.css'
-import { useGlobalContext } from "../../context.js";
 
+//BookDisplayArea Component, which is the container for rendering book search results using the props as the input parameter
 function BooksDisplayArea(props) {
 
-  const { bookInformation, setBookInformation, showBookInfoModal, setShowBookInfoModal} = useGlobalContext();
-
+    //return function containing JSX markup to display the UI elements
     return (
         <>
-        
-
         {
             props.books?.length > 0
             ? (

@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../context";
 
 
 const BookCarousel = ({ books }) => {
-  const { setBookInformation, showBookInfoModal, setShowBookInfoModal } = useGlobalContext();
+  const { setBookInformation, setShowBookInfoModal } = useGlobalContext();
 
   const handleClick = (book) => {
     //alert(book.title);
@@ -32,7 +32,7 @@ const BookCarousel = ({ books }) => {
       autoPlay
       centerMode
       centerSlidePercentage={25}
-      infiniteLoop
+      
       showThumbs={false}
       dynamicHeight
       width="80%"

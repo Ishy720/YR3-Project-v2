@@ -1,3 +1,4 @@
+//Imports
 import "./LoginForm.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -5,24 +6,30 @@ import axios from "axios";
 import { useGlobalContext } from "../../context";
 import toast, { Toaster } from "react-hot-toast";
 
+//LoginForm Component, used to render the login form for the user to log into the application with
 function LoginForm() {
-  const { setUser, setAuth, setAccountType } = useGlobalContext();
 
+  //import required states/functions from context file
+  const { setUser, setAuth, setAccountType } = useGlobalContext();
   let navigate = useNavigate();
 
+  //variables to hold the user's input of username and password
   const initialUserData = {
     username: "",
     password: "",
   };
 
+  //state to hold the initialUserData
   const [userData, setUserData] = useState(initialUserData);
+
+  //event handler to update the userData variables dynamically
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData((values) => ({ ...values, [name]: value }));
   };
 
-  axios.defaults.withCredentials = true;
 
+  //event handler to handle the form submission for the user to log into the application
   async function handleSubmit(e) {
     e.preventDefault();
     const { username, password } = userData;
@@ -32,10 +39,13 @@ function LoginForm() {
       password: password,
     };
 
+    //submit the user's login data to the server to attempt to login
+    axios.defaults.withCredentials = true;
     axios
       .post("http://localhost:8080/login", loginData)
       .then((res) => {
-        console.log(res.data);
+
+        //set session storage variables about the user and their JWT authentication token
         sessionStorage.setItem("authenticated", true);
         sessionStorage.setItem("accountType", res.data.user.accountType);
         sessionStorage.setItem(
@@ -54,37 +64,27 @@ function LoginForm() {
         });
       })
       .then(() => {
+        
+        //set context variables in context file so the rest of the application and files can use the user's data
         setAuth(Boolean(sessionStorage.getItem("authenticated")));
         setAccountType(sessionStorage.getItem("accountType"));
         console.log(sessionStorage.getItem("accountType"));
+
+        //navigate the user to the search page if they are a normal user
         if (sessionStorage.getItem("accountType") === "USER") {
           navigate("/searchPage");
         }
+
+        //navigate the user to the manager page if they are a manager
         if (sessionStorage.getItem("accountType") === "MANAGER") {
           navigate("/manager");
         }
-        /*
-        if (sessionStorage.getItem("accountType") === "ADMIN") {
-          navigate("/admin");
-        }*/
     }).catch(() => {
       toast.error("Incorrect details!");;
     });
   }
 
-  function getSessionDetails() {
-    axios
-      .get("http://localhost:8080/session")
-      .then((res) => console.log(res.data));
-  }
-
-  function logout() {
-    axios
-      .get("http://localhost:8080/logout")
-      .then((res) => sessionStorage.setItem("authenticated", false));
-    //delete details from local storage
-  }
-
+  //return function containing JSX markup to display the UI elements
   return (
     <div id="loginContainer">
       <div id="loginFormContainer">
@@ -136,7 +136,3 @@ function LoginForm() {
 }
 
 export default LoginForm;
-{
-  /* <button onClick={getSessionDetails}>Print session info</button>
-<button onClick={logout}>Logout</button> */
-}

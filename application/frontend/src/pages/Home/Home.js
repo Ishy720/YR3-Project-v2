@@ -1,14 +1,18 @@
+//Imports
 import React, { useRef } from "react";
 import "./Home.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useViewportScroll, useTransform, motion } from "framer-motion";
 import { FaArrowCircleRight } from "react-icons/fa";
 
+//Home Component
 function Home() {
-  let navigate = useNavigate();
+
   const { scrollY } = useViewportScroll();
   const sectionRef = useRef(null);
   const y = useTransform(scrollY, [0, 500], [0, 0]);
+  
+  //return function containing JSX markup to display the UI elements
   return (
     <div className="home">
       <motion.section
@@ -53,9 +57,8 @@ function Home() {
         <section>
           <h2>Our Algorithm</h2>
           <p>
-            We use TF-IDF calculations to find the best suggestions for the books
-            you look at. By doing so, you can be sure you'll always find something
-            new and interesting to read!
+            We calculate similar book recommendations using our own comparison algorithms
+            which utilise the Jaccard similarity metric!
           </p>
         </section>
         <section>

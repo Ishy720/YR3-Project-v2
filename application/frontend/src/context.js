@@ -1,3 +1,9 @@
+/*
+  This file contains most of the common functions the application globally requires for functionality. It contains variables and functions 
+  for the user's account, the books they select, their reading lists and the render states for overlays.
+*/
+
+//Imports
 import axios from "axios";
 import React, { createContext, useContext, useState } from "react";
 
@@ -11,17 +17,17 @@ const AppProvider = ({ children }) => {
   const [accountType, setAccountType] = useState(sessionStorage.getItem("accountType"));
 
   //book list states
-  const [toreadlist, setToReadList] = useState([]);
+  const [toReadList, setToReadList] = useState([]);
   const [currentlyReadingList, setCurrentlyReadingList] = useState([]);
   const [finishedList, setFinishedList] = useState([]);
   const [customListNames, setCustomlistNames] = useState([]);
   const [customList, setCustomlist] = useState([]);
 
   //modal view states
-  const [showModal, setShowModal] = useState(false);
+  const [showCustomListModal, setShowCustomListModal] = useState(false);
   const [showSelectListModal, setShowSelectListModal] = useState(false);
-
   const [showBookInfoModal, setShowBookInfoModal] = useState(false);
+
   const [bookInformation, setBookInformation] = useState({
     _id: '',
     title: '',
@@ -35,12 +41,13 @@ const AppProvider = ({ children }) => {
     ratingDistribution: []
   });
 
-  //related 'suggestion' states
+  //related states
   const [selectedBook, setSelectedBook] = useState("");
-  const [suggestionsByGenre, setSuggestionsByGenre] = useState([]);
-  const [suggestionsByAuthor, setSuggestionsByAuthor] = useState([]);
+  const [relatedByGenre, setRelatedByGenre] = useState([]);
+  const [relatedByAuthor, setRelatedByAuthor] = useState([]);
 
-  const addToreadList = async (userId, bookId) => {
+  //function responsible for adding a book to a user's to-read list
+  const addToReadList = async (userId, bookId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
       "Authorization": `Bearer ${token}`,
@@ -54,38 +61,22 @@ const AppProvider = ({ children }) => {
       return err.response;
     }
   };
-  /*
-  const addToreadList = async (userId, bookId) => {
+
+  //function responsible for adding a book to a user's currently-reading list
+  const addToCurrentlyReadingList = async (userId, bookId) => {
+    const token = sessionStorage.getItem("token");
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    };
     return axios
-      .patch(`http://localhost:8080/toreadlist/${userId}/${bookId}`)
+      .patch(`http://localhost:8080/currentlyreadinglist/${userId}/${bookId}`, {}, { headers })
       .catch((err) => {
         return err.response;
       });
-  };*/
-
-  const addToCurrentlyReadingList = async (userId, bookId) => {
-  const token = sessionStorage.getItem("token");
-  const headers = {
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json"
   };
-  return axios
-    .patch(`http://localhost:8080/currentlyreadinglist/${userId}/${bookId}`, {}, { headers })
-    .catch((err) => {
-      return err.response;
-    });
-};
 
-
-  /*
-  const addToCurrentlyReadingList = async (userId, bookId) => {
-    return axios
-      .patch(`http://localhost:8080/currentlyreadinglist/${userId}/${bookId}`)
-      .catch((err) => {
-        return err.response;
-      });
-  };*/
-
+  //function responsible for adding a book to a user's finished-reading list
   const addToFinishedList = async (userId, bookId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -101,15 +92,7 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  /*
-  const addToFinishedList = async (userId, bookId) => {
-    return axios
-      .patch(`http://localhost:8080/finishedlist/${userId}/${bookId}`)
-      .catch((err) => {
-        return err.response;
-      });
-  };*/
-
+  //function responsible for returning a user's to-read list
   const getToReadList = async (userId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -128,16 +111,7 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  /*
-  const getToReadList = async (userId) => {
-    return axios
-      .get(`http://localhost:8080/list/toread/${userId}`)
-      .catch((err) => {
-        return err.response;
-      });
-  };*/
-
-
+  //function responsible for returning a user's currently-reading list
   const getCurrentlyReadingList = async (userId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -151,16 +125,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  
-  /*
-  const getCurrentlyReadingList = async (userId) => {
-    return axios
-      .get(`http://localhost:8080/list/currentlyreading/${userId}`)
-      .catch((err) => {
-        return err.response;
-      });
-  };*/
-
+  //function responsible for returning a user's finished-reading list
   const getFinishedList = async (userId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -174,15 +139,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  /*
-  const getFinishedList = async (userId) => {
-    return axios
-      .get(`http://localhost:8080/list/finished/${userId}`)
-      .catch((err) => {
-        return err.response;
-      });
-  };*/
-
+  //function responsible for deleting a book from a user's core reading lists
   const deleteBook = async (userId, bookId) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -201,21 +158,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  /*
-  const deleteBook = async (userId, bookId) => {
-    axios
-      .patch(`http://localhost:8080/delete/${userId}/${bookId}`)
-      .then((res) => {
-        setFinishedList(res.data.finishedList);
-        setToReadList(res.data.toReadList);
-        setCurrentlyReadingList(res.data.currentlyReadingList);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
-  };*/
-
+  //function responsible for creating a custom list for a user
   const createCustomList = async (userId, listName) => {
     const token = sessionStorage.getItem("token");
     const headers = {
@@ -230,18 +173,7 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  /*
-  const createCustomList = async (userId, listName) => {
-    return axios
-      .post(`http://localhost:8080/createcustomlist/${userId}`, { listName })
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return err.response.data;
-      });
-  };*/
-
+  //function responsible for deleting a user's specified custom list
   const deleteCustomList = async (userId, listName) => {
     const token = sessionStorage.getItem("token");
     return axios
@@ -258,18 +190,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  /*
-  const deleteCustomList = async (userId, listName) => {
-    return axios
-      .patch(`http://localhost:8080/deletecustomlist/${userId}`, { listName })
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return err.response.data;
-      });
-  };*/
-
+  //function responsible for returning a user's custom reading lists
   const getCustomList = async (userId) => {
     try {
       const response = await axios.get(`http://localhost:8080/customlist/${userId}`, {
@@ -284,17 +205,7 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  /*
-  const getCustomList = async (userId) => {
-    axios
-      .get(`http://localhost:8080/customlist/${userId}`)
-      .then((res) => {
-        setCustomlistNames(Object.keys(res.data.customList));
-        setCustomlist(res.data.customList);
-      })
-      .catch((err) => console.log(err));
-  };*/
-
+  //function responsible for adding a book to a user's specified custom list
   const addBookToCustomList = async (userId, bookId, list) => {
     const token = sessionStorage.getItem("token");
     const headers = { Authorization: `Bearer ${token}` };
@@ -313,20 +224,7 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  /*
-  const addBookToCustomList = async (userId, bookId, list) => {
-    return axios
-      .patch(
-        `http://localhost:8080/customlist/addbook/${userId}/${bookId}?list=${list}`
-      )
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return err.response.data;
-      });
-  };*/
-
+  //function responsible for deleting a specific book from a user's specific custom reading list
   const deleteBookFromCustomList = async (userId, bookId, list) => {
     const token = sessionStorage.getItem("token");
     return axios
@@ -347,21 +245,8 @@ const AppProvider = ({ children }) => {
       });
   };
 
-  /*
-  const deleteBookFromCustomList = async (userId, bookId, list) => {
-    return axios
-      .patch(
-        `http://localhost:8080/customlist/removebook/${userId}/${bookId}?list=${list}`
-      )
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return err.response.data;
-      });
-  };*/
-
-  const getSuggestionsByGenre = async (userId) => {
+  //function responsible for returning a user's related books by genres
+  const getRelatedByGenre = async (userId) => {
     const token = sessionStorage.getItem("token");
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -372,33 +257,17 @@ const AppProvider = ({ children }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data.filterBooks) {
-          setSuggestionsByGenre(res.data.filterBooks);
+          setRelatedByGenre(res.data.filterBooks);
         } else {
-          setSuggestionsByGenre([]);
+          setRelatedByGenre([]);
         }
         return;
       })
       .catch((err) => console.log(err));
   };
 
-  /*
-  const getSuggestionsByGenre = async (userId) => {
-    return axios
-      .get(`http://localhost:8080/recommendationbygenre/${userId}`)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.filterBooks) {
-          setSuggestionsByGenre(res.data.filterBooks);
-        }
-        else {
-          setSuggestionsByGenre([]);
-        }
-        return
-      })
-      .catch((err) => console.log(err));
-  };*/
-
-  const getSuggestionsByAuthor = async (userId) => {
+  //function responsible for returning a user's related books by authors
+  const getRelatedByAuthor = async (userId) => {
     const token = sessionStorage.getItem("token");
     return axios
       .get(`http://localhost:8080/relatedbyauthor/${userId}`, {
@@ -409,31 +278,14 @@ const AppProvider = ({ children }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data.filterBooks) {
-          setSuggestionsByAuthor(res.data.filterBooks);
+          setRelatedByAuthor(res.data.filterBooks);
         } else {
-          setSuggestionsByAuthor([]);
+          setRelatedByAuthor([]);
         }
         return;
       })
       .catch((err) => console.log(err));
   };
-
-  /*
-  const getSuggestionsByAuthor = async (userId) => {
-    return axios
-      .get(`http://localhost:8080/recommendationbyauthor/${userId}`)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.filterBooks) {
-          setSuggestionsByAuthor(res.data.filterBooks);
-        }
-        else {
-          setSuggestionsByAuthor([]);
-        }
-        return
-      })
-      .catch((err) => console.log(err));
-  };*/
 
   //return global functions for all pages to use
   return (
@@ -445,13 +297,13 @@ const AppProvider = ({ children }) => {
         setAuth,
         accountType,
         setAccountType,
-        addToreadList,
+        addToReadList,
         addToCurrentlyReadingList,
         addToFinishedList,
         getToReadList,
         getCurrentlyReadingList,
         getFinishedList,
-        toreadlist,
+        toReadList,
         setToReadList,
         currentlyReadingList,
         setCurrentlyReadingList,
@@ -463,18 +315,18 @@ const AppProvider = ({ children }) => {
         getCustomList,
         customListNames,
         customList,
-        showModal,
-        setShowModal,
+        showCustomListModal,
+        setShowCustomListModal,
         showSelectListModal,
         setShowSelectListModal,
         selectedBook,
         setSelectedBook,
         addBookToCustomList,
         deleteBookFromCustomList,
-        getSuggestionsByGenre,
-        suggestionsByGenre,
-        suggestionsByAuthor,
-        getSuggestionsByAuthor, 
+        getRelatedByGenre,
+        relatedByGenre,
+        relatedByAuthor,
+        getRelatedByAuthor, 
         showBookInfoModal,
         setShowBookInfoModal,
         bookInformation,

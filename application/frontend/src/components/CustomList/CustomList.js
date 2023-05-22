@@ -1,24 +1,18 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-
 import { useGlobalContext } from "../../context";
 
+//CustomList Component, used to render the user's custom lists
 const CustomList = () => {
+
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState(false);
+
+  //import required states/functions from context file
   const {
     deleteBookFromCustomList,
-    addToreadList,
-    addToFinishedList,
-    toreadlist,
-    currentlyReadingList,
-    getCurrentlyReadingList,
-    setCurrentlyReadingList,
-    setToReadList,
-    finishedList,
-    setFinishedList,
     setBookInformation,
     setShowBookInfoModal,
     user: { id: userId },
@@ -31,6 +25,10 @@ const CustomList = () => {
     toast.success(message);
   }
 
+  function notifyError(message) {
+    toast.error(message);
+  }
+
   const getList = async () => {
     setLoading(true);
     getCustomList(userId);
@@ -41,6 +39,7 @@ const CustomList = () => {
     getList();
   }, []);
 
+  //event handler to remove a book from a user's custom book reading list
   const handleDelete = async (userId, bookId, book) => {
     const data = await deleteBookFromCustomList(userId, bookId, book);
     console.log(data);
@@ -66,9 +65,11 @@ const CustomList = () => {
     setShowBookInfoModal(true);
   }
 
+  //content variable to hold UI markup depending on if there is a list to render or not
   let content;
+
   if (loading) {
-    content = <p className="other-message">Loading......</p>;
+    content = <p className="other-message">Loading...</p>;
   }
 
   if (customListNames.length === 0) {
@@ -124,7 +125,6 @@ const CustomList = () => {
         );
       }
 
-      //   return display;
     });
   }
 
@@ -132,45 +132,3 @@ const CustomList = () => {
 };
 
 export default CustomList;
-
-//   return (
-//     <div className="book-card" key={book._id}>
-//       <div className="image-con">
-//         <img src={book.imgurl} alt={book.title} className="image" />
-//       </div>
-//       <div className="details-con">
-//         <h5 className="title">
-//           <span>Title</span> {book.title}
-//         </h5>
-//         <h5 className="author">
-//           <span>Author</span> {book.author}
-//         </h5>
-//         <h5 className="rating">
-//           <span>Rating</span> {book.avgRating}
-//         </h5>
-//         <footer className="card-footer">
-//           <p className="add-to">Add to:</p>
-//           <div className="more-con">
-//             <button
-//               onClick={() => handleAddToReadList(userId, book._id)}
-//               disabled={query}
-//             >
-//               To read
-//             </button>
-//             <button
-//               onClick={() => handleAddToFinishedList(userId, book._id)}
-//               disabled={query}
-//             >
-//               Finished reading
-//             </button>
-//           </div>
-//           <div className="icon-con">
-//             <FaTrashAlt
-//               className="trash-icon"
-//               onClick={() => deleteBook(userId, book._id)}
-//             />
-//           </div>
-//         </footer>
-//       </div>
-//     </div>
-//   );

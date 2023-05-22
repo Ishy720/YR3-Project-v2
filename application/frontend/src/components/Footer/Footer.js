@@ -1,7 +1,11 @@
+//Imports
 import React from "react";
 import "./Footer.css";
 
+//Footer Component, used to render the page footer at the bottom of the page
 const Footer = () => {
+
+  //return function containing JSX markup to display the UI elements
   return (
     <footer className="footer">
       <div className="footer-section">

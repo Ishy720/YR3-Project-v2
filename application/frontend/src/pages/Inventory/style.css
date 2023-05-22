@@ -1,0 +1,232 @@
+.section-title {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin-top: 0;
+  padding-top: 2rem;
+  margin: 0;
+  font-family: "Sono", sans-serif;
+}
+.other-message {
+  text-align: center;
+  color: antiquewhite;
+  font-size: 2rem;
+  min-width: 95vw;
+}
+.main-con {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom:0;
+}
+
+.book-card {
+  margin: 2rem 0;
+  width: 250px;
+  height: 470px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: rgba(100, 100, 100, 0.9) 0px 3px 8px;
+}
+
+.image-con {
+  height: 250px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.details-con {
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.title,
+.author,
+.rating {
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.title span,
+.author span,
+.rating span {
+  font-weight: 700;
+  min-width: 60px !important;
+  padding: 0 0.9rem;
+  display: block;
+}
+
+.card-footer {
+  display: flex;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  border-radius: 0;
+  width: 100%;
+}
+.add-to {
+  margin: 0;
+  text-align: left;
+  width: 100%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  top: -15px;
+  left: 0.2rem;
+}
+.icon-con {
+  display: flex;
+}
+
+.more-con {
+  width: 100%;
+  display: flex;
+}
+
+.more-con button {
+  padding: 0.3rem;
+  cursor: pointer;
+  flex: 1;
+  border-radius: 0;
+  transition: all 0.5s;
+}
+
+.more-con button:hover {
+  background-color: black;
+  color: antiquewhite;
+}
+.trash-icon {
+  color: red;
+  cursor: pointer;
+  font-size: 2rem;
+  transition: all 0.5s;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.trash-icon:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.btn {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  margin: 0.5rem;
+  font-weight: bold;
+  background-color: #faebd799;
+  cursor: pointer;
+}
+
+.custom-list {
+  display: flex;
+  flex-direction: column;
+  width: unset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom:0;
+  /* background-color: rgba(250, 235, 215, 0.6); */
+}
+
+.each-customlist-con {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: solid 2px rgb(50, 50, 50);
+}
+.empty-customlist-con {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: solid 2px rgb(50, 50, 50);
+}
+
+.each-customlist-con .book-card {
+  height: 420px;
+}
+.customlist-title {
+  color: antiquewhite;
+  text-transform: capitalize;
+  letter-spacing: 0.2rem;
+  border-bottom: solid 2px antiquewhite;
+}
+
+.booklist-component {
+  height: max-content;
+  min-height: 80vh;
+}
+.booklist-component .tab-btns {
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin-bottom: 0;
+}
+
+.booklist-component .tab-btns button {
+  font-size: 1rem;
+  padding: 0;
+  height: 40px;
+  background-color: #fff1ac37;
+  border: transparent;
+  cursor: pointer;
+  border-right: solid 1px #000;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-family: "Sono", sans-serif;
+}
+
+.active-tab {
+  position: relative;
+  background-color: #ffd30ec1 !important;
+}
+
+.active-tab::after {
+  content: "";
+  height: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  transition: width 0.5s;
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .main-con,
+  .each-customlist-con {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 5px 15px;
+    padding: 1rem 2rem;
+  }
+  .book-card {
+    max-width: 230px;
+  }
+}

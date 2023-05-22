@@ -1,30 +1,27 @@
+//Imports
 import React, { useState, useRef } from "react";
 import "./BookCard.css";
 import NoBookCover from "../../images/NoBookCover.jpg";
 import { useGlobalContext } from "../../context";
 import toast, { Toaster } from "react-hot-toast";
 import {
-  FaArrowAltCircleRight,
-  FaArrowCircleDown,
-  FaBars,
-  FaPlus,
-  FaTimes,
+  FaArrowAltCircleRight
 } from "react-icons/fa";
 
-
+//BookCard Component, used to render the books and options on the search page
 const BookCard = ({ book }) => {
+
   const { _id: bookId } = book;
+
+  //import required states/functions from context file
   const {
-    addToreadList,
+    addToReadList,
     addToCurrentlyReadingList,
     addToFinishedList,
     user: { id: userId },
     setShowSelectListModal,
-    selectedBook,
     setSelectedBook,
-    bookInformation,
     setBookInformation,
-    showBookInfoModal,
     setShowBookInfoModal,
   } = useGlobalContext();
 
@@ -51,9 +48,10 @@ const BookCard = ({ book }) => {
     bookImageURL = NoBookCover;
   }
 
+  //event handler to add this book to the user's to-read list
   const handleAddToReadList = async (userId, bookId) => {
     setLoading(true);
-    const data = await addToreadList(userId, bookId);
+    const data = await addToReadList(userId, bookId);
     console.log(data);
     if (data.status !== 200) {
       //alert(data.data.message);
@@ -65,6 +63,7 @@ const BookCard = ({ book }) => {
     setLoading(false);
   };
 
+  //event handler to add this book to the user's currently-reading list
   const handleAddToCurrentlyReadingList = async (userId, bookId) => {
     setLoading(true);
     const data = await addToCurrentlyReadingList(userId, bookId);
@@ -79,6 +78,7 @@ const BookCard = ({ book }) => {
     setLoading(false);
   };
 
+  //event handler to add this book to the user's finished-reading list
   const handleAddToFinishedList = async (userId, bookId) => {
     setLoading(true);
     const data = await addToFinishedList(userId, bookId);
@@ -93,6 +93,7 @@ const BookCard = ({ book }) => {
     setLoading(false);
   };
 
+  //event handler to render the select custom list option modal
   const handleAddToCustomList = (bookId) => {
     console.log(bookId);
     setSelectedBook(bookId);
@@ -116,13 +117,14 @@ const BookCard = ({ book }) => {
     setShowBookInfoModal(true);
   };
 
+  //reference to show the add button options on hover
   const listCon = useRef();
 
   const showlistCon = () => {
     listCon.current.classList.toggle("show-list");
-    console.log(listCon.current);
   };
 
+  //return function containing JSX markup to display the UI elements
   return (
     <>
       <div className="bookComponent">

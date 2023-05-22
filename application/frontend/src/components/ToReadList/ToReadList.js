@@ -1,24 +1,25 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCircleMore } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-
 import { useGlobalContext } from "../../context";
 
 const ToReadList = () => {
+
+  //state variables
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState(false);
 
+  //import required states
   const {
     deleteBook,
-    finishedList,
     setFinishedList,
     addToFinishedList,
     addToCurrentlyReadingList,
-    currentlyReadingList,
     setCurrentlyReadingList,
     setToReadList,
-    toreadlist,
+    toReadList,
     getToReadList,
     setBookInformation,
     setShowBookInfoModal,
@@ -33,6 +34,7 @@ const ToReadList = () => {
     toast.success(message);
   }
 
+  //event handler for getting the user's to-read list of books
   const getList = async () => {
     setLoading(true);
     const data = await getToReadList(userId);
@@ -40,6 +42,7 @@ const ToReadList = () => {
     setLoading(false);
   };
 
+  //event handler to add a specific book to the user's currently-reading list
   const handleAddToCurrentlyReadingList = async (userId, bookId) => {
     setQuery(true);
     const data = await addToCurrentlyReadingList(userId, bookId);
@@ -55,6 +58,7 @@ const ToReadList = () => {
     setQuery(false);
   };
 
+  //event handler to add a specific book to the user's finished-reading list
   const handleAddToFinishedList = async (userId, bookId) => {
     setQuery(true);
     const data = await addToFinishedList(userId, bookId);
@@ -87,27 +91,23 @@ const ToReadList = () => {
     setShowBookInfoModal(true);
   }
 
-  // const controller = new AbortController();
-  // const signal = controller.signal;
+  //on render, get the user's to-reading list of books
   useEffect(() => {
     getList();
   }, []);
-  // return () => {
-  //   // cancel the request before component unmounts
-  //   controller.abort();
-  // };
 
+  //content variable to hold UI markup depending on if there are any books to render or not
   let content;
 
   if (loading) {
     content = <p className="other-message">Loading...</p>;
   }
-  if (toreadlist.length === 0) {
+  if (toReadList.length === 0) {
     content = <p className="other-message">Looks like you aren't tracking any books here! Add a book to get started!</p>;
   }
 
-  if (!loading && toreadlist.length > 0) {
-    content = toreadlist.map((book) => {
+  if (!loading && toReadList.length > 0) {
+    content = toReadList.map((book) => {
       return (
         <>
         <div className="book-card" key={book._id}>

@@ -1,13 +1,16 @@
+//Imports
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context";
 import { FaTrash, FaTimes } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-
 import "./style.css";
+
+//SelectCustomListModal Component, used to render a modal overlay giving the user options of which custom list they want to add 
+//their selected book to.
 const SelectCustomListModal = () => {
-  
+
+  //import required states
   const {
-    showSelectListModal,
     setShowSelectListModal,
     customListNames,
     getCustomList,
@@ -16,9 +19,11 @@ const SelectCustomListModal = () => {
     addBookToCustomList,
   } = useGlobalContext();
 
+  //state variables
   const [listName, setListName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  //on render get the user's custom lists
   useEffect(() => {
     getCustomList(userId);
   }, []);
@@ -31,6 +36,7 @@ const SelectCustomListModal = () => {
     toast.success(message);
   }
 
+  //event handler which adds the user's selected book to their custom list
   const handleSubmit = async () => {
     setLoading(true);
     const data = await addBookToCustomList(userId, bookId, listName);
@@ -38,6 +44,8 @@ const SelectCustomListModal = () => {
     notifySuccess(data.message);
     setLoading(false);
   };
+
+  //return function containing JSX markup to display the UI elements
   return (
     <section className="main-sec">
       <div className="modal-content">
