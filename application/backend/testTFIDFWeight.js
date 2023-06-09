@@ -29,7 +29,7 @@ async function retrieveRelatedBooks(bookId, genres) {
   const books = await Book.aggregate([
     { $match: { genres: { $in: genres } } },
     { $match: { _id: { $ne: mongoose.Types.ObjectId(bookId) } } },
-    //{ $sample: { size: 500 } },
+    { $sample: { size: 500 } },
     { $project: { _id: 1, title: 1, author: 1, releaseDate: 1, description: 1, imgurl: 1, genres: 1, avgRating: 1, likedPercentage: 1, ratingDistribution: 1 } }
   ]);
 

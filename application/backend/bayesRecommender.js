@@ -139,7 +139,7 @@ const findSimilarBooks = async (bookId) => {
   //retrieve the book classifications the classifier predicts using the input features, limited to a max of 10
   const categories = classifier.getClassifications(inputFeatures)
     .sort((a, b) => b.value - a.value)
-    .slice(0, 10)
+    .slice(0, 30)
     .map((classification) => {
       return {
         id: classification.label,
@@ -168,27 +168,28 @@ const findSimilarBooks = async (bookId) => {
     const similarityScore = categories.find((category) => category.id === book.id).score;
     const normalisedScore = (similarityScore - minScore) / (maxScore - minScore) * 100;
     if(normalisedScore > 0) {
-      console.log(`Book: ${book.title} - Probability: ${normalisedScore.toFixed(3)}`);
+      console.log(`Book: ${book.title} - Normalised Probability: ${normalisedScore.toFixed(10)}`);
     }
   }
 
   return results;
 };
 
-findSimilarBooks("640b6eb01024425951abacea");
+//findSimilarBooks("640b6eb11024425951abbfde");
 
 async function runTest() {
   const memoryBefore = process.memoryUsage().heapUsed
   const start = Date.now()
-  findSimilarBooks("640b6eb01024425951abacea")
+  findSimilarBooks("640b6eb11024425951abbfde")
     .then((result) => {
       const end = Date.now()
       const memoryUsed = process.memoryUsage().heapUsed
       console.log('Time taken:', (end - start)/1000, 's', '||', 'Memory used:', (memoryUsed - memoryBefore)/(1024 * 1024), 'MB');
+      /*
       result.forEach((book) => {
         console.log(book.title);
-      });
+      });*/
     })
 }
 
-//runTest();
+runTest();

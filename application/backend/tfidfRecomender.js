@@ -1,5 +1,5 @@
 /*
-  This file is where I tried to make the TF-IDF recommendation system without third party imports to assist in my calculations.
+  This file is where I initially tried to make the TF-IDF recommendation system without third party imports to assist in my calculations.
 */
 
 //Imports

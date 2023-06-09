@@ -175,7 +175,7 @@ async function recommendForBook(bookID) {
 
   //sort the scored books by descending score and return the top books
   const sortedRelatedBooks = relatedBookScores.sort((a, b) => b.score - a.score);
-  return sortedRelatedBooks.splice(0, 6);
+  return sortedRelatedBooks.splice(0, 30);
     /*
     //print top 6 books
     for (let i = 0; i < 30 && i < sortedRelatedBooks.length; i++) {
@@ -185,28 +185,32 @@ async function recommendForBook(bookID) {
 
 }
 
-recommendForBook("640b6eb01024425951abb166")
+/*
+recommendForBook("640b6eb11024425951abbfde")
 .then((result) => {
   console.log(result);
-})
+})*/
 
 //this function is used to test the time and memory performance of the recommendation system.
 async function runTest() {
   //measure the initial memory usage and time
   const memoryBefore = process.memoryUsage().heapUsed
   const start = Date.now()
-  recommendForBook("640b6eb01024425951abb166")
+  recommendForBook("640b6eb11024425951abbfde")
     .then((result) => {
       const end = Date.now()
       const memoryAfter = process.memoryUsage().heapUsed
       //print the measured time taken and memory used
       console.log('Time', (end - start) / 1000, 's', '||', 'Memory used:', (memoryAfter - memoryBefore) / (1024 * 1024), 'MB');
       //print the books that were recommended
-      console.log(result);
+      //console.log(result);
+      result.forEach((book) => {
+        console.log(book.title + "  " + book.score);
+      });
     })
 }
 
-//runTest();
+runTest();
 
 //test function to compare two books specifically
 async function compareBooks(bookA, bookB) {

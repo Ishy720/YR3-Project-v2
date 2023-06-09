@@ -95,7 +95,7 @@ async function recommendFromOneBook(bookId) {
   recommendedBooks.sort((a, b) => b.score - a.score);
 
   //return the top 10 books
-  return recommendedBooks.slice(0, 10);
+  return recommendedBooks.slice(0, 30);
 }
 
 //this function is used to test the time and memory performance of the recommendation system.
@@ -103,7 +103,7 @@ async function runTest() {
   //measure the initial memory usage and time
   const memoryBefore = process.memoryUsage().heapUsed
   const start = Date.now()
-  recommendFromOneBook("640b6eb01024425951abb166")
+  recommendFromOneBook("640b6eb11024425951abbfde")
     .then((result) => {
       const end = Date.now()
       const memoryUsed = process.memoryUsage().heapUsed
@@ -116,13 +116,14 @@ async function runTest() {
     })
 }
 
-//runTest();
+runTest();
 
-recommendFromOneBook("640b6eb01024425951abb166")
+/*
+recommendFromOneBook("640b6eb11024425951abbfde")
 .then((result) => {
   result.forEach((book) => {
     console.log(book.book.title + "  " + book.score);
   });
-})
+})*/
 
 exports.recommendFromOneBook = recommendFromOneBook;

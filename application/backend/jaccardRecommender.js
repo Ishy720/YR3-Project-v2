@@ -88,7 +88,7 @@ async function recommendForBook(bookId) {
   
     //sort books by descending similarity
     results.sort((a, b) => b.similarity - a.similarity);
-    return results.splice(0, 10);
+    return results.splice(0, 30);
     /*
     //print top 6 books
     for (let i = 0; i < 6 && i < results.length; i++) {
@@ -97,12 +97,13 @@ async function recommendForBook(bookId) {
     }*/
 }
 
-recommendForBook("640b6eb01024425951abb166")
+/*
+recommendForBook("640b6eb11024425951abbfde")
 .then((result) => {
   result.forEach((book) => {
     console.log(book.book.title + "  " + book.similarity);
   });
-})
+})*/
 
 exports.recommendForBook = recommendForBook;
 
@@ -111,7 +112,7 @@ async function runTest() {
   //measure the initial memory usage and time
   const memoryBefore = process.memoryUsage().heapUsed
   const start = Date.now()
-  recommendForBook("640b6eb01024425951abb166")
+  recommendForBook("640b6eb11024425951abbfde")
     .then((result) => {
       const end = Date.now()
       const memoryAfter = process.memoryUsage().heapUsed
@@ -124,7 +125,7 @@ async function runTest() {
     })
 }
 
-//runTest();
+runTest();
 
 //test function to compare two books specifically
 async function compareBooks(bookA, bookB) {
